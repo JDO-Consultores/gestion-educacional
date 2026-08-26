@@ -1,0 +1,152 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Usuarios</h2>
+    <button id="btnCrearUsuario" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Crear Usuario
+    </button>
+</div>
+
+<div id="grid"></div>
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetUsuarios,
+                        contentType: "application/json",
+                        type: "GET"
+                    }
+                },
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "number" },
+                            Username: { type: "string" },
+                            Nombre: { type: "string" },
+                            Apellido: { type: "string" },
+                            IsActive: { type: "boolean" },
+                            Roles: { type: "object" }
+                        }
+                    },
+                }
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            columns: [
+                {
+                    field: "Username",
+                    title: "Identificador",
+                    width: "20%"
+                },
+                {
+                    field: "Nombre",
+                    title: "Nombre",
+                    width: "15%"
+                },
+                {
+                    field: "Apellido",
+                    title: "Apellido",
+                    width: "15%"
+                },
+                {
+                    field: "IsActive",
+                    title: "Activo",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return dataItem.IsActive
+                            ? "<span class='badge bg-success'>Activo</span>"
+                            : "<span class='badge bg-secondary'>Inactivo</span>";
+                    }
+                },
+                {
+                    field: "Roles",
+                    title: "Roles",
+                    width: "20%",
+                    template: function (dataItem) {
+                        if (dataItem.Roles && dataItem.Roles.length > 0) {
+                            return dataItem.Roles.map(function (role) {
+                                return `<span class='badge bg-primary me-1'>${role.Roles.Rol}</span>`;
+                            }).join(" ");
+                        } else {
+                            return "";
+                        }
+                    },
+                },
+                { 
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        var btns = `<button class="btn btn-outline-secondary btn-sm me-1" title="Editar" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalEditUser, dataItem.ID)}')"><i class="bi bi-pencil"></i></button>`;
+                        if (dataItem.IsActive) {
+                            btns += `<button class="btn btn-outline-danger btn-sm btn-cambiar-estado" data-id="${dataItem.ID}" data-activo="true" title="Desactivar"><i class="bi bi-person-x"></i></button>`;
+                        } else {
+                            btns += `<button class="btn btn-outline-success btn-sm btn-cambiar-estado" data-id="${dataItem.ID}" data-activo="false" title="Activar"><i class="bi bi-person-check"></i></button>`;
+                        }
+                        return btns;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ],
+        });
+
+        $("#btnCrearUsuario").click(function () {
+            loadView($('#modales'), urlAjaxParamId(ModalCreateUser));
+        });
+
+        $(document).on("click", ".btn-cambiar-estado", function () {
+            var id = $(this).data("id");
+            var estaActivo = $(this).data("activo") === true || $(this).data("activo") === "true";
+            showConfirm({
+                tipo: estaActivo ? 'danger' : 'info',
+                titulo: estaActivo ? 'Desactivar usuario' : 'Activar usuario',
+                mensaje: estaActivo
+                    ? '¿Desea desactivar este usuario? No podrá iniciar sesión.'
+                    : '¿Desea activar este usuario?',
+                onOk: function () {
+                    showLoading(true);
+                    $.post(CambiarEstadoUsuario, { id: id })
+                        .done(function (r) {
+                            if (r.success) {
+                                showToast("success", r.message);
+                                $("#grid").data("kendoGrid").dataSource.read();
+                            } else {
+                                showToast("info", r.message);
+                            }
+                        })
+                        .fail(function () {
+                            showToast("error", "No se pudo cambiar el estado del usuario.");
+                        })
+                        .always(function () {
+                            showLoading(false);
+                        });
+                }
+            });
+        });
+    });
+</script>

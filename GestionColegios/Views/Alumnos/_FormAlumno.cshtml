@@ -1,0 +1,1110 @@
+﻿@model GestionColegios.ViewModels.AlumnoFichaViewModel
+
+@* ── Estilos específicos del formulario ──────────────────────────────── *@
+<style>
+    .form-section {
+        border-left: 4px solid transparent;
+        border-radius: .5rem;
+        padding: 1rem 1.25rem .75rem;
+        background: #fafafa;
+        margin-bottom: 1rem;
+    }
+    .form-section.sec-identificacion { border-left-color: #0d6efd; }
+    .form-section.sec-contacto       { border-left-color: #40BF3B; }
+    .form-section.sec-salud          { border-left-color: #dc3545; }
+    .form-section.sec-social         { border-left-color: #F29F05; }
+    .form-section.sec-estado         { border-left-color: #6c757d; }
+    .form-section .sec-title {
+        font-size: .8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin-bottom: .75rem;
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        color: #495057;
+    }
+    .form-label { font-size: .85rem; font-weight: 500; margin-bottom: .25rem; }
+    .req { color: #dc3545; margin-left: 2px; }
+</style>
+
+@* ══════════════════════════════════════════════════════════════════════
+   SECCIÓN 1 — IDENTIFICACIÓN
+   ══════════════════════════════════════════════════════════════════════ *@
+<div class="form-section sec-identificacion">
+    <p class="sec-title"><i class="bi bi-person-vcard-fill"></i> Identificación</p>
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label class="form-label">RUT <span class="req">*</span></label>
+            @Html.TextBoxFor(m => m.Rut, new { @class = "form-control", placeholder = "12.345.678-9", id = "txtRut", autocomplete = "off" })
+            <div id="rutFeedback" class="small mt-1"></div>
+            @Html.ValidationMessageFor(m => m.Rut, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Apellido Paterno <span class="req">*</span></label>
+            @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", placeholder = "Apellido paterno" })
+            @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Apellido Materno</label>
+            @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control", placeholder = "Apellido materno" })
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Nombres <span class="req">*</span></label>
+            @Html.TextBoxFor(m => m.Nombres, new { @class = "form-control", placeholder = "Nombres completos" })
+            @Html.ValidationMessageFor(m => m.Nombres, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Fecha de Nacimiento <span class="req">*</span></label>
+            @Html.TextBoxFor(m => m.FechaNacimiento, "{0:dd/MM/yyyy}",
+                     new { @class = "form-control", id = "dtpFechaNacimiento", placeholder = "dd/mm/aaaa" })
+            @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Sexo <span class="req">*</span></label>
+            @Html.DropDownListFor(m => m.SexoID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlSexo" })
+            @Html.ValidationMessageFor(m => m.SexoID, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Nacionalidad <span class="req">*</span></label>
+            @Html.DropDownListFor(m => m.NacionalidadID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlNacionalidad" })
+            @Html.ValidationMessageFor(m => m.NacionalidadID, "", new { @class = "text-danger small" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Estado del Alumno <span class="req">*</span></label>
+            @Html.DropDownListFor(m => m.EstadoAlumnoID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlEstadoAlumno" })
+            <div class="invalid-feedback">El estado del alumno es obligatorio.</div>
+        </div>
+
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════════════════
+   SECCIÓN 2 — DOMICILIO Y CONTACTO
+   ══════════════════════════════════════════════════════════════════════ *@
+<div class="form-section sec-contacto">
+    <p class="sec-title"><i class="bi bi-geo-alt-fill"></i> Domicilio y contacto</p>
+    <div class="row g-3">
+
+        <div class="col-md-5">
+            <label class="form-label">Dirección</label>
+            @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control", placeholder = "Calle / número / villa" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Región</label>
+            <select id="ddlRegion" class="form-select">
+                <option value="">-- Seleccione --</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Comuna</label>
+            @Html.DropDownListFor(m => m.ComunaID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlComuna" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Teléfono</label>
+            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", placeholder = "+56 9 XXXX XXXX" })
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Correo electrónico</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "correo@dominio.cl" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+        </div>
+
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════════════════
+   SECCIÓN 3 — SALUD
+   ══════════════════════════════════════════════════════════════════════ *@
+<div class="form-section sec-salud">
+    <p class="sec-title"><i class="bi bi-heart-pulse-fill"></i> Salud</p>
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <label class="form-label">Sistema de Salud</label>
+            @Html.DropDownListFor(m => m.SistemaSaludID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlSistemaSalud" })
+        </div>
+
+
+        <div class="col-md-3 d-flex align-items-center">
+            <div class="form-check mt-3">
+                @Html.CheckBoxFor(m => m.TienePIE, new { @class = "form-check-input", id = "chkTienePIE" })
+                <label class="form-check-label fw-semibold" for="chkTienePIE">
+                    <i class="bi bi-universal-access me-1 text-info"></i>Programa de Integración (PIE)
+                </label>
+                <div class="text-muted small">El alumno es parte del programa PIE</div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="fw-semibold small text-secondary">
+                    <i class="bi bi-universal-access me-1"></i>Discapacidades
+                    <span class="text-muted fw-normal ms-1">(certificado médico obligatorio por cada una)</span>
+                </span>
+                <button type="button" class="btn btn-outline-warning btn-sm" id="btnAgregarFilaDiscapacidad">
+                    <i class="bi bi-plus-circle me-1"></i>Agregar
+                </button>
+            </div>
+
+            @if (Model.ID > 0 && Model.Discapacidades.Any())
+            {
+                <table class="table table-sm table-bordered align-middle mb-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:200px">Tipo</th>
+                            <th>Descripción</th>
+                            <th style="width:120px" class="text-center">Certificado</th>
+                            <th style="width:44px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyDiscapacidadesGuardadas">
+                        @foreach (var d in Model.Discapacidades)
+                        {
+                            <tr data-id="@d.ID">
+                                <td><span class="badge bg-warning text-dark">@d.TipoDiscapacidad</span></td>
+                                <td>@(d.Descripcion ?? "—")</td>
+                                <td class="text-center">
+                                    @if (d.TieneCertificado)
+                                    {
+                                        <a href="@Url.Action("DescargarCertificadoDiscapacidad","Alumnos",new{id=d.ID})"
+                                           class="btn btn-outline-secondary btn-sm" target="_blank">
+                                            <i class="bi bi-file-earmark-arrow-down"></i>
+                                        </a>
+                                    }
+                                    else { <span class="badge bg-danger">Sin cert.</span> }
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-discapacidad"
+                                            data-id="@d.ID"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <div id="containerDiscapacidadesNuevas">
+                <table class="table table-sm table-bordered align-middle d-none" id="tblDiscapacidadesNuevas">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:200px">Tipo <span class="req">*</span></th>
+                            <th>Descripción</th>
+                            <th style="width:260px">Certificado médico <span class="req">*</span></th>
+                            <th style="width:40px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyDiscapacidadesNuevas"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="fw-semibold small text-secondary">
+                    <i class="bi bi-capsule me-1"></i>Alergias
+                </span>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="btnAgregarFilaAlergia">
+                    <i class="bi bi-plus-circle me-1"></i>Agregar
+                </button>
+            </div>
+
+            @if (Model.ID > 0 && Model.Alergias.Any())
+            {
+                <table class="table table-sm table-bordered align-middle mb-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:130px">Tipo</th>
+                            <th>Alergia</th>
+                            <th>Detalle</th>
+                            <th style="width:110px" class="text-center">Certificado</th>
+                            <th style="width:44px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyAlergiasGuardadas">
+                        @foreach (var a in Model.Alergias)
+                        {
+                            <tr data-id="@a.ID">
+                                <td>
+                                    @if (a.TipoAlergiaID == 1)
+                                    { <span class="badge bg-primary">Informativa</span> }
+                                    else
+                                    { <span class="badge bg-warning text-dark">Alimenticia</span> }
+                                </td>
+                                <td>@a.NombreAlergia</td>
+                                <td>@(a.Descripcion ?? "—")</td>
+                                <td class="text-center">
+                                    @if (a.TieneCertificado)
+                                    {
+                                        <a href="@Url.Action("DescargarCertificadoAlergia","Alumnos",new{id=a.ID})"
+                                           class="btn btn-outline-secondary btn-sm" target="_blank">
+                                            <i class="bi bi-file-earmark-arrow-down"></i>
+                                        </a>
+                                    }
+                                    else { <span class="text-muted small">—</span> }
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-alergia"
+                                            data-id="@a.ID"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <div id="containerAlergiasNuevas">
+                <table class="table table-sm table-bordered align-middle d-none" id="tblAlergiasNuevas">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:150px">Tipo <span class="req">*</span></th>
+                            <th>Alergia <span class="req">*</span></th>
+                            <th style="width:200px">Detalle</th>
+                            <th style="width:220px">Certificado</th>
+                            <th style="width:40px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyAlergiasNuevas"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════════════════
+   SECCIÓN 4 — DATOS SOCIOECONÓMICOS Y CULTURALES
+   ══════════════════════════════════════════════════════════════════════ *@
+<div class="form-section sec-social">
+    <p class="sec-title"><i class="bi bi-people-fill"></i> Datos socioeconómicos y culturales</p>
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <label class="form-label">Etnia</label>
+            @Html.DropDownListFor(m => m.EtniaID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlEtnia" })
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Condición Socioeconómica</label>
+            @Html.DropDownListFor(m => m.CondicionSocioeconomicaID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlCondicionSocioeconomica" })
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Vive con</label>
+            @Html.DropDownListFor(m => m.ViveConID,
+                     new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                     "-- Seleccione --",
+                     new { @class = "form-select", id = "ddlViveCon" })
+        </div>
+
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════════════════
+   SECCIÓN 5 — APODERADOS
+   ══════════════════════════════════════════════════════════════════════ *@
+<div class="form-section" style="border-left-color:#6f42c1">
+    <p class="sec-title"><i class="bi bi-people-fill"></i> Apoderados</p>
+
+    @* ── Padre ── *@
+    <div class="mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary">Padre</span>
+            <span class="text-muted small">Complete los datos del padre del alumno</span>
+        </div>
+        @Html.HiddenFor(m => m.ApoderadoPadre.ApoderadoID)
+        <div class="row g-2 mb-2">
+            <div class="col-md-2">
+                <label class="form-label form-label-sm">RUT</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.Rut, new { @class = "form-control form-control-sm", placeholder = "12.345.678-9", id = "txtRutPadre", autocomplete = "off" })
+                <div id="feedbackRutPadre" class="small mt-1"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Apellido Paterno</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.ApellidoPaterno, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Apellido Materno</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.ApellidoMaterno, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Nombres</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.Nombres, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Nacionalidad</label>
+                @Html.DropDownListFor(m => m.ApoderadoPadre.NacionalidadID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlNacionalidadPadre" })
+            </div>
+        </div>
+        <div class="row g-2 mb-2">
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Nivel Educacional</label>
+                @Html.DropDownListFor(m => m.ApoderadoPadre.NivelEducacionalID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlNivelEducPadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Situación Laboral</label>
+                @Html.DropDownListFor(m => m.ApoderadoPadre.SituacionLaboralID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlSitLaboralPadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Lugar de Trabajo</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.LugarTrabajo, new { @class = "form-control form-control-sm", placeholder = "Empresa / Institución" })
+            </div>
+        </div>
+        <div class="row g-2">
+            <div class="col-md-5">
+                <label class="form-label form-label-sm">Dirección</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.Direccion, new { @class = "form-control form-control-sm", placeholder = "Calle / número / villa" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Región</label>
+                <select id="ddlRegionPadre" class="form-select form-select-sm"><option value="">-- Seleccione --</option></select>
+                @Html.HiddenFor(m => m.ApoderadoPadre.RegionID, new { id = "hdnRegionPadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Comuna</label>
+                @Html.DropDownListFor(m => m.ApoderadoPadre.ComunaID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlComunaPadre" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Teléfono Fijo</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.Telefono, new { @class = "form-control form-control-sm", placeholder = "+56 2 XXXX XXXX" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Celular</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.TelefonoCelular, new { @class = "form-control form-control-sm", placeholder = "+56 9 XXXX XXXX" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Correo</label>
+                @Html.TextBoxFor(m => m.ApoderadoPadre.Email, new { @class = "form-control form-control-sm", type = "email" })
+            </div>
+            <div class="col-md-2 d-flex align-items-end pb-1">
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.ApoderadoPadre.EsApoderadoTitular, new { @class = "form-check-input" })
+                    <label class="form-check-label small fw-semibold text-primary">Titular</label>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.ApoderadoPadre.ParentescoID, new { id = "hdnParentescoPadre" })
+        </div>
+    </div>
+
+    <hr class="my-3" />
+
+    @* ── Madre ── *@
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-success">Madre</span>
+            <span class="text-muted small">Complete los datos de la madre del alumno</span>
+        </div>
+        @Html.HiddenFor(m => m.ApoderadoMadre.ApoderadoID)
+        <div class="row g-2 mb-2">
+            <div class="col-md-2">
+                <label class="form-label form-label-sm">RUT</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.Rut, new { @class = "form-control form-control-sm", placeholder = "12.345.678-9", id = "txtRutMadre", autocomplete = "off" })
+                <div id="feedbackRutMadre" class="small mt-1"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Apellido Paterno</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.ApellidoPaterno, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Apellido Materno</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.ApellidoMaterno, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Nombres</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.Nombres, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Nacionalidad</label>
+                @Html.DropDownListFor(m => m.ApoderadoMadre.NacionalidadID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlNacionalidadMadre" })
+            </div>
+        </div>
+        <div class="row g-2 mb-2">
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Nivel Educacional</label>
+                @Html.DropDownListFor(m => m.ApoderadoMadre.NivelEducacionalID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlNivelEducMadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Situación Laboral</label>
+                @Html.DropDownListFor(m => m.ApoderadoMadre.SituacionLaboralID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlSitLaboralMadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Lugar de Trabajo</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.LugarTrabajo, new { @class = "form-control form-control-sm", placeholder = "Empresa / Institución" })
+            </div>
+        </div>
+        <div class="row g-2">
+            <div class="col-md-5">
+                <label class="form-label form-label-sm">Dirección</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.Direccion, new { @class = "form-control form-control-sm", placeholder = "Calle / número / villa" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Región</label>
+                <select id="ddlRegionMadre" class="form-select form-select-sm"><option value="">-- Seleccione --</option></select>
+                @Html.HiddenFor(m => m.ApoderadoMadre.RegionID, new { id = "hdnRegionMadre" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Comuna</label>
+                @Html.DropDownListFor(m => m.ApoderadoMadre.ComunaID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select form-select-sm", id = "ddlComunaMadre" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Teléfono Fijo</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.Telefono, new { @class = "form-control form-control-sm", placeholder = "+56 2 XXXX XXXX" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Celular</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.TelefonoCelular, new { @class = "form-control form-control-sm", placeholder = "+56 9 XXXX XXXX" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-label-sm">Correo</label>
+                @Html.TextBoxFor(m => m.ApoderadoMadre.Email, new { @class = "form-control form-control-sm", type = "email" })
+            </div>
+            <div class="col-md-2 d-flex align-items-end pb-1">
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.ApoderadoMadre.EsApoderadoTitular, new { @class = "form-check-input" })
+                    <label class="form-check-label small fw-semibold text-primary">Titular</label>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.ApoderadoMadre.ParentescoID, new { id = "hdnParentescoMadre" })
+        </div>
+    </div>
+</div>
+
+@* Templates (sin cambios) *@
+<template id="templateFilaDiscapacidad">
+    <tr class="fila-discapacidad-nueva">
+        <td>
+            <select name="DiscapacidadesPendientes[__IDX__].TipoDiscapacidadID"
+                    class="form-select form-select-sm sel-tipo-discapacidad" required>
+                <option value="">-- Tipo --</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" name="DiscapacidadesPendientes[__IDX__].Descripcion"
+                   class="form-control form-control-sm" placeholder="Especifique…" />
+        </td>
+        <td>
+            <input type="file" name="DiscapacidadesPendientes[__IDX__].CertificadoArchivo"
+                   class="form-control form-control-sm inp-cert-discapacidad"
+                   accept=".pdf,.jpg,.jpeg,.png" required />
+            <div class="form-text text-danger small">PDF o imagen obligatorio.</div>
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-outline-danger btn-sm btn-quitar-fila-disc" title="Quitar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+<template id="templateFilaAlergia">
+    <tr class="fila-alergia-nueva">
+        <td>
+            <select name="AlergiasPendientes[__IDX__].TipoAlergiaID"
+                    class="form-select form-select-sm sel-tipo-alergia" required>
+                <option value="">-- Tipo --</option>
+            </select>
+        </td>
+        <td class="td-nombre"></td>
+        <td class="td-descripcion">
+            <input type="text" name="AlergiasPendientes[__IDX__].Descripcion"
+                   class="form-control form-control-sm inp-descripcion" style="display:none;"
+                   placeholder="Especifique…" />
+        </td>
+        <td class="td-certificado">
+            <div class="inp-certificado-wrap" style="display:none;">
+                <input type="file" name="AlergiasPendientes[__IDX__].CertificadoArchivo"
+                       class="form-control form-control-sm inp-certificado"
+                       accept=".pdf,.jpg,.jpeg,.png" />
+                <div class="form-text text-danger">PDF o imagen. Obligatorio.</div>
+            </div>
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-outline-danger btn-sm btn-quitar-fila" title="Quitar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+<script>
+    $(document).ready(function () {
+
+        // ── Validación de campos obligatorios ─────────────────────────
+        // Retorna true si todo es válido; false y marca los campos si no.
+        window.validarFormulario = function () {
+            var valido = true;
+
+            // Definición de reglas: [selector, mensaje de error exacto]
+            var reglas = [
+                { sel: '#txtRut',            msg: 'El RUT es obligatorio.',                  tipo: 'texto'    },
+                { sel: '#Nombres',           msg: 'Los nombres son obligatorios.',             tipo: 'texto'    },
+                { sel: '#ApellidoPaterno',   msg: 'El apellido paterno es obligatorio.',       tipo: 'texto'    },
+                { sel: '#dtpFechaNacimiento',msg: 'La fecha de nacimiento es obligatoria.',   tipo: 'texto'    },
+                { sel: '#ddlSexo',           msg: 'El sexo es obligatorio.',                  tipo: 'select'   },
+                { sel: '#ddlNacionalidad',   msg: 'La nacionalidad es obligatoria.',          tipo: 'select'   },
+                { sel: '#ddlEstadoAlumno',   msg: 'El estado del alumno es obligatorio.',     tipo: 'select'   }
+            ];
+
+            // Limpiar estado previo
+            $.each(reglas, function (i, r) {
+                $(r.sel).removeClass('is-invalid').siblings('.field-error-msg').remove();
+            });
+            // Limpiar error RUT duplicado si ya es válido
+            if ($('#rutFeedback').hasClass('text-success')) { /* ok */ }
+
+            $.each(reglas, function (i, r) {
+                var $el = $(r.sel);
+                var val = $.trim($el.val());
+                var vacio = (r.tipo === 'select') ? (val === '' || val === '0') : (val === '');
+                if (vacio) {
+                    $el.addClass('is-invalid');
+                    $el.after('<div class="field-error-msg text-danger small mt-1">' + r.msg + '</div>');
+                    valido = false;
+                }
+            });
+
+            // Validar RUT (usa la función ya definida más abajo)
+            var rutVal = $.trim($('#txtRut').val());
+            if (rutVal && !validarRutFormato(rutVal)) {
+                $('#txtRut').addClass('is-invalid');
+                $('#rutFeedback').removeClass('text-success text-warning')
+                    .addClass('text-danger').text('✖ El RUT ingresado no es válido.');
+                valido = false;
+            } else if ($('#rutFeedback').hasClass('text-danger')) {
+                valido = false;
+            }
+
+            if (!valido) {
+                // Hacer scroll al primer campo inválido
+                var $primero = $('.is-invalid, #rutFeedback.text-danger').first();
+                if ($primero.length) {
+                    $('html, body').animate({ scrollTop: $primero.offset().top - 100 }, 300);
+                }
+            }
+
+            return valido;
+        };
+
+        // Limpiar marca de error al corregir
+        $(document).on('input change', '.is-invalid', function () {
+            $(this).removeClass('is-invalid').siblings('.field-error-msg').remove();
+        });
+
+        // ── DatePicker ────────────────────────────────────────────────
+        $("#dtpFechaNacimiento").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            max: new Date()
+        });
+
+        // ── Cargar Sexo ───────────────────────────────────────────────
+        $.getJSON("@Url.Action("Sexos", "Lookup")", function (data) {
+            var ddl = $("#ddlSexo");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.SexoID");
+        });
+
+        // ── Validación RUT chileno ────────────────────────────────────
+        var alumnoIdActual = @Model.ID;  // 0 en crear, >0 en editar
+
+        function formatearRut(rut) {
+            rut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+            if (rut.length < 2) return rut;
+            var cuerpo = rut.slice(0, -1);
+            var dv = rut.slice(-1);
+            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return cuerpo + '-' + dv;
+        }
+
+        function calcularDv(rut) {
+            var suma = 0, multiplo = 2;
+            for (var i = rut.length - 1; i >= 0; i--) {
+                suma += parseInt(rut.charAt(i)) * multiplo;
+                multiplo = multiplo < 7 ? multiplo + 1 : 2;
+            }
+            var res = 11 - (suma % 11);
+            if (res === 11) return '0';
+            if (res === 10) return 'K';
+            return String(res);
+        }
+
+        function validarRutFormato(rut) {
+            rut = rut.replace(/[.\-]/g, '').toUpperCase();
+            if (!/^\d{7,8}[0-9K]$/.test(rut)) return false;
+            var cuerpo = rut.slice(0, -1);
+            var dv = rut.slice(-1);
+            return calcularDv(cuerpo) === dv;
+        }
+
+        function mostrarFeedbackRut(msg, tipo) {
+            // tipo: 'ok' | 'error' | 'info' | ''
+            var colores = { ok: 'text-success', error: 'text-danger', info: 'text-warning', '': '' };
+            var iconos  = { ok: '✔', error: '✖', info: '⚠', '': '' };
+            var $fb = $('#rutFeedback');
+            $fb.removeClass('text-success text-danger text-warning')
+               .addClass(colores[tipo] || '')
+               .text(msg ? (iconos[tipo] + ' ' + msg) : '');
+        }
+
+        var rutTimer;
+        $('#txtRut').on('input', function () {
+            var raw = $(this).val().replace(/[^0-9kK]/g, '').toUpperCase();
+            if (raw.length > 1) $(this).val(formatearRut(raw));
+
+            clearTimeout(rutTimer);
+            var rut = $(this).val();
+            if (!rut) { mostrarFeedbackRut('', ''); return; }
+
+            if (!validarRutFormato(rut)) {
+                mostrarFeedbackRut('RUT inválido.', 'error');
+                return;
+            }
+
+            mostrarFeedbackRut('Verificando…', 'info');
+            rutTimer = setTimeout(function () {
+                $.getJSON('@Url.Action("ValidarRut", "Alumnos")',
+                    { rut: rut, alumnoId: alumnoIdActual },
+                    function (r) {
+                        if (r.duplicado) {
+                            mostrarFeedbackRut('Este RUT ya está registrado.', 'error');
+                        } else {
+                            mostrarFeedbackRut('RUT válido y disponible.', 'ok');
+                        }
+                    });
+            }, 500);
+        });
+
+        // Bloquear envío si RUT es inválido
+        $(document).on('submit-validar-rut', function () {
+            var rut = $('#txtRut').val();
+            if (!validarRutFormato(rut)) {
+                mostrarFeedbackRut('Corrija el RUT antes de continuar.', 'error');
+                return false;
+            }
+            return true;
+        });
+
+        // ── Cargar Nacionalidades ─────────────────────────────────────
+        $.getJSON("@Url.Action("Nacionalidades", "Lookup")", function (data) {
+            var ddl = $("#ddlNacionalidad");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.NacionalidadID");
+        });
+
+        // ── Cargar Sistema de Salud ───────────────────────────────────
+        $.getJSON("@Url.Action("SistemasSalud", "Lookup")", function (data) {
+            var ddl = $("#ddlSistemaSalud");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.SistemaSaludID");
+        });
+
+        // ── Cargar Etnias ──────────────────────────────────────────────
+        $.getJSON("@Url.Action("Etnias", "Lookup")", function (data) {
+            var ddl = $("#ddlEtnia");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.EtniaID");
+        });
+
+        // ── Cargar Condiciones Socioeconómicas ─────────────────────────
+        $.getJSON("@Url.Action("CondicionesSocioeconomicas", "Lookup")", function (data) {
+            var ddl = $("#ddlCondicionSocioeconomica");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.CondicionSocioeconomicaID");
+        });
+
+        // ── Cargar Vive Con ────────────────────────────────────────────
+        $.getJSON("@Url.Action("ViveCon", "Lookup")", function (data) {
+            var ddl = $("#ddlViveCon");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.ViveConID");
+        });
+
+        // ── Cargar Estado Alumno ──────────────────────────────────────
+        $.getJSON("@Url.Action("EstadosAlumno", "Lookup")", function (data) {
+            var ddl = $("#ddlEstadoAlumno");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            ddl.val("@Model.EstadoAlumnoID");
+        });
+
+        // ── Cargar Regiones y Comunas en cascada ─────────────────────
+        var regionIdActual = @Html.Raw(Model.RegionID.HasValue ? Model.RegionID.Value.ToString() : "null");
+        var comunaIdActual = @Html.Raw(Model.ComunaID.HasValue  ? Model.ComunaID.Value.ToString()  : "null");
+
+        $.getJSON("@Url.Action("Regiones", "Lookup")", function (data) {
+            var ddl = $("#ddlRegion");
+            $.each(data, function (i, item) {
+                ddl.append($("<option>").val(item.ID).text(item.Texto));
+            });
+            if (regionIdActual !== null) {
+                ddl.val(regionIdActual);
+                cargarComunas(regionIdActual, comunaIdActual);
+            }
+        });
+
+        $("#ddlRegion").change(function () {
+            cargarComunas(parseInt($(this).val()) || null, null);
+        });
+
+        function cargarComunas(regionId, comunaId) {
+            if (!regionId) return;
+            $.getJSON("@Url.Action("ComunasPorRegion", "Lookup")", { regionId: regionId }, function (data) {
+                var ddl = $("#ddlComuna");
+                ddl.empty().append('<option value="">-- Seleccione --</option>');
+                $.each(data, function (i, item) {
+                    ddl.append($("<option>").val(item.ID).text(item.Texto));
+                });
+                if (comunaId !== null) ddl.val(comunaId);
+            });
+        }
+
+        // ── Alergias ──────────────────────────────────────────────────
+        var tiposAlergia = [];       // [{ID, Texto}]
+        var catalogoCache = {};      // {tipoId: [{ID, Texto, RequiereDetalle}]}
+        var filaIdx = 0;
+
+        // Cargar tipos desde BD
+        $.getJSON("@Url.Action("TiposAlergia", "Lookup")", function (data) {
+            tiposAlergia = data;
+        });
+
+        // Cargar catálogo por tipo (con caché)
+        function cargarCatalogo(tipoId, cb) {
+            if (catalogoCache[tipoId]) { cb(catalogoCache[tipoId]); return; }
+            $.getJSON("@Url.Action("CatalogoAlergias", "Lookup")", { tipoAlergiaId: tipoId }, function (data) {
+                catalogoCache[tipoId] = data;
+                cb(data);
+            });
+        }
+
+        // Agregar fila nueva a la tabla
+        $("#btnAgregarFilaAlergia").click(function () {
+            var idx = filaIdx++;
+            var tmpl = document.getElementById("templateFilaAlergia").innerHTML
+                .replace(/__IDX__/g, idx);
+
+            var $fila = $(tmpl);
+            var $selTipo = $fila.find(".sel-tipo-alergia");
+
+            // Poblar tipos desde BD
+            $.each(tiposAlergia, function (i, t) {
+                $selTipo.append($("<option>").val(t.ID).text(t.Texto));
+            });
+            // Si aun no se cargaron, recargar y poblar
+            if (tiposAlergia.length === 0) {
+                $.getJSON("@Url.Action("TiposAlergia", "Lookup")", function (data) {
+                    tiposAlergia = data;
+                    $.each(data, function (i, t) {
+                        $selTipo.append($("<option>").val(t.ID).text(t.Texto));
+                    });
+                });
+            }
+
+            // Evento cambio de tipo
+            $selTipo.change(function () {
+                var tipoId = parseInt($(this).val());
+                var $tdNombre = $fila.find(".td-nombre");
+                var $tdDesc = $fila.find(".td-descripcion");
+                var $inpDesc = $fila.find(".inp-descripcion");
+                var $tdCert = $fila.find(".td-certificado");
+                var $wrapCert = $fila.find(".inp-certificado-wrap");
+
+                $tdNombre.empty();
+                $inpDesc.hide().val("");
+                $wrapCert.hide();
+                $fila.find(".inp-certificado").val("");
+
+                if (!tipoId) return;
+
+                if (tipoId === 1) {
+                    // Informativa: nombre libre + certificado obligatorio
+                    $tdNombre.append(
+                        $('<input type="text" class="form-control form-control-sm inp-nombre-libre" placeholder="Ej: Alergia al polvo de ácaros" required />')
+                            .attr("name", "AlergiasPendientes[" + idx + "].NombreAlergia")
+                    );
+                    $wrapCert.show();
+                } else {
+                    // Alimenticia: catálogo desde BD
+                    var $sel = $('<select class="form-select form-select-sm sel-catalogo" required></select>')
+                        .attr("name", "AlergiasPendientes[" + idx + "].NombreAlergia");
+                    $sel.append('<option value="">-- Seleccione --</option>');
+
+                    cargarCatalogo(tipoId, function (items) {
+                        $.each(items, function (i, item) {
+                            $sel.append($("<option>").val(item.Texto).text(item.Texto)
+                                .data("requiere-detalle", item.RequiereDetalle));
+                        });
+                    });
+
+                    $sel.change(function () {
+                        var opt = $(this).find(":selected");
+                        var req = opt.data("requiere-detalle");
+                        if (req) { $inpDesc.show(); }
+                        else { $inpDesc.hide().val(""); }
+                    });
+
+                    $tdNombre.append($sel);
+                }
+            });
+
+            // Botón quitar fila
+            $fila.find(".btn-quitar-fila").click(function () {
+                $fila.remove();
+                reindexarFilas();
+                if ($("#tbodyAlergiasNuevas tr").length === 0)
+                    $("#tblAlergiasNuevas").addClass("d-none");
+            });
+
+            $("#tbodyAlergiasNuevas").append($fila);
+            $("#tblAlergiasNuevas").removeClass("d-none");
+        });
+
+        // Reindexar names tras eliminar filas intermedias
+        function reindexarFilas() {
+            $("#tbodyAlergiasNuevas tr.fila-alergia-nueva").each(function (newIdx) {
+                $(this).find("[name]").each(function () {
+                    var n = $(this).attr("name");
+                    $(this).attr("name", n.replace(/AlergiasPendientes\[\d+\]/, "AlergiasPendientes[" + newIdx + "]"));
+                });
+            });
+            filaIdx = $("#tbodyAlergiasNuevas tr").length;
+        }
+
+        // Eliminar alergia ya guardada (modo edición) vía AJAX
+        $(document).on("click", ".btn-eliminar-alergia", function () {
+            var id    = $(this).data("id");
+            var $fila = $(this).closest("tr");
+            showConfirm({
+                tipo: 'danger',
+                titulo: 'Eliminar alergia',
+                mensaje: 'Se eliminará esta alergia del registro del alumno.',
+                onOk: function () {
+                    $.post("@Url.Action("EliminarAlergia", "Alumnos")",
+                        { alergiaId: id, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+                        function (r) {
+                            if (r.success) $fila.fadeOut(200, function () { $(this).remove(); });
+                            else showAlert({ tipo: 'danger', titulo: 'Error', mensaje: 'No se pudo eliminar la alergia.' });
+                        });
+                }
+            });
+        });
+
+        // ════════════════════════════════════════════════════════════
+        // DISCAPACIDADES
+        // ════════════════════════════════════════════════════════════
+        var discapacidadIdx = 0;
+        var tiposDiscapacidad = [];
+
+        $.getJSON("@Url.Action("TiposDiscapacidad", "Lookup")", function (data) {
+            tiposDiscapacidad = data;
+        });
+
+        function agregarFilaDiscapacidad() {
+            var tpl = document.getElementById("templateFilaDiscapacidad").innerHTML
+                .replace(/__IDX__/g, discapacidadIdx++);
+            var $fila = $(tpl);
+            var $sel = $fila.find(".sel-tipo-discapacidad");
+            $.each(tiposDiscapacidad, function (i, t) {
+                $sel.append($("<option>").val(t.ID).text(t.Texto));
+            });
+            $("#tbodyDiscapacidadesNuevas").append($fila);
+            $("#tblDiscapacidadesNuevas").removeClass("d-none");
+        }
+
+        $("#btnAgregarFilaDiscapacidad").click(agregarFilaDiscapacidad);
+
+        $(document).on("click", ".btn-quitar-fila-disc", function () {
+            $(this).closest("tr").remove();
+            if ($("#tbodyDiscapacidadesNuevas tr").length === 0)
+                $("#tblDiscapacidadesNuevas").addClass("d-none");
+        });
+
+        $(document).on("click", ".btn-eliminar-discapacidad", function () {
+            var id = $(this).data("id");
+            showConfirm({
+                tipo: 'danger',
+                titulo: 'Eliminar discapacidad',
+                mensaje: 'Se eliminará esta discapacidad y su certificado del registro del alumno.',
+                onOk: function () {
+                    $.post("@Url.Action("EliminarDiscapacidad", "Alumnos")", { discapacidadId: id })
+                        .done(function (r) {
+                            if (r.success) $("tr[data-id='" + id + "']").fadeOut(200, function () { $(this).remove(); });
+                            else showAlert({ tipo: 'danger', titulo: 'Error', mensaje: 'No se pudo eliminar la discapacidad.' });
+                        });
+                }
+            });
+        });
+
+        // ════════════════════════════════════════════════════════════
+        // APODERADOS INLINE
+        // ════════════════════════════════════════════════════════════
+
+        // Cargar IDs de parentesco Padre/Madre y asignarlos a los hiddens
+        $.getJSON("@Url.Action("Parentescos","Lookup")", function (data) {
+            $.each(data, function (i, d) {
+                var n = d.Texto.toLowerCase();
+                if (n === 'padre')  $('#hdnParentescoPadre').val(d.ID);
+                if (n === 'madre')  $('#hdnParentescoMadre').val(d.ID);
+            });
+        });
+
+        // Helper: cargar un dropdown con datos
+        function cargarDdlApo(url, $ddl, valorActual) {
+            $.getJSON(url, function (data) {
+                $.each(data, function (i, d) { $ddl.append($('<option>').val(d.ID).text(d.Texto)); });
+                if (valorActual) $ddl.val(valorActual);
+            });
+        }
+
+        // Helper: cargar comunas de una región
+        function cargarComunasApo(regionId, comunaId, $ddlComuna) {
+            if (!regionId) return;
+            $.getJSON("@Url.Action("ComunasPorRegion","Lookup")", { regionId: regionId }, function (data) {
+                $ddlComuna.empty().append('<option value="">-- Seleccione --</option>');
+                $.each(data, function (i, d) { $ddlComuna.append($('<option>').val(d.ID).text(d.Texto)); });
+                if (comunaId) $ddlComuna.val(comunaId);
+            });
+        }
+
+        // Cargar catálogos comunes una sola vez
+        var urlNac    = "@Url.Action("Nacionalidades","Lookup")";
+        var urlNivEdu = "@Url.Action("NivelesEducacionales","Lookup")";
+        var urlSitLab = "@Url.Action("SituacionesLaborales","Lookup")";
+        var urlReg    = "@Url.Action("Regiones","Lookup")";
+
+        var padreNacID  = @Html.Raw(Model.ApoderadoPadre.NacionalidadID.HasValue  ? Model.ApoderadoPadre.NacionalidadID.Value.ToString()  : "null");
+        var padreNivID  = @Html.Raw(Model.ApoderadoPadre.NivelEducacionalID.HasValue ? Model.ApoderadoPadre.NivelEducacionalID.Value.ToString() : "null");
+        var padreSitID  = @Html.Raw(Model.ApoderadoPadre.SituacionLaboralID.HasValue ? Model.ApoderadoPadre.SituacionLaboralID.Value.ToString() : "null");
+        var padreRegID  = @Html.Raw(Model.ApoderadoPadre.RegionID.HasValue  ? Model.ApoderadoPadre.RegionID.Value.ToString()  : "null");
+        var padreComID  = @Html.Raw(Model.ApoderadoPadre.ComunaID.HasValue  ? Model.ApoderadoPadre.ComunaID.Value.ToString()  : "null");
+
+        var madreNacID  = @Html.Raw(Model.ApoderadoMadre.NacionalidadID.HasValue  ? Model.ApoderadoMadre.NacionalidadID.Value.ToString()  : "null");
+        var madreNivID  = @Html.Raw(Model.ApoderadoMadre.NivelEducacionalID.HasValue ? Model.ApoderadoMadre.NivelEducacionalID.Value.ToString() : "null");
+        var madreSitID  = @Html.Raw(Model.ApoderadoMadre.SituacionLaboralID.HasValue ? Model.ApoderadoMadre.SituacionLaboralID.Value.ToString() : "null");
+        var madreRegID  = @Html.Raw(Model.ApoderadoMadre.RegionID.HasValue  ? Model.ApoderadoMadre.RegionID.Value.ToString()  : "null");
+        var madreComID  = @Html.Raw(Model.ApoderadoMadre.ComunaID.HasValue  ? Model.ApoderadoMadre.ComunaID.Value.ToString()  : "null");
+
+        cargarDdlApo(urlNac,    $('#ddlNacionalidadPadre'), padreNacID);
+        cargarDdlApo(urlNivEdu, $('#ddlNivelEducPadre'),    padreNivID);
+        cargarDdlApo(urlSitLab, $('#ddlSitLaboralPadre'),   padreSitID);
+        cargarDdlApo(urlNac,    $('#ddlNacionalidadMadre'), madreNacID);
+        cargarDdlApo(urlNivEdu, $('#ddlNivelEducMadre'),    madreNivID);
+        cargarDdlApo(urlSitLab, $('#ddlSitLaboralMadre'),   madreSitID);
+
+        // Regiones Padre
+        $.getJSON(urlReg, function (data) {
+            $.each(data, function (i, d) {
+                $('#ddlRegionPadre, #ddlRegionMadre').append($('<option>').val(d.ID).text(d.Texto));
+            });
+            if (padreRegID) { $('#ddlRegionPadre').val(padreRegID); cargarComunasApo(padreRegID, padreComID, $('#ddlComunaPadre')); }
+            if (madreRegID) { $('#ddlRegionMadre').val(madreRegID); cargarComunasApo(madreRegID, madreComID, $('#ddlComunaMadre')); }
+        });
+
+        $('#ddlRegionPadre').change(function () { cargarComunasApo($(this).val(), null, $('#ddlComunaPadre')); });
+        $('#ddlRegionMadre').change(function () { cargarComunasApo($(this).val(), null, $('#ddlComunaMadre')); });
+
+        // Formato RUT en tiempo real para apoderados
+        aplicarFormatoRut($('#txtRutPadre'));
+        aplicarFormatoRut($('#txtRutMadre'));
+
+        // Búsqueda de apoderado existente por RUT
+        function buscarApoderadoPorRut(rutInput, feedbackId, prefijo, ddlNac, ddlNiv, ddlSit, ddlReg, ddlCom) {
+            var rut = $(rutInput).val().trim();
+            if (!rut) return;
+            $('#' + feedbackId).text('Buscando...').css('color', 'gray');
+            $.getJSON("@Url.Action("BuscarPorRut","Apoderado")", { rut: rut }, function (apo) {
+                if (!apo || !apo.ID) {
+                    $('#' + feedbackId).text('No encontrado. Complete los datos manualmente.').css('color', 'orange');
+                } else {
+                    $('#' + prefijo + '_ApoderadoID').val(apo.ID);
+                    $('#' + prefijo + '_ApellidoPaterno').val(apo.ApellidoPaterno || '');
+                    $('#' + prefijo + '_ApellidoMaterno').val(apo.ApellidoMaterno || '');
+                    $('#' + prefijo + '_Nombres').val(apo.Nombres || '');
+                    $('#' + prefijo + '_Telefono').val(apo.Telefono || '');
+                    $('#' + prefijo + '_TelefonoCelular').val(apo.TelefonoCelular || '');
+                    $('#' + prefijo + '_Email').val(apo.Email || '');
+                    $('#' + prefijo + '_Direccion').val(apo.Direccion || '');
+                    $('#' + prefijo + '_LugarTrabajo').val(apo.LugarTrabajo || '');
+                    if (apo.NacionalidadID)    ddlNac.val(apo.NacionalidadID);
+                    if (apo.NivelEducacionalID) ddlNiv.val(apo.NivelEducacionalID);
+                    if (apo.SituacionLaboralID) ddlSit.val(apo.SituacionLaboralID);
+                    if (apo.RegionID) {
+                        ddlReg.val(apo.RegionID);
+                        cargarComunasApo(apo.RegionID, apo.ComunaID, ddlCom);
+                    }
+                    $('#' + feedbackId).text('✔ Datos cargados correctamente.').css('color', 'green');
+                }
+            }).fail(function () {
+                $('#' + feedbackId).text('Error al buscar. Intente nuevamente.').css('color', 'red');
+            });
+        }
+
+        $('#txtRutPadre').on('blur', function () {
+            buscarApoderadoPorRut(this, 'feedbackRutPadre', 'ApoderadoPadre',
+                $('#ddlNacionalidadPadre'), $('#ddlNivelEducPadre'), $('#ddlSitLaboralPadre'),
+                $('#ddlRegionPadre'), $('#ddlComunaPadre'));
+        });
+        $('#txtRutMadre').on('blur', function () {
+            buscarApoderadoPorRut(this, 'feedbackRutMadre', 'ApoderadoMadre',
+                $('#ddlNacionalidadMadre'), $('#ddlNivelEducMadre'), $('#ddlSitLaboralMadre'),
+                $('#ddlRegionMadre'), $('#ddlComunaMadre'));
+        });
+
+    });
+</script>

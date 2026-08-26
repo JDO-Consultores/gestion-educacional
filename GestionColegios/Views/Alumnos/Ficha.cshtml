@@ -1,0 +1,1677 @@
+﻿@model GestionColegios.ViewModels.AlumnoFichaViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Ficha — " + Model.NombreCompleto;
+    bool isAdmin = (bool)ViewBag.IsAdmin;
+    var badgeEstado = Model.EstadoAlumno == "Activo" ? "bg-success"
+                    : Model.EstadoAlumno == "Vigente" ? "bg-success"
+                    : Model.EstadoAlumno == "Retirado" ? "bg-danger"
+                    : Model.EstadoAlumno == "Egresado" ? "bg-warning text-dark"
+                    : "bg-secondary";
+    int edad = Model.FechaNacimiento.HasValue
+        ? (int)((DateTime.Today - Model.FechaNacimiento.Value).TotalDays / 365.25)
+        : 0;
+    const string nd = "—";
+}
+
+<!-- ═══════════════════════════════════════════════════
+     CABECERA
+     ═══════════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+
+            <!-- Izquierda: avatar + datos -->
+            <div class="d-flex align-items-center gap-3 flex-grow-1 overflow-hidden">
+
+                @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                {
+                    <img src="@Model.FotoUrl" alt="Foto alumno"
+                         class="rounded-circle border shadow-sm"
+                         style="width:80px;height:80px;object-fit:cover;flex-shrink:0;" />
+                }
+                else
+                {
+                    <div class="rounded-circle d-flex align-items-center justify-content-center
+                                text-white fw-bold shadow-sm bg-primary"
+                         style="width:80px;height:80px;font-size:1.9rem;flex-shrink:0;">
+                        @(Model.ApellidoPaterno?.Substring(0,1))@(Model.Nombres?.Substring(0,1))
+                    </div>
+                }
+
+                <div>
+                    <h4 class="mb-1 fw-bold">@Model.NombreCompleto</h4>
+
+                    <div class="d-flex flex-wrap gap-1 mb-1">
+                        @if (Model.EstadoAlumno != Model.ResultadoPromocion)
+                        {
+                            <span class="badge @badgeEstado">@Model.EstadoAlumno</span>
+                        }
+                        @if (Model.FechaRetiro.HasValue)
+                        {
+                            <span class="badge bg-danger bg-opacity-75 fw-normal">
+                                <i class="bi bi-calendar-x me-1"></i>Retirado el @Model.FechaRetiro.Value.ToString("dd/MM/yyyy")
+                                @if (!string.IsNullOrEmpty(Model.CausalRetiro))
+                                {
+                                    <span class="ms-1 opacity-75">— @Model.CausalRetiro</span>
+                                }
+                            </span>
+                        }
+                        @if (Model.EsAlumnoNuevo)
+                        {
+                            <span class="badge bg-success">
+                                <i class="bi bi-star-fill me-1"></i>Alumno Nuevo
+                            </span>
+                        }
+                        else if (Model.MatriculaID.HasValue)
+                        {
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-arrow-repeat me-1"></i>Alumno Antiguo
+                            </span>
+                        }
+                        @if (Model.TieneDiscapacidad)
+                        {
+                            <span class="badge bg-warning text-dark"><i class="bi bi-universal-access me-1"></i>Discapacidad</span>
+                        }
+                        @if (Model.TienePIE)
+                        {
+                            <span class="badge bg-info text-dark"><i class="bi bi-universal-access me-1"></i>PIE</span>
+                        }
+                        @if (Model.Alergias != null && Model.Alergias.Any())
+                        {
+                            <span class="badge bg-danger"><i class="bi bi-bandaid me-1"></i>@Model.Alergias.Count alergia(s)</span>
+                        }
+                        @if (Model.ResultadoPromocion == "Promovido")
+                        {
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Promovido</span>
+                        }
+                        else if (Model.ResultadoPromocion == "No Promovido")
+                        {
+                            <span class="badge bg-danger" title="@Model.MotivoNoPromocion">
+                                <i class="bi bi-x-circle me-1"></i>No Promovido
+                            </span>
+                        }
+                        @if (Model.MatriculaCancelada)
+                        {
+                            <span class="badge bg-warning text-dark" title="Bloqueado para matrícula del próximo año">
+                                <i class="bi bi-lock-fill me-1"></i>Matrícula Cancelada
+                            </span>
+                        }
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 text-muted small">
+                        <span><i class="bi bi-person-vcard me-1"></i><strong>RUT:</strong> @Model.Rut</span>
+                        @if (Model.FechaNacimiento.HasValue)
+                        {
+                            <span><i class="bi bi-calendar3 me-1"></i>@Model.FechaNacimiento.Value.ToString("dd/MM/yyyy") (@edad años)</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Sexo))
+                        {
+                            <span><i class="bi bi-gender-ambiguous me-1"></i>@Model.Sexo</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Curso))
+                        {
+                            <span><i class="bi bi-book me-1"></i><strong>Curso:</strong> @Model.Curso (@Model.AnioEscolar)</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ProfesorJefe))
+                        {
+                            <span>
+                                <i class="bi bi-person-badge me-1"></i><strong>Prof. Jefe:</strong> @Model.ProfesorJefe
+                                @if (!string.IsNullOrEmpty(Model.EmailProfesorJefe))
+                                {
+                                    <span class="ms-2 small text-muted">
+                                        <i class="bi bi-envelope me-1"></i>@Model.EmailProfesorJefe
+                                    </span>
+                                }
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derecha: botones siempre en la misma fila -->
+            <div class="d-flex gap-2 flex-shrink-0">
+                @if (isAdmin && !Model.FueTraspasado)
+                {
+                    <a href="@Url.Action("Editar","Alumnos",new{id=Model.ID})"
+                       class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </a>
+                    <a href="@Url.Action("Crear","Matricula",new{alumnoId=Model.ID})"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-journal-plus me-1"></i>Nueva Matrícula
+                    </a>
+                    <button id="btnCambioRut" class="btn btn-outline-warning btn-sm"
+                            title="Registrar cambio de RUT (extranjero con RUT definitivo)"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            @(Model.TieneRutAnterior ? "disabled" : "")>
+                        <i class="bi bi-arrow-left-right me-1"></i>Cambio RUT
+                    </button>
+                    <button id="btnRetirar" class="btn btn-outline-danger btn-sm"
+                            @(Model.EstadoAlumnoID != 1 ? "disabled" : "")>
+                        <i class="bi bi-x-circle me-1"></i>Retirar
+                    </button>
+                }
+                <button id="btnGenerarCertificado" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-award me-1"></i>Certificados
+                </button>
+                <a href="@Url.Action("Index","Alumnos")" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Volver
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ALERTA RUT ANTERIOR (extranjeros con cambio de RUT)
+     ═══════════════════════════════════════════════════ -->
+@if (Model.FueTraspasado)
+{
+    <div class="alert alert-danger d-flex align-items-start gap-3 py-3 mb-3">
+        <i class="bi bi-archive-fill fs-4 mt-1 flex-shrink-0"></i>
+        <div>
+            <div class="fw-bold mb-1">Ficha archivada &mdash; Registro de solo lectura</div>
+            <div class="small">
+                Este alumno fue traspasado al obtener su RUT definitivo.
+                @if (!string.IsNullOrEmpty(Model.RutNuevo))
+                {
+                    <span>RUT nuevo: <strong>@Model.RutNuevo</strong>.</span>
+                }
+                @if (Model.AlumnoDestinoID.HasValue)
+                {
+                    <a href="/Alumnos/Ficha/@Model.AlumnoDestinoID"
+                       class="ms-2 fw-semibold text-danger">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Ver ficha con RUT definitivo
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+}
+@if (Model.TieneRutAnterior)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-2 py-2 mb-2">
+        <i class="bi bi-arrow-left-right fs-5"></i>
+        <div>
+            Este registro fue creado por un <strong>cambio de RUT</strong>.
+            RUT anterior: <strong>@Model.RutAnterior</strong>
+            @if (Model.AlumnoOrigenID.HasValue)
+            {
+                <a href="/Alumnos/Ficha/@Model.AlumnoOrigenID"
+                   class="ms-2 link-secondary small">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>Ver ficha original
+                </a>
+            }
+        </div>
+    </div>
+}
+
+@if (Model.ResultadoPromocion == "No Promovido")
+{
+    <div class="alert alert-danger d-flex align-items-start gap-3 py-3 mb-2">
+        <i class="bi bi-x-octagon-fill fs-4 mt-1 flex-shrink-0"></i>
+        <div>
+            <div class="fw-bold mb-1">Alumno NO PROMOVIDO &mdash; no pasa al año siguiente</div>
+            <div class="small">
+                <strong>Motivo:</strong> @(Model.MotivoNoPromocion ?? nd)
+                &nbsp;·&nbsp; <strong>Decreto:</strong> @(Model.DecretoNoPromocion ?? nd)
+                @if (!string.IsNullOrEmpty(Model.GlosaNoPromocion))
+                {
+                    <div class="mt-1"><strong>Glosa:</strong> @Model.GlosaNoPromocion</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.MatriculaCancelada)
+{
+    <div class="alert alert-warning d-flex align-items-start gap-3 py-3 mb-2">
+        <i class="bi bi-lock-fill fs-4 mt-1 flex-shrink-0"></i>
+        <div class="flex-grow-1">
+            <div class="fw-bold mb-1">Matrícula Cancelada &mdash; bloqueado para matrícula del próximo año</div>
+            <div class="small">
+                El alumno fue promovido pero tiene la matrícula cancelada. Para recibirlo nuevamente se
+                requiere autorización mediante clave de un supervisor.
+            </div>
+        </div>
+        @if (isAdmin && Model.MatriculaID.HasValue)
+        {
+            <button id="btnAutorizarMatricula" class="btn btn-success btn-sm flex-shrink-0"
+                    data-id="@Model.MatriculaID">
+                <i class="bi bi-unlock me-1"></i>Autorizar
+            </button>
+        }
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════════
+     TABS
+     ═══════════════════════════════════════════════════ -->
+<div id="tabFicha">
+    <ul>
+        <li class="k-state-active"><i class="bi bi-person-lines-fill me-1"></i>Datos Personales</li>
+        <li><i class="bi bi-heart-pulse me-1"></i>Salud</li>
+        <li><i class="bi bi-journal-check me-1"></i>Matrículas</li>
+        <li><i class="bi bi-people me-1"></i>Apoderados</li>
+        <li><i class="bi bi-folder2 me-1"></i>Documentos</li>
+        <li><i class="bi bi-clock-history me-1"></i>Historial</li>
+    </ul>
+
+    <!-- ─────────────────────────────────────────
+         TAB 1 — Datos Personales
+         ───────────────────────────────────────── -->
+    <div>
+        @* ── Estilos de sección (misma jerarquía que el formulario) ─── *@
+        <style>
+            .ficha-section {
+                border-left: 4px solid transparent;
+                border-radius: .45rem;
+                padding: .85rem 1.1rem .65rem;
+                background: #fafafa;
+                margin-bottom: .85rem;
+            }
+
+                .ficha-section.sec-identificacion {
+                    border-left-color: #0d6efd;
+                }
+
+                .ficha-section.sec-contacto {
+                    border-left-color: #40BF3B;
+                }
+
+                .ficha-section.sec-salud {
+                    border-left-color: #dc3545;
+                }
+
+                .ficha-section.sec-social {
+                    border-left-color: #F29F05;
+                }
+
+                .ficha-section .sec-title {
+                    font-size: .78rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: .06em;
+                    color: #495057;
+                    margin-bottom: .6rem;
+                    display: flex;
+                    align-items: center;
+                    gap: .35rem;
+                }
+
+            .ficha-field small {
+                font-size: .76rem;
+                color: #6c757d;
+                display: block;
+                margin-bottom: 1px;
+            }
+
+            .ficha-field span {
+                font-size: .9rem;
+            }
+        </style>
+
+        @* ══ SECCIÓN 1 — IDENTIFICACIÓN ══ *@
+        <div class="ficha-section sec-identificacion mt-2">
+            <p class="sec-title"><i class="bi bi-person-vcard-fill"></i> Identificación</p>
+            <div class="row g-3">
+                <div class="col-md-2 col-sm-4 ficha-field">
+                    <small>RUT</small>
+                    <span class="fw-semibold">@Model.Rut</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small>Apellido Paterno</small>
+                    <span class="fw-semibold">@(Model.ApellidoPaterno ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small>Apellido Materno</small>
+                    <span class="fw-semibold">@(Model.ApellidoMaterno ?? nd)</span>
+                </div>
+                <div class="col-md-4 col-sm-8 ficha-field">
+                    <small>Nombres</small>
+                    <span class="fw-semibold">@(Model.Nombres ?? nd)</span>
+                </div>
+                <div class="col-md-2 col-sm-4 ficha-field">
+                    <small>Fecha Nac.</small>
+                    <span class="fw-semibold">
+                        @(Model.FechaNacimiento.HasValue
+                            ? Model.FechaNacimiento.Value.ToString("dd/MM/yyyy")
+                            : nd)
+                        @if (edad > 0)
+                        {<span class="text-muted small fw-normal">(@edad años)</span>}
+                    </span>
+                </div>
+                <div class="col-md-2 col-sm-4 ficha-field">
+                    <small>Sexo</small>
+                    <span class="fw-semibold">@(Model.Sexo ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-4 ficha-field">
+                    <small>Nacionalidad</small>
+                    <span class="fw-semibold">@(Model.Nacionalidad ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-4 ficha-field">
+                    <small>Estado</small>
+                    <span class="fw-semibold">@(Model.EstadoAlumno ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-4 ficha-field">
+                    <small>Tipo de alumno</small>
+                    @if (Model.EsAlumnoNuevo)
+                    {
+                        <span class="badge bg-success fs-6 py-1 px-2">
+                            <i class="bi bi-star-fill me-1"></i>Alumno Nuevo
+                        </span>
+                    }
+                    else if (Model.MatriculaID.HasValue)
+                    {
+                        <span class="badge bg-secondary fs-6 py-1 px-2">
+                            <i class="bi bi-arrow-repeat me-1"></i>Alumno Antiguo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">@nd</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* ══ SECCIÓN 2 — DOMICILIO Y CONTACTO ══ *@
+        <div class="ficha-section sec-contacto">
+            <p class="sec-title"><i class="bi bi-geo-alt-fill"></i> Domicilio y contacto</p>
+            <div class="row g-3">
+                <div class="col-md-5 col-sm-12 ficha-field">
+                    <small>Dirección</small>
+                    <span class="fw-semibold">@(Model.Direccion ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small>Comuna</small>
+                    <span class="fw-semibold">@(Model.Comuna ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small>Región</small>
+                    <span class="fw-semibold">@(Model.Region ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small><i class="bi bi-telephone me-1"></i>Teléfono</small>
+                    <span class="fw-semibold">@(Model.Telefono ?? nd)</span>
+                </div>
+                <div class="col-md-5 col-sm-6 ficha-field">
+                    <small><i class="bi bi-envelope me-1"></i>Correo electrónico</small>
+                    <span class="fw-semibold">@(Model.Email ?? nd)</span>
+                </div>
+            </div>
+        </div>
+
+        @* ══ SECCIÓN 3 — DATOS SOCIOECONÓMICOS Y CULTURALES ══ *@
+        <div class="ficha-section sec-social">
+            <p class="sec-title"><i class="bi bi-people-fill"></i> Datos socioeconómicos y culturales</p>
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-4 ficha-field">
+                    <small>Etnia</small>
+                    <span class="fw-semibold">@(Model.Etnia ?? nd)</span>
+                </div>
+                <div class="col-md-4 col-sm-4 ficha-field">
+                    <small>Condición Socioeconómica</small>
+                    <span class="fw-semibold">@(Model.CondicionSocioeconomica ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-4 ficha-field">
+                    <small>Vive con</small>
+                    <span class="fw-semibold">@(Model.ViveCon ?? nd)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────
+         TAB 2 — Salud
+         ───────────────────────────────────────── -->
+    <div>
+        @* ══ SECCIÓN — SALUD ══ *@
+        <div class="ficha-section sec-salud mt-2">
+            <p class="sec-title"><i class="bi bi-heart-pulse-fill"></i> Salud</p>
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small><i class="bi bi-hospital me-1"></i>Sistema de Salud</small>
+                    <span class="fw-semibold">@(Model.SistemaSalud ?? nd)</span>
+                </div>
+                <div class="col-md-3 col-sm-6 ficha-field">
+                    <small><i class="bi bi-universal-access me-1"></i>Programa PIE</small>
+                    @if (Model.TienePIE)
+                    {
+                        <span class="badge bg-info text-dark"><i class="bi bi-check-circle me-1"></i>Sí, integrado en PIE</span>
+                    }
+                    else
+                    {
+                        <span class="fw-semibold text-muted">No</span>
+                    }
+                </div>
+
+
+                @* Discapacidades *@
+                <div class="col-12">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="fw-semibold small text-secondary">
+                            <i class="bi bi-universal-access me-1"></i>Discapacidades
+                        </span>
+                    </div>
+                    @if (Model.Discapacidades != null && Model.Discapacidades.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Descripción</th>
+                                        <th style="width:120px" class="text-center">Certificado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model.Discapacidades)
+                                    {
+                                        <tr>
+                                            <td><span class="badge bg-warning text-dark">@d.TipoDiscapacidad</span></td>
+                                            <td>@(d.Descripcion ?? nd)</td>
+                                            <td class="text-center">
+                                                @if (d.TieneCertificado)
+                                                {
+                                                    <a href="@Url.Action("DescargarCertificadoDiscapacidad","Alumnos",new{id=d.ID})"
+                                                       target="_blank" class="btn btn-outline-secondary btn-sm">
+                                                        <i class="bi bi-file-earmark-arrow-down"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                { <span class="badge bg-danger">Sin certificado</span>}
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small mb-0">No hay discapacidades registradas.</p>
+                    }
+                </div>
+
+                @* Alergias *@
+                <div class="col-12">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="fw-semibold small text-secondary">
+                            <i class="bi bi-capsule me-1"></i>Alergias
+                        </span>
+                    </div>
+                    @if (Model.Alergias != null && Model.Alergias.Any())
+                    {
+                        <div class="row g-2">
+                            @foreach (var a in Model.Alergias)
+                            {
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card border-0 bg-light h-100">
+                                        <div class="card-body py-2 px-3">
+                                            @if (a.TipoAlergiaID == 1)
+                                            {<span class="badge bg-primary mb-1">Informativa</span> }
+                                            else
+                                            { <span class="badge bg-warning text-dark mb-1">Alimenticia</span>}
+                                            <div class="fw-semibold small">@a.NombreAlergia</div>
+                                            @if (!string.IsNullOrEmpty(a.Descripcion))
+                                            {<small class="text-muted">@a.Descripcion</small>}
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small mb-0">No hay alergias registradas.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────
+         TAB 3 — Matrículas
+         ───────────────────────────────────────── -->
+    <div>
+        <div class="d-flex justify-content-between align-items-center mt-2 mb-2">
+            <h6 class="mb-0">
+                <i class="bi bi-journal-check me-1"></i>Historial de Matrículas
+            </h6>
+            @if (isAdmin && !Model.FueTraspasado)
+            {
+                <a href="@Url.Action("Crear","Matricula",new{alumnoId=Model.ID})"
+                   class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus"></i> Nueva Matrícula
+                </a>
+            }
+        </div>
+        <div id="gridMatriculasFicha"></div>
+    </div>
+
+    <!-- ─────────────────────────────────────────
+         TAB 4 — Apoderados
+         ───────────────────────────────────────── -->
+    <div>
+        <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
+            <h6 class="mb-0"><i class="bi bi-people me-1"></i>Apoderados registrados</h6>
+            @if (isAdmin && !Model.FueTraspasado)
+            {
+                <a href="@Url.Action("Crear","Apoderado",new{alumnoId=Model.ID})"
+                   class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus me-1"></i>Agregar Apoderado
+                </a>
+            }
+        </div>
+
+        @if (Model.Apoderados != null && Model.Apoderados.Count > 0)
+        {
+            <div class="row g-3">
+                @foreach (var apo in Model.Apoderados.OrderByDescending(a => a.EsApoderadoTitular))
+                {
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm @(apo.EsApoderadoTitular ? "border-primary" : "border-0 bg-light")">
+                            <div class="card-header py-2 d-flex justify-content-between align-items-center
+                                @(apo.EsApoderadoTitular ? "bg-primary text-white" : "bg-transparent")">
+                                <span class="fw-semibold">
+                                    <i class="bi bi-person-fill me-1"></i>@apo.NombreCompleto
+                                </span>
+                                <div class="d-flex gap-1 align-items-center">
+                                    @if (apo.EsApoderadoTitular)
+                                    {<span class="badge bg-white text-primary me-1">Titular</span>}
+                                    @if (apo.EsPadre)
+                                    {<span class="badge bg-light text-dark border">Padre</span>}
+                                    @if (apo.EsMadre)
+                                    {<span class="badge bg-light text-dark border">Madre</span>}
+                                    @if (isAdmin && !Model.FueTraspasado)
+                                    {
+                                        <a href="@Url.Action("Editar","Apoderado",new{alumnoId=Model.ID,alumnoApoderadoId=apo.AlumnoApoderadoID})"
+                                           class="btn btn-sm @(apo.EsApoderadoTitular ? "btn-light" : "btn-outline-secondary") ms-2"
+                                           title="Editar"
+                                           data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm @(apo.EsApoderadoTitular ? "btn-outline-light" : "btn-outline-danger") btn-desvincular"
+                                                data-id="@apo.AlumnoApoderadoID" title="Desvincular"
+                                                data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <i class="bi bi-person-dash"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-body py-3">
+                                <div class="row g-2 small">
+                                    <div class="col-6">
+                                        <span class="text-muted d-block">RUT</span>
+                                        <strong>@(apo.Rut ?? nd)</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-muted d-block">Parentesco</span>
+                                        <strong>@(apo.Parentesco ?? nd)</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-muted d-block"><i class="bi bi-telephone me-1"></i>Teléfono Fijo</span>
+                                        <strong>@(apo.Telefono ?? nd)</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-muted d-block"><i class="bi bi-phone me-1"></i>Celular</span>
+                                        <strong>@(apo.TelefonoCelular ?? nd)</strong>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="text-muted d-block"><i class="bi bi-envelope me-1"></i>Correo</span>
+                                        <strong class="text-break">@(apo.Email ?? nd)</strong>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(apo.NivelEducacional))
+                                    {
+                                        <div class="col-6">
+                                            <span class="text-muted d-block">Nivel Educacional</span>
+                                            <strong>@apo.NivelEducacional</strong>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(apo.SituacionLaboral))
+                                    {
+                                        <div class="col-6">
+                                            <span class="text-muted d-block">Situación Laboral</span>
+                                            <strong>@apo.SituacionLaboral</strong>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(apo.LugarTrabajo))
+                                    {
+                                        <div class="col-12">
+                                            <span class="text-muted d-block">Lugar de Trabajo</span>
+                                            <strong>@apo.LugarTrabajo</strong>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-people fs-1 d-block mb-2 opacity-50"></i>
+                No hay apoderados registrados para este alumno.
+            </div>
+        }
+    </div>
+
+    <!-- ─────────────────────────────────────────
+         TAB 5 — Documentos
+         ───────────────────────────────────────── -->
+    <div>
+        <div class="mt-2" id="tabDocumentos">
+
+            <!-- Alerta documentos obligatorios pendientes -->
+            <div id="alertaDocsPendientes" class="alert alert-warning d-none py-2 mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Documentos obligatorios pendientes:</strong>
+                <span id="txtDocsPendientes"></span>
+            </div>
+            <div id="alertaDocsCompletos" class="alert alert-success d-none py-2 mb-3">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Todos los documentos obligatorios de matrícula están cargados.
+            </div>
+
+            <!-- Selector de año escolar para documentos de matrícula -->
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label mb-1 small fw-semibold">
+                        <i class="bi bi-calendar3 me-1"></i>Año Escolar
+                    </label>
+                    <select id="ddlAnioDocumentos" class="form-select form-select-sm">
+                        <option value="">-- Seleccione año --</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-outline-secondary btn-sm" id="btnCargarDocsMatricula">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Documentos de Matrícula -->
+            <div id="seccionDocsMatricula">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-journal-check me-1 text-primary"></i>Documentos de Matrícula
+                </h6>
+                <div id="tablaDocsMatricula">
+                    <p class="text-muted small text-center py-3">
+                        Seleccione un año escolar para ver los documentos de matrícula.
+                    </p>
+                </div>
+            </div>
+
+            <hr class="my-3" />
+
+            <!-- Documentos Anexos del Alumno -->
+            <div id="seccionDocsAnexos">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-paperclip me-1 text-secondary"></i>Documentos Anexos del Alumno
+                        <small class="text-muted fw-normal">(se pueden adjuntar en cualquier momento del año)</small>
+                    </h6>
+                    @if (isAdmin && !Model.FueTraspasado)
+                    {
+                        <button class="btn btn-outline-primary btn-sm" id="btnNuevoAnexo">
+                            <i class="bi bi-plus me-1"></i>Agregar Anexo
+                        </button>
+                    }
+                </div>
+                <div id="tablaDocsAnexos">
+                    <p class="text-muted small text-center py-3">
+                        <i class="bi bi-hourglass-split me-1"></i>Cargando...
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Ventana subir documento de matrícula -->
+    <div id="windowSubirDocMatricula" style="display:none;">
+        <div class="p-2">
+            <input type="hidden" id="hdnTipoDocMatriculaID" />
+            <input type="hidden" id="hdnTipoDocMatriculaNombre" />
+            <div class="mb-3">
+                <label class="form-label">Documento: <strong id="lblTipoDocMatricula"></strong></label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Archivo <span class="text-danger">*</span></label>
+                <input type="file" id="fileDocMatricula" class="form-control form-control-sm"
+                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                <div class="form-text">PDF, imágenes o documentos Word. Máx. 10 MB.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Observación</label>
+                <input type="text" id="txtObsDocMatricula" class="form-control form-control-sm"
+                       placeholder="Opcional..." maxlength="300" />
+            </div>
+            <div class="text-end">
+                <button class="btn btn-primary btn-sm" id="btnConfirmarSubirDocMatricula">
+                    <i class="bi bi-upload me-1"></i>Subir Documento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana subir documento anexo -->
+    <div id="windowSubirAnexo" style="display:none;">
+        <div class="p-2">
+            <div class="mb-3">
+                <label class="form-label">Tipo de Documento <span class="text-danger">*</span></label>
+                <select id="ddlTipoDocAnexo" class="form-select form-select-sm">
+                    <option value="">-- Seleccione --</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Archivo <span class="text-danger">*</span></label>
+                <input type="file" id="fileDocAnexo" class="form-control form-control-sm"
+                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                <div class="form-text">PDF, imágenes o documentos Word. Máx. 10 MB.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Observación</label>
+                <input type="text" id="txtObsDocAnexo" class="form-control form-control-sm"
+                       placeholder="Opcional..." maxlength="300" />
+            </div>
+            <div class="text-end">
+                <button class="btn btn-primary btn-sm" id="btnConfirmarSubirAnexo">
+                    <i class="bi bi-upload me-1"></i>Subir Documento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────
+         TAB 6 — Historial
+         ───────────────────────────────────────── -->
+    <div>
+        <div class="d-flex justify-content-between align-items-center mt-2 mb-2">
+            <h6 class="mb-0">
+                <i class="bi bi-clock-history me-1"></i>Historial de Actividad
+            </h6>
+            <button class="btn btn-outline-secondary btn-sm" id="btnRefrescarHistorial">
+                <i class="bi bi-arrow-clockwise"></i> Actualizar
+            </button>
+        </div>
+        <div id="tablaHistorial"></div>
+    </div>
+
+</div>
+
+<!-- Ventana generar certificado -->
+<div id="windowGenerarCertificado" style="display:none;">
+    <div class="p-2">
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">
+                <i class="bi bi-file-earmark-word me-1"></i>Tipo de Certificado <span class="text-danger">*</span>
+            </label>
+            <select id="ddlPlantillaCert" class="form-select form-select-sm">
+                <option value="">-- Seleccione --</option>
+            </select>
+            <div class="form-text" id="descPlantillaCert"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">
+                <i class="bi bi-pen me-1"></i>Firma
+            </label>
+            <select id="ddlFirmanteCert" class="form-select form-select-sm">
+                <option value="">-- Usar firmante por defecto --</option>
+            </select>
+            <div class="form-text">Puede cambiar quién firma este certificado.</div>
+        </div>
+        <div class="alert alert-light border small py-2 mb-3">
+            <i class="bi bi-info-circle me-1"></i>
+            El certificado se descargará en formato <strong>Word (.docx)</strong> editable.
+        </div>
+        <div class="text-end">
+            <button class="btn btn-success btn-sm" id="btnConfirmarGenerarCert">
+                <i class="bi bi-download me-1"></i>Generar y Descargar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VENTANA CAMBIO DE RUT
+     ═══════════════════════════════════════════════════ -->
+<div id="windowCambioRut" style="display:none;">
+    <div class="row g-3 p-1">
+        <div class="col-12">
+            <div class="alert alert-warning py-2 small">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Esta operación es <strong>irreversible</strong>. La ficha actual quedará archivada
+                y se creará un nuevo registro con el RUT definitivo, conservando el número de matrícula.
+            </div>
+        </div>
+        <div class="col-12">
+            <label class="form-label">
+                RUT Anterior <span class="text-muted">(actual)</span>
+            </label>
+            <input type="text" class="form-control" value="@Model.Rut" readonly />
+        </div>
+        <div class="col-12">
+            <label class="form-label">
+                RUT Nuevo (definitivo) <span class="text-danger">*</span>
+            </label>
+            <input type="text" id="txtRutNuevo" class="form-control"
+                   placeholder="12345678-9" autocomplete="off" />
+            <div id="rutNuevoFeedback" class="small mt-1"></div>
+        </div>
+        <div class="col-12">
+            <label class="form-label">Motivo del cambio</label>
+            <textarea id="txtMotivoCambioRut" class="k-textbox" rows="2"
+                      style="width:100%;" placeholder="Ej: Obtención de RUN definitivo SERVEL"></textarea>
+        </div>
+        <div class="col-12 text-end">
+            <button id="btnConfirmarCambioRut" class="btn btn-warning">
+                <i class="bi bi-check me-1"></i>Confirmar Cambio de RUT
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VENTANA RETIRO
+     ═══════════════════════════════════════════════════ -->
+<div id="windowRetiro" style="display:none;">
+    <input type="hidden" id="retiroAlumnoID" value="@Model.ID" />
+    <div class="row g-3 p-1">
+        <div class="col-12">
+            <label class="form-label">Causal de Retiro <span class="text-danger">*</span></label>
+            <select id="ddlCausalRetiro" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">
+                Fecha de Retiro <span class="text-danger">*</span>
+                <small class="text-muted ms-1">(requerida por MINEDUC)</small>
+            </label>
+            <input type="text" id="dpFechaRetiro" class="form-control"
+                   placeholder="dd/mm/aaaa" autocomplete="off" />
+        </div>
+        <div class="col-12">
+            <label class="form-label">Observación</label>
+            <textarea id="txtObservacionRetiro" class="k-textbox" rows="3"
+                      style="width:100%;" placeholder="Ingrese observación..."></textarea>
+        </div>
+        <div class="col-12 text-end">
+            <button id="btnConfirmarRetiro" class="btn btn-danger">
+                <i class="bi bi-check me-1"></i>Confirmar Retiro
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VENTANA AUTORIZACIÓN SUPERVISOR (Matrícula Cancelada)
+     ═══════════════════════════════════════════════════ -->
+<div id="windowAutorizarMat" style="display:none;">
+    <input type="hidden" id="auMatriculaID" />
+    <div class="alert alert-warning py-2 small">
+        <i class="bi bi-shield-lock me-1"></i>
+        Para levantar la condición <strong>Matrícula Cancelada</strong> ingrese las credenciales de un supervisor (Administrador).
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Usuario supervisor <span class="text-danger">*</span></label>
+        <input type="text" id="auUsuario" class="form-control" autocomplete="off" />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Clave de supervisor <span class="text-danger">*</span></label>
+        <input type="password" id="auClave" class="form-control" autocomplete="off" />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Observación</label>
+        <input type="text" id="auObs" class="form-control" maxlength="300" placeholder="Opcional..." />
+    </div>
+    <div class="text-end mt-2">
+        <button id="btnConfirmarAutorizarMat" class="btn btn-success btn-sm">
+            <i class="bi bi-unlock me-1"></i>Autorizar
+        </button>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+var alumnoId      = @Model.ID;
+var isAdmin       = @isAdmin.ToString().ToLower();
+var fueTraspasado = @Model.FueTraspasado.ToString().ToLower();
+
+$(document).ready(function () {
+
+    // ── TabStrip ──────────────────────────────────────────────
+    var tabFicha = $("#tabFicha").kendoTabStrip({
+        animation: { open: { effects: "fadeIn" } }
+    }).data("kendoTabStrip");
+
+    tabFicha.select(0);
+
+    // ── Grid Matrículas ───────────────────────────────────────
+    $("#gridMatriculasFicha").kendoGrid({
+        dataSource: {
+            type: "json",
+            transport: {
+                read: {
+                    url: "@Url.Action("GetMatriculas","Matricula")",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                parameterMap: function (o) {
+                    return kendo.stringify($.extend({ alumnoId: alumnoId }, o));
+                }
+            },
+            pageSize: 5,
+            serverPaging: true, serverSorting: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        AnioEscolar:     { type: "number"  },
+                        NroMatricula:    { type: "string"  },
+                        CursoNombre:     { type: "string"  },
+                        FechaMatricula:  { type: "date"    },
+                        EstadoMatricula: { type: "string"  },
+                        EsAlumnoNuevo:   { type: "boolean" }
+                    }
+                },
+                data: "Data", total: "Total"
+            }
+        },
+        pageable: true, sortable: true, resizable: true,
+        columns: [
+            { field: "AnioEscolar",    title: "Año",          width: "70px" },
+            { field: "NroMatricula",   title: "N° Matrícula", width: "128px" },
+            { field: "CursoNombre",    title: "Curso",        width: "140px" },
+            { field: "FechaMatricula", title: "Fecha",        width: "100px", format: "{0:dd/MM/yyyy}" },
+            {
+                field: "EsAlumnoNuevo", title: "Tipo", width: "130px",
+                template: "#= EsAlumnoNuevo ? '<span class=\"badge bg-success\"><i class=\"bi bi-star-fill me-1\"></i>Nuevo</span>' : '<span class=\"badge bg-primary\"><i class=\"bi bi-arrow-repeat me-1\"></i>Antiguo</span>' #"
+            },
+            {
+                field: "EstadoMatricula", title: "Estado", width: "105px",
+                template: "#= badgeMat(EstadoMatricula) #"
+            },
+            {
+                title: "", width: "130px",
+                attributes: { style: "text-align:center" },
+                template: function (item) {
+                    if (!isAdmin || fueTraspasado) return "";
+                    var b = '<a class="btn btn-outline-secondary btn-sm me-1" href="@Url.Action("Editar","Matricula")/' + item.ID + '"><i class="bi bi-pencil"></i></a>';
+                    if (item.EstadoMatricula === "Vigente")
+                        b += '<button class="btn btn-outline-danger btn-sm btnAnularMat" data-id="' + item.ID + '"><i class="bi bi-x-circle"></i></button>';
+                    return b;
+                }
+            }
+        ]
+    });
+
+    $(document).on("click", ".btnAnularMat", function () {
+        var matId = $(this).data("id");
+        showConfirm({
+            tipo: 'danger',
+            titulo: 'Anular matricula',
+            mensaje: 'Esta accion no se puede deshacer. La matricula quedara en estado Anulada.',
+            onOk: function () {
+                $.post("@Url.Action("Anular","Matricula")", {
+                    matriculaId: matId,
+                    observacion: "Anulada desde ficha alumno."
+                }).done(function (r) {
+                    if (r.success) $("#gridMatriculasFicha").data("kendoGrid").dataSource.read();
+                });
+            }
+        });
+    });
+
+    // ── Desvincular apoderado ─────────────────────────────────
+    $(document).on("click", ".btn-desvincular", function () {
+        var id = $(this).data("id");
+        showConfirm({
+            tipo: 'danger',
+            titulo: 'Desvincular apoderado',
+            mensaje: 'El apoderado sera desvinculado del alumno. Su registro no se eliminara.',
+            onOk: function () {
+                $.post("@Url.Action("Desvincular","Apoderado")", { alumnoApoderadoId: id })
+                    .done(function (r) {
+                        if (r.success) location.reload();
+                        else showAlert({ tipo: 'danger', titulo: 'Error', mensaje: 'No se pudo desvincular el apoderado.' });
+                    });
+            }
+        });
+    });
+
+    // ── Ventana Cambio de RUT ─────────────────────────────────
+    var winCambioRut = $("#windowCambioRut").kendoWindow({
+        title: "Cambio de RUT — Alumno Extranjero", width: "520px",
+        modal: true, visible: false, actions: ["Close"]
+    }).data("kendoWindow");
+
+    $("#btnCambioRut").click(function () {
+        $("#txtRutNuevo").val("");
+        $("#rutNuevoFeedback").text("").removeClass("text-success text-danger");
+        $("#txtMotivoCambioRut").val("");
+        winCambioRut.center().open();
+    });
+
+    // Aplicar formato RUT en tiempo real
+    aplicarFormatoRut($("#txtRutNuevo"));
+
+    // Validar RUT nuevo en tiempo real
+    $("#txtRutNuevo").on("blur", function () {
+        var rut = $(this).val().trim();
+        if (!rut) return;
+        $.getJSON("@Url.Action("ValidarRut","Alumnos")", { rut: rut, alumnoId: 0 }, function (r) {
+            if (r.duplicado) {
+                $("#rutNuevoFeedback").text("Este RUT ya existe en el sistema.").removeClass("text-success").addClass("text-danger");
+            } else {
+                $("#rutNuevoFeedback").text("RUT disponible ✓").removeClass("text-danger").addClass("text-success");
+            }
+        });
+    });
+
+    $("#btnConfirmarCambioRut").click(function () {
+        var rutNuevo = $("#txtRutNuevo").val().trim();
+        if (!rutNuevo) { showToast("info", "Debe ingresar el RUT nuevo."); return; }
+        if ($("#rutNuevoFeedback").hasClass("text-danger")) { showToast("info", "El RUT ingresado no es válido."); return; }
+        showConfirm({
+            tipo: 'danger',
+            titulo: 'Confirmar cambio de RUT',
+            mensaje: 'Esta accion no se puede deshacer. Se creara un nuevo registro para el alumno con el RUT ingresado.',
+            onOk: function () {
+                showLoading(true);
+                $.post("@Url.Action("CambioRut","Alumnos")", {
+                    AlumnoOrigenID: alumnoId,
+                    RutNuevo:       rutNuevo,
+                    Motivo:         $("#txtMotivoCambioRut").val()
+                }).done(function (r) {
+                    showLoading(false);
+                    if (r.success) {
+                        winCambioRut.close();
+                        showToast("success", "Cambio de RUT registrado correctamente.");
+                        setTimeout(function () {
+                            window.location.href = '/Alumnos/Ficha/' + r.nuevoAlumnoId;
+                        }, 1500);
+                    } else {
+                        showToast("error", r.error || "No se pudo completar el cambio de RUT.");
+                    }
+                }).fail(function () {
+                    showLoading(false);
+                    showToast("error", "Error al procesar la solicitud.");
+                });
+            }
+        });
+    });
+
+    // ── Ventana Retiro ────────────────────────────────────────
+    var winRetiro = $("#windowRetiro").kendoWindow({
+        title: "Retirar Alumno", width: "500px",
+        modal: true, visible: false, actions: ["Close"]
+    }).data("kendoWindow");
+
+    $("#dpFechaRetiro").kendoDatePicker({
+        format: "dd/MM/yyyy",
+        value: new Date(),
+        max:   new Date()
+    });
+
+    $.getJSON("@Url.Action("CausalesRetiro","Lookup")", function (data) {
+        var ddl = $("#ddlCausalRetiro").empty().append('<option value="">-- Seleccione --</option>');
+        $.each(data, function (i, d) { ddl.append($("<option>").val(d.ID).text(d.Texto)); });
+    });
+
+    $("#btnRetirar").click(function () { winRetiro.center().open(); });
+
+    $("#btnConfirmarRetiro").click(function () {
+        var causal = parseInt($("#ddlCausalRetiro").val());
+        if (!causal) { showToast("info", "Debe seleccionar una causal de retiro."); return; }
+
+        var dp    = $("#dpFechaRetiro").data("kendoDatePicker");
+        var fecha = dp ? dp.value() : null;
+        if (!fecha) { showToast("info", "Debe ingresar la fecha de retiro."); return; }
+
+        // Formatear como yyyy-MM-dd para el servidor
+        var fechaStr = fecha.getFullYear() + "-" +
+                       ("0" + (fecha.getMonth() + 1)).slice(-2) + "-" +
+                       ("0" + fecha.getDate()).slice(-2);
+
+        $.post("@Url.Action("Retirar","Alumnos")", {
+            alumnoId:      alumnoId,
+            causalRetiroId: causal,
+            fechaRetiro:   fechaStr,
+            observacion:   $("#txtObservacionRetiro").val()
+        }).done(function (r) {
+            if (r.success) { winRetiro.close(); location.reload(); }
+            else showAlert({ tipo: 'danger', titulo: 'Error', mensaje: 'No se pudo registrar el retiro.' });
+        });
+    });
+
+    // ── Autorización supervisor (levantar Matrícula Cancelada) ─
+    var winAutorizarMat = $("#windowAutorizarMat").kendoWindow({
+        title: "Autorización de supervisor", width: "440px",
+        modal: true, visible: false, actions: ["Close"]
+    }).data("kendoWindow");
+
+    $("#btnAutorizarMatricula").click(function () {
+        $("#auMatriculaID").val($(this).data("id"));
+        $("#auUsuario, #auClave, #auObs").val("");
+        winAutorizarMat.center().open();
+    });
+
+    $("#btnConfirmarAutorizarMat").click(function () {
+        var data = {
+            MatriculaID:       $("#auMatriculaID").val(),
+            SupervisorUsuario: $("#auUsuario").val(),
+            SupervisorClave:   $("#auClave").val(),
+            Observacion:       $("#auObs").val()
+        };
+        if (!data.SupervisorUsuario || !data.SupervisorClave) {
+            showToast("info", "Ingrese usuario y clave de supervisor.");
+            return;
+        }
+        $.post("@Url.Action("AutorizarMatricula","AnioEscolar")", data).done(function (r) {
+            if (r.success) {
+                winAutorizarMat.close();
+                showToast("success", r.message);
+                setTimeout(function () { location.reload(); }, 900);
+            } else {
+                showToast("error", r.message);
+            }
+        });
+    });
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function badgeMat(e) {
+    var m = {
+        "Vigente":    "bg-success",
+        "Anulada":    "bg-danger",
+        "Trasladada": "bg-warning text-dark",
+        "Pendiente":  "bg-info"
+    };
+    return '<span class="badge ' + (m[e] || "bg-secondary") + '">' + (e || "") + '</span>';
+}
+
+function cargarHistorial() {
+    $('#tablaHistorial').html(
+        '<p class="text-muted text-center py-4">' +
+        '<i class="bi bi-hourglass-split me-1"></i>Cargando...</p>');
+
+    $.getJSON('@Url.Action("GetHistorial","Alumnos")', { alumnoId: alumnoId }, function (data) {
+        var cfg = {
+            'Alumno':    { cls: 'bg-primary',           icon: 'bi-person-fill',       lbl: 'Alumno'    },
+            'Matrícula': { cls: 'bg-success',           icon: 'bi-journal-check',     lbl: 'Matrícula' },
+            'Alergia':   { cls: 'bg-warning text-dark', icon: 'bi-bandaid-fill',      lbl: 'Alergia'   },
+            'Apoderado': { cls: 'bg-info text-dark',    icon: 'bi-people-fill',       lbl: 'Apoderado' },
+            'Documento': { cls: 'bg-secondary',         icon: 'bi-file-earmark-text', lbl: 'Documento' }
+        };
+
+        var html = '<div class="table-responsive">' +
+            '<table class="table table-sm table-hover align-middle">' +
+            '<thead class="table-light"><tr>' +
+            '<th style="width:110px">Fecha / Hora</th>' +
+            '<th style="width:105px">Categoría</th>' +
+            '<th style="width:190px">Usuario</th>' +
+            '<th>Acción</th>' +
+            '<th>Detalle</th>' +
+            '</tr></thead><tbody>';
+
+        if (!data || !data.length) {
+            html += '<tr><td colspan="5" class="text-center text-muted py-4">' +
+                    'Sin registros de actividad.</td></tr>';
+        } else {
+            $.each(data, function (i, item) {
+                var ts = item.FechaAccion
+                    ? parseInt(item.FechaAccion.replace('/Date(', '').replace(')/', ''))
+                    : null;
+                var fd = ts ? new Date(ts) : null;
+                var fStr = fd
+                    ? ('0' + fd.getDate()).slice(-2) + '/' +
+                      ('0' + (fd.getMonth() + 1)).slice(-2) + '/' +
+                      fd.getFullYear() +
+                      '<br><small class="text-muted">' +
+                      ('0' + fd.getHours()).slice(-2) + ':' +
+                      ('0' + fd.getMinutes()).slice(-2) + ':' +
+                      ('0' + fd.getSeconds()).slice(-2) + '</small>'
+                    : '—';
+                var ent = item.Entidad || 'Alumno';
+                var c   = cfg[ent] || { cls: 'bg-secondary', icon: 'bi-circle', lbl: ent };
+                var bdg = '<span class="badge ' + c.cls + '">' +
+                          '<i class="bi ' + c.icon + ' me-1"></i>' + c.lbl + '</span>';
+
+                html += '<tr>' +
+                    '<td class="text-nowrap small">' + fStr + '</td>' +
+                    '<td>' + bdg + '</td>' +
+                    '<td class="small">' + (item.Usuario || '—') + '</td>' +
+                    '<td class="fw-semibold small">' + (item.Accion || '') + '</td>' +
+                    '<td class="small text-muted">' + (item.Detalle || '—') + '</td>' +
+                    '</tr>';
+            });
+        }
+        html += '</tbody></table></div>';
+        $('#tablaHistorial').html(html);
+    }).fail(function () {
+        $('#tablaHistorial').html(
+            '<p class="text-danger text-center">' +
+            '<i class="bi bi-exclamation-triangle me-1"></i>' +
+            'Error al cargar el historial.</p>');
+    });
+}
+
+cargarHistorial();
+
+$('#btnRefrescarHistorial').click(cargarHistorial);
+
+// ═══════════════════════════════════════════════
+// DOCUMENTOS
+// ═══════════════════════════════════════════════
+
+var urlGetEstadoMatricula   = "@Url.Action("GetEstadoMatricula","Documento")";
+var urlGetAnexos            = "@Url.Action("GetAnexos","Documento")";
+var urlGetTiposAnexo        = "@Url.Action("GetTiposAnexo","Documento")";
+var urlVerificarObligatorios = "@Url.Action("VerificarObligatorios","Documento")";
+var urlSubirMatricula       = "@Url.Action("SubirMatricula","Documento")";
+var urlSubirAnexo           = "@Url.Action("SubirAnexo","Documento")";
+var urlEliminarDoc          = "@Url.Action("Eliminar","Documento")";
+var urlDescargarDoc         = "@Url.Action("Descargar","Documento")";
+
+var anioDocSeleccionado = 0;
+
+// Cargar años escolares en el selector
+$.getJSON('@Url.Action("GetAniosEscolares","Lookup")', function(data) {
+    var ddl = $('#ddlAnioDocumentos');
+    $.each(data, function(i, d) {
+        ddl.append($('<option>').val(d.ID).text(d.Texto));
+    });
+    // Seleccionar primer año automáticamente
+    if (data && data.length > 0) {
+        ddl.val(data[0].ID);
+        anioDocSeleccionado = data[0].ID;
+        cargarDocsMatricula(data[0].ID);
+    }
+});
+
+$('#ddlAnioDocumentos, #btnCargarDocsMatricula').on('change click', function() {
+    var anioId = parseInt($('#ddlAnioDocumentos').val());
+    if (!anioId) return;
+    anioDocSeleccionado = anioId;
+    cargarDocsMatricula(anioId);
+});
+
+function cargarDocsMatricula(anioId) {
+    $('#tablaDocsMatricula').html(
+        '<p class="text-muted small text-center py-3">' +
+        '<i class="bi bi-hourglass-split me-1"></i>Cargando...</p>');
+
+    $.getJSON(urlGetEstadoMatricula, { alumnoId: alumnoId, anioEscolarId: anioId }, function(data) {
+        // Verificar obligatorios para alertas
+        $.getJSON(urlVerificarObligatorios, { alumnoId: alumnoId, anioEscolarId: anioId }, function(ver) {
+            if (ver.TodosObligatoriosCargados) {
+                $('#alertaDocsPendientes').addClass('d-none');
+                $('#alertaDocsCompletos').removeClass('d-none');
+            } else {
+                $('#alertaDocsCompletos').addClass('d-none');
+                $('#alertaDocsPendientes').removeClass('d-none');
+                $('#txtDocsPendientes').text(' ' + ver.FaltanDocumentos.join(', '));
+            }
+        });
+
+        if (!data || !data.length) {
+            $('#tablaDocsMatricula').html(
+                '<p class="text-muted small text-center py-3">' +
+                'No hay tipos de documento configurados para matrícula.</p>');
+            return;
+        }
+
+        // El servidor devuelve los datos ya ordenados por OrdenImportancia.
+        // Agrupar en 4 bloques de importancia para mostrarlos separados.
+        var gruposImp = {
+            1: { titulo: 'Obligatorios pendientes',  icon: 'bi-exclamation-circle-fill', cls: 'text-danger',         filaClass: 'table-danger'  },
+            2: { titulo: 'Obligatorios cargados',    icon: 'bi-check-circle-fill',        cls: 'text-success',        filaClass: ''              },
+            3: { titulo: 'Opcionales pendientes',    icon: 'bi-dash-circle',              cls: 'text-warning',        filaClass: 'table-warning' },
+            4: { titulo: 'Opcionales cargados',      icon: 'bi-check-circle',             cls: 'text-secondary',      filaClass: ''              }
+        };
+
+        var grupos = { 1: [], 2: [], 3: [], 4: [] };
+        $.each(data, function(i, d) {
+            var k = d.OrdenImportancia || 4;
+            if (!grupos[k]) grupos[k] = [];
+            grupos[k].push(d);
+        });
+
+        // Config visual por categoría (para el sub-separador dentro de cada bloque)
+        var catLabels = {
+            'Reglamentario': 'Reglamentario',
+            'Autorizacion':  'Autorización',
+            'Interno':       'Interno'
+        };
+
+        var html = '';
+        $.each([1, 2, 3, 4], function(_, imp) {
+            var docs = grupos[imp];
+            if (!docs || !docs.length) return;
+
+            var g = gruposImp[imp];
+            html += '<div class="mb-3">';
+            // Encabezado del grupo de importancia
+            html += '<p class="fw-bold small mb-2 d-flex align-items-center gap-1 ' + g.cls + '">' +
+                    '<i class="bi ' + g.icon + '"></i>' + g.titulo +
+                    ' <span class="badge rounded-pill bg-light border text-dark fw-normal ms-1">' + docs.length + '</span>' +
+                    '</p>';
+            html += '<div class="table-responsive">';
+            html += '<table class="table table-sm table-hover align-middle mb-0">';
+            html += '<thead class="table-light"><tr>' +
+                    '<th>Documento</th>' +
+                    '<th style="width:100px" class="text-center">Categoría</th>' +
+                    '<th style="width:120px">Archivo</th>' +
+                    '<th style="width:100px">Fecha carga</th>' +
+                    '<th style="width:110px" class="text-center">Acciones</th>' +
+                    '</tr></thead><tbody>';
+
+            $.each(docs, function(j, doc) {
+                var catLabel = catLabels[doc.Categoria] || (doc.Categoria || '—');
+                var badgeCat = doc.Obligatorio
+                    ? '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle small">' + catLabel + '</span>'
+                    : '<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle small">' + catLabel + '</span>';
+
+                var badgeEst = doc.Cargado
+                    ? '<i class="bi bi-check-circle-fill text-success" title="Cargado"></i>'
+                    : '<i class="bi bi-clock-fill text-warning" title="Pendiente"></i>';
+
+                var nombreArch = doc.NombreArchivo
+                    ? '<span class="text-truncate d-inline-block" style="max-width:110px" title="' + doc.NombreArchivo + '">' +
+                      '<i class="bi bi-file-earmark me-1 text-muted"></i>' + doc.NombreArchivo + '</span>'
+                    : '<span class="text-muted small">—</span>';
+
+                var fechaCarga = doc.FechaCarga ? formatearFechaJson(doc.FechaCarga) : '—';
+
+                var acciones = '';
+                if (doc.Cargado) {
+                    acciones += '<a href="' + urlDescargarDoc + '/' + doc.DocumentoAlumnoID + '" ' +
+                                'target="_blank" class="btn btn-outline-secondary btn-sm me-1" ' +
+                                'title="Descargar"><i class="bi bi-download"></i></a>';
+                    if (isAdmin && !fueTraspasado) {
+                        acciones += '<button class="btn btn-outline-danger btn-sm btn-eliminar-doc" ' +
+                                    'data-id="' + doc.DocumentoAlumnoID + '" title="Eliminar">' +
+                                    '<i class="bi bi-trash"></i></button>';
+                    }
+                }
+                if (isAdmin && !fueTraspasado) {
+                    acciones += '<button class="btn btn-sm ms-1 ' +
+                                (!doc.Cargado ? 'btn-primary' : 'btn-outline-primary') +
+                                ' btn-subir-doc-mat" ' +
+                                'data-tipoid="' + doc.TipoDocumentoID + '" ' +
+                                'data-nombre="' + doc.Nombre + '" ' +
+                                'title="' + (doc.Cargado ? 'Reemplazar' : 'Subir documento') + '">' +
+                                '<i class="bi bi-upload"></i>' +
+                                (!doc.Cargado ? ' <span class="small">Subir</span>' : '') +
+                                '</button>';
+                }
+
+                html += '<tr class="' + g.filaClass + '">' +
+                        '<td class="fw-semibold small">' + badgeEst + ' ' + doc.Nombre + '</td>' +
+                        '<td class="text-center">' + badgeCat + '</td>' +
+                        '<td>' + nombreArch + '</td>' +
+                        '<td class="small">' + fechaCarga + '</td>' +
+                        '<td class="text-center">' + acciones + '</td>' +
+                        '</tr>';
+            });
+
+            html += '</tbody></table></div></div>';
+        });
+
+        $('#tablaDocsMatricula').html(html);
+    }).fail(function() {
+        $('#tablaDocsMatricula').html(
+            '<p class="text-danger small text-center py-3">' +
+            '<i class="bi bi-exclamation-triangle me-1"></i>Error al cargar documentos.</p>');
+    });
+}
+
+function cargarDocsAnexos() {
+    $.getJSON(urlGetAnexos, { alumnoId: alumnoId }, function(data) {
+        if (!data || !data.length) {
+            $('#tablaDocsAnexos').html(
+                '<p class="text-muted small text-center py-3">' +
+                'No hay documentos anexos cargados para este alumno.</p>');
+            return;
+        }
+        var html = '<div class="table-responsive">' +
+                   '<table class="table table-sm table-hover align-middle">' +
+                   '<thead class="table-light"><tr>' +
+                   '<th>Tipo</th><th>Archivo</th>' +
+                   '<th style="width:115px">Fecha carga</th>' +
+                   '<th>Observación</th>' +
+                   '<th style="width:100px" class="text-center">Acciones</th>' +
+                   '</tr></thead><tbody>';
+        $.each(data, function(i, doc) {
+            var fechaCarga = doc.FechaCarga ? formatearFechaJson(doc.FechaCarga) : '—';
+            var acciones = '<a href="' + urlDescargarDoc + '/' + doc.ID + '" target="_blank" ' +
+                           'class="btn btn-outline-secondary btn-sm me-1" title="Descargar">' +
+                           '<i class="bi bi-download"></i></a>';
+            if (isAdmin && !fueTraspasado) {
+                acciones += '<button class="btn btn-outline-danger btn-sm btn-eliminar-doc" ' +
+                            'data-id="' + doc.ID + '" title="Eliminar">' +
+                            '<i class="bi bi-trash"></i></button>';
+            }
+            html += '<tr>' +
+                    '<td class="fw-semibold small"><i class="bi bi-paperclip text-secondary me-1"></i>' + doc.TipoDocumento + '</td>' +
+                    '<td class="small">' + (doc.NombreArchivo || '—') + '</td>' +
+                    '<td class="small">' + fechaCarga + '</td>' +
+                    '<td class="small text-muted">' + (doc.Observacion || '—') + '</td>' +
+                    '<td class="text-center">' + acciones + '</td>' +
+                    '</tr>';
+        });
+        html += '</tbody></table></div>';
+        $('#tablaDocsAnexos').html(html);
+    });
+}
+
+cargarDocsAnexos();
+
+// Ventana subir documento de matrícula
+var winSubirDocMat = $('#windowSubirDocMatricula').kendoWindow({
+    title: 'Subir Documento de Matrícula', width: '480px',
+    modal: true, visible: false, actions: ['Close']
+}).data('kendoWindow');
+
+$(document).on('click', '.btn-subir-doc-mat', function() {
+    var tipoId   = $(this).data('tipoid');
+    var nombre   = $(this).data('nombre');
+    $('#hdnTipoDocMatriculaID').val(tipoId);
+    $('#hdnTipoDocMatriculaNombre').val(nombre);
+    $('#lblTipoDocMatricula').text(nombre);
+    $('#fileDocMatricula').val('');
+    $('#txtObsDocMatricula').val('');
+    winSubirDocMat.center().open();
+});
+
+$('#btnConfirmarSubirDocMatricula').click(function() {
+    var anioId = parseInt($('#ddlAnioDocumentos').val());
+    if (!anioId) { showToast('info', 'Seleccione un año escolar.'); return; }
+    var file = $('#fileDocMatricula')[0].files[0];
+    if (!file) { showToast('info', 'Debe seleccionar un archivo.'); return; }
+
+    var fd = new FormData();
+    fd.append('AlumnoID',        alumnoId);
+    fd.append('TipoDocumentoID', $('#hdnTipoDocMatriculaID').val());
+    fd.append('AnioEscolarID',   anioId);
+    fd.append('Observacion',     $('#txtObsDocMatricula').val());
+    fd.append('Archivo',         file);
+
+    showLoading(true);
+    $.ajax({
+        url: urlSubirMatricula, type: 'POST', data: fd,
+        processData: false, contentType: false,
+        success: function(r) {
+            showLoading(false);
+            if (r.success) {
+                winSubirDocMat.close();
+                showToast('success', r.message);
+                cargarDocsMatricula(anioDocSeleccionado);
+            } else {
+                showToast('error', r.message);
+            }
+        },
+        error: function() {
+            showLoading(false);
+            showToast('error', 'Error al subir el documento.');
+        }
+    });
+});
+
+// Ventana subir documento anexo
+var winSubirAnexo = $('#windowSubirAnexo').kendoWindow({
+    title: 'Agregar Documento Anexo', width: '480px',
+    modal: true, visible: false, actions: ['Close']
+}).data('kendoWindow');
+
+$.getJSON(urlGetTiposAnexo, function(data) {
+    var ddl = $('#ddlTipoDocAnexo');
+    $.each(data, function(i, d) {
+        ddl.append($('<option>').val(d.ID).text(d.Texto));
+    });
+});
+
+$('#btnNuevoAnexo').click(function() {
+    $('#ddlTipoDocAnexo').val('');
+    $('#fileDocAnexo').val('');
+    $('#txtObsDocAnexo').val('');
+    winSubirAnexo.center().open();
+});
+
+$('#btnConfirmarSubirAnexo').click(function() {
+    var tipoId = parseInt($('#ddlTipoDocAnexo').val());
+    if (!tipoId) { showToast('info', 'Seleccione un tipo de documento.'); return; }
+    var file = $('#fileDocAnexo')[0].files[0];
+    if (!file) { showToast('info', 'Debe seleccionar un archivo.'); return; }
+
+    var fd = new FormData();
+    fd.append('AlumnoID',        alumnoId);
+    fd.append('TipoDocumentoID', tipoId);
+    fd.append('Observacion',     $('#txtObsDocAnexo').val());
+    fd.append('Archivo',         file);
+
+    showLoading(true);
+    $.ajax({
+        url: urlSubirAnexo, type: 'POST', data: fd,
+        processData: false, contentType: false,
+        success: function(r) {
+            showLoading(false);
+            if (r.success) {
+                winSubirAnexo.close();
+                showToast('success', r.message);
+                cargarDocsAnexos();
+            } else {
+                showToast('error', r.message);
+            }
+        },
+        error: function() {
+            showLoading(false);
+            showToast('error', 'Error al subir el documento.');
+        }
+    });
+});
+
+// Eliminar documento (matrícula o anexo)
+$(document).on('click', '.btn-eliminar-doc', function() {
+    var docId = $(this).data('id');
+    showConfirm({
+        tipo: 'danger',
+        titulo: 'Eliminar documento',
+        mensaje: '¿Confirma que desea eliminar este documento? Esta acción no se puede deshacer.',
+        onOk: function() {
+            $.post(urlEliminarDoc, { documentoId: docId }).done(function(r) {
+                if (r.success) {
+                    showToast('success', 'Documento eliminado.');
+                    cargarDocsMatricula(anioDocSeleccionado);
+                    cargarDocsAnexos();
+                } else {
+                    showToast('error', 'No se pudo eliminar el documento.');
+                }
+            });
+        }
+    });
+});
+
+function formatearFechaJson(val) {
+    if (!val) return '—';
+    var ts = parseInt(val.replace('/Date(', '').replace(')/', ''));
+    var d  = new Date(ts);
+    return ('0' + d.getDate()).slice(-2) + '/' +
+           ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+           d.getFullYear();
+}
+
+// ═══════════════════════════════════════════════
+// CERTIFICADOS (generación on-demand en Word)
+// ═══════════════════════════════════════════════
+var urlGetPlantillasCert = '@Url.Action("GetPlantillas","Certificado")';
+var urlGetFirmantesCert  = '@Url.Action("GetFirmantes","Certificado")';
+var urlGenerarCert       = '@Url.Action("Generar","Certificado")';
+
+var plantillasCertCache = [];
+
+var winGenerarCert = $('#windowGenerarCertificado').kendoWindow({
+    title: 'Generar Certificado', width: '460px',
+    modal: true, visible: false, actions: ['Close']
+}).data('kendoWindow');
+
+function cargarSelectsCertificado() {
+    $.getJSON(urlGetPlantillasCert, function (data) {
+        plantillasCertCache = data || [];
+        var ddl = $('#ddlPlantillaCert');
+        ddl.find('option:gt(0)').remove();
+        $.each(plantillasCertCache, function (i, p) {
+            ddl.append($('<option>').val(p.ID).text(p.Nombre).attr('data-firmante', p.FirmanteDefectoID || ''));
+        });
+    });
+    $.getJSON(urlGetFirmantesCert, function (data) {
+        var ddl = $('#ddlFirmanteCert');
+        ddl.find('option:gt(0)').remove();
+        $.each(data || [], function (i, f) {
+            ddl.append($('<option>').val(f.ID).text(f.Nombre + ' — ' + f.Cargo));
+        });
+    });
+}
+cargarSelectsCertificado();
+
+$('#ddlPlantillaCert').on('change', function () {
+    var id = parseInt($(this).val());
+    var p = plantillasCertCache.filter(function (x) { return x.ID === id; })[0];
+    $('#descPlantillaCert').text(p ? (p.Descripcion || '') : '');
+    // Preseleccionar el firmante por defecto de la plantilla
+    if (p && p.FirmanteDefectoID) {
+        $('#ddlFirmanteCert').val(p.FirmanteDefectoID);
+    } else {
+        $('#ddlFirmanteCert').val('');
+    }
+});
+
+$('#btnGenerarCertificado').click(function () {
+    $('#ddlPlantillaCert').val('');
+    $('#ddlFirmanteCert').val('');
+    $('#descPlantillaCert').text('');
+    winGenerarCert.center().open();
+});
+
+$('#btnConfirmarGenerarCert').click(function () {
+    var plantillaId = parseInt($('#ddlPlantillaCert').val());
+    if (!plantillaId) { showToast('info', 'Seleccione un tipo de certificado.'); return; }
+    var firmanteId = $('#ddlFirmanteCert').val();
+
+    var url = urlGenerarCert + '?plantillaId=' + plantillaId + '&alumnoId=' + alumnoId;
+    if (firmanteId) url += '&firmanteId=' + firmanteId;
+
+    // Descarga directa del .docx
+    window.location.href = url;
+    winGenerarCert.close();
+    showToast('success', 'Generando certificado...');
+});
+    </script>
+}

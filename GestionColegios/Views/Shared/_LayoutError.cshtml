@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(ViewBag.Title ?? "Algo salió mal") — GESTIÓN EDUCACIONAL</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="~/Content/Assets/logo_icono_sin_texto.ico">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #eafbe9 0%, #f5fbf0 45%, #fbeafc 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #1a1a2e;
+            padding: 1.5rem;
+        }
+
+        .error-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 18px 60px rgba(64, 191, 59, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+            max-width: 560px;
+            width: 100%;
+            padding: 3rem 2.75rem;
+            text-align: center;
+        }
+
+        .error-logo {
+            max-width: 220px;
+            margin-bottom: 1.75rem;
+        }
+
+        .error-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            font-size: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .error-code {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(80, 60, 20, 0.45);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-text {
+            color: rgba(60, 60, 80, 0.75);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-error {
+            border: none;
+            border-radius: 12px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+            .btn-error:hover {
+                transform: translateY(-2px);
+            }
+
+        .btn-error-primary {
+            background: #40BF3B;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(64, 191, 59, 0.35);
+        }
+
+            .btn-error-primary:hover {
+                color: #fff;
+                box-shadow: 0 10px 24px rgba(64, 191, 59, 0.45);
+            }
+
+        .btn-error-ghost {
+            background: #f4f6fb;
+            color: #1a1a2e;
+        }
+
+            .btn-error-ghost:hover {
+                color: #1a1a2e;
+                background: #e9edf6;
+            }
+
+        .error-foot {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: rgba(80, 60, 20, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <img src="~/Content/Assets/logo_web_con_texto.png" alt="Gestión Educacional" class="error-logo" onerror="this.style.display='none'">
+        @RenderBody()
+        <div class="error-foot">
+            &copy; @DateTime.Now.Year GESTIÓN COLEGIOS — Si el problema persiste, contacte al administrador.
+        </div>
+    </div>
+</body>
+</html>

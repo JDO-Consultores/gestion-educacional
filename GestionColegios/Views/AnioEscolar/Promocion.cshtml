@@ -1,0 +1,353 @@
+@model GestionColegios.ViewModels.AnioEscolarDetalleViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Cierre / Promoción " + Model.Anio;
+    bool isAdmin = (bool)ViewBag.IsAdmin;
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h3 class="mb-0">
+            <i class="bi bi-mortarboard me-2"></i>Cierre de Año · Promoción @Model.Anio
+        </h3>
+        <small class="text-muted">@Model.Establecimiento</small>
+    </div>
+    <a href="@Url.Action("Detalle", "AnioEscolar", new { id = Model.ID })" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Volver al detalle
+    </a>
+</div>
+
+<div class="alert alert-info d-flex align-items-center gap-2">
+    <i class="bi bi-info-circle-fill fs-5"></i>
+    <div class="small">
+        Al cierre de año cada alumno debe quedar como <strong>Promovido</strong> (pasa al año siguiente) o
+        <strong>No Promovido</strong> (no pasa, requiere motivo, decreto y glosa).
+        Un alumno Promovido puede quedar con <strong>Matrícula Cancelada</strong> (bloqueado para el próximo año);
+        esa condición solo puede levantarse con autorización de un supervisor.
+    </div>
+</div>
+
+@if (isAdmin)
+{
+    <div class="d-flex justify-content-end mb-2">
+        <button id="btnPromoverCurso" class="btn btn-success btn-sm">
+            <i class="bi bi-check2-all me-1"></i>Promover curso completo
+        </button>
+    </div>
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div id="gridPromocion"></div>
+    </div>
+</div>
+
+<!-- ??????????? Ventana: Registrar resultado ??????????? -->
+<div id="windowResultado" style="display:none;">
+    <input type="hidden" id="rpMatriculaID" />
+    <div class="mb-2">
+        <strong id="rpAlumno"></strong>
+        <div class="text-muted small" id="rpCurso"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Resultado <span class="text-danger">*</span></label>
+        <select id="rpResultado" class="form-select">
+            <option value="">-- Seleccione --</option>
+            <option value="Promovido">Promovido</option>
+            <option value="No Promovido">No Promovido</option>
+        </select>
+    </div>
+
+    <!-- Bloque Promovido -->
+    <div id="bloquePromovido" class="d-none">
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="rpCancelada" />
+            <label class="form-check-label" for="rpCancelada">
+                Matrícula Cancelada (bloquear matrícula para el año siguiente)
+            </label>
+        </div>
+    </div>
+
+    <!-- Bloque No Promovido -->
+    <div id="bloqueNoPromovido" class="d-none">
+        <div class="mb-2">
+            <label class="form-label">Motivo <span class="text-danger">*</span></label>
+            <input type="text" id="rpMotivo" class="form-control" maxlength="150"
+                   placeholder="Ej: Inasistencia no justificada, Rendimiento..." />
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Decreto <span class="text-danger">*</span></label>
+            <input type="text" id="rpDecreto" class="form-control" maxlength="100"
+                   placeholder="Decreto que ampara la decisión" />
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Glosa <span class="text-danger">*</span></label>
+            <textarea id="rpGlosa" class="form-control" rows="3" maxlength="500"
+                      placeholder="Descripción / fundamento de la decisión"></textarea>
+        </div>
+    </div>
+
+    <div class="text-end mt-2">
+        <button id="btnGuardarResultado" class="btn btn-primary btn-sm">
+            <i class="bi bi-save me-1"></i>Guardar resultado
+        </button>
+    </div>
+</div>
+
+<!-- ??????????? Ventana: Autorización de supervisor ??????????? -->
+<div id="windowAutorizar" style="display:none;">
+    <input type="hidden" id="auMatriculaID" />
+    <div class="alert alert-warning py-2 small">
+        <i class="bi bi-shield-lock me-1"></i>
+        Para levantar la condición <strong>Matrícula Cancelada</strong> ingrese las credenciales de un supervisor (Administrador).
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Usuario supervisor <span class="text-danger">*</span></label>
+        <input type="text" id="auUsuario" class="form-control" autocomplete="off" />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Clave de supervisor <span class="text-danger">*</span></label>
+        <input type="password" id="auClave" class="form-control" autocomplete="off" />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Observación</label>
+        <input type="text" id="auObs" class="form-control" maxlength="300" placeholder="Opcional..." />
+    </div>
+    <div class="text-end mt-2">
+        <button id="btnConfirmarAutorizar" class="btn btn-success btn-sm">
+            <i class="bi bi-unlock me-1"></i>Autorizar
+        </button>
+    </div>
+</div>
+
+<!-- ??????????? Ventana: Promoción masiva de curso ??????????? -->
+<div id="windowPromoverCurso" style="display:none;">
+    <div class="alert alert-info py-2 small">
+        <i class="bi bi-info-circle me-1"></i>
+        Marca como <strong>Promovido</strong> a todos los alumnos del curso que aún no tienen resultado registrado.
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Curso <span class="text-danger">*</span></label>
+        <select id="pcCurso" class="form-select"></select>
+    </div>
+    <div class="text-end mt-2">
+        <button id="btnConfirmarPromoverCurso" class="btn btn-success btn-sm">
+            <i class="bi bi-check2-all me-1"></i>Promover curso
+        </button>
+    </div>
+</div>
+
+@section scripts {
+<script>
+    var anioEscolarId = @Model.ID;
+    var isAdmin       = @isAdmin.ToString().ToLower();
+    var urlGetData    = '@Url.Action("GetPromocionAlumnos", "AnioEscolar")';
+    var urlRegistrar  = '@Url.Action("RegistrarPromocion", "AnioEscolar")';
+    var urlAutorizar  = '@Url.Action("AutorizarMatricula", "AnioEscolar")';
+    var urlCursosPend = '@Url.Action("GetCursosConPendientes", "AnioEscolar")';
+    var urlPromCurso  = '@Url.Action("PromoverCurso", "AnioEscolar")';
+
+    $(document).ready(function () {
+
+        var winResultado = $("#windowResultado").kendoWindow({
+            title: "Registrar resultado de promoción", width: "460px",
+            modal: true, visible: false, actions: ["Close"]
+        }).data("kendoWindow");
+
+        var winAutorizar = $("#windowAutorizar").kendoWindow({
+            title: "Autorización de supervisor", width: "440px",
+            modal: true, visible: false, actions: ["Close"]
+        }).data("kendoWindow");
+
+        var winPromoverCurso = $("#windowPromoverCurso").kendoWindow({
+            title: "Promover curso completo", width: "420px",
+            modal: true, visible: false, actions: ["Close"]
+        }).data("kendoWindow");
+
+        $("#gridPromocion").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: { url: urlGetData, contentType: "application/json", type: "POST" },
+                    parameterMap: function (o) {
+                        return kendo.stringify($.extend({ anioEscolarId: anioEscolarId }, o));
+                    }
+                },
+                pageSize: 20,
+                serverPaging: true, serverSorting: true, serverFiltering: true,
+                schema: {
+                    model: {
+                        id: "MatriculaID",
+                        fields: {
+                            AlumnoNombreCompleto: { type: "string" },
+                            AlumnoRut:            { type: "string" },
+                            Curso:                { type: "string" },
+                            NroMatricula:         { type: "string" },
+                            ResultadoPromocion:   { type: "string" },
+                            MatriculaCancelada:   { type: "boolean" }
+                        }
+                    },
+                    data: "Data", total: "Total"
+                }
+            },
+            pageable: { pageSizes: [10, 20, 50] },
+            sortable: true,
+            filterable: { extra: false, operators: { string: { contains: "Contiene" } } },
+            resizable: true,
+            columns: [
+                { field: "NroMatricula",         title: "N° Matrícula", width: "120px" },
+                { field: "AlumnoNombreCompleto", title: "Alumno",       width: "240px" },
+                { field: "AlumnoRut",            title: "RUT",          width: "110px" },
+                { field: "Curso",                title: "Curso",        width: "120px" },
+                {
+                    field: "ResultadoPromocion", title: "Resultado", width: "150px",
+                    template: "#= renderResultado(ResultadoPromocion, MatriculaCancelada) #"
+                },
+                {
+                    title: "Acciones", width: "180px", filterable: false, sortable: false,
+                    attributes: { style: "text-align:center" },
+                    template: function (item) {
+                        if (!isAdmin) return "";
+                        var b = '<button class="btn btn-outline-primary btn-sm me-1 btnResultado" ' +
+                                'data-id="' + item.MatriculaID + '" data-alumno="' + kendo.htmlEncode(item.AlumnoNombreCompleto) + '" ' +
+                                'data-curso="' + kendo.htmlEncode(item.Curso) + '" title="Registrar resultado">' +
+                                '<i class="bi bi-pencil-square"></i></button>';
+                        if (item.MatriculaCancelada) {
+                            b += '<button class="btn btn-outline-success btn-sm btnAutorizar" ' +
+                                 'data-id="' + item.MatriculaID + '" title="Autorizar (levantar bloqueo)">' +
+                                 '<i class="bi bi-unlock"></i></button>';
+                        }
+                        return b;
+                    }
+                }
+            ]
+        });
+
+        // Mostrar/ocultar bloques según resultado
+        $("#rpResultado").change(function () {
+            var v = $(this).val();
+            $("#bloquePromovido").toggleClass("d-none", v !== "Promovido");
+            $("#bloqueNoPromovido").toggleClass("d-none", v !== "No Promovido");
+        });
+
+        // Abrir ventana de resultado
+        $(document).on("click", ".btnResultado", function () {
+            $("#rpMatriculaID").val($(this).data("id"));
+            $("#rpAlumno").text($(this).data("alumno"));
+            $("#rpCurso").text("Curso: " + $(this).data("curso"));
+            $("#rpResultado").val("");
+            $("#rpCancelada").prop("checked", false);
+            $("#rpMotivo, #rpDecreto, #rpGlosa").val("");
+            $("#bloquePromovido, #bloqueNoPromovido").addClass("d-none");
+            winResultado.center().open();
+        });
+
+        // Guardar resultado
+        $("#btnGuardarResultado").click(function () {
+            var resultado = $("#rpResultado").val();
+            if (!resultado) { showToast("info", "Seleccione el resultado."); return; }
+
+            var data = {
+                MatriculaID:        $("#rpMatriculaID").val(),
+                ResultadoPromocion: resultado,
+                MatriculaCancelada: $("#rpCancelada").is(":checked"),
+                MotivoNoPromocion:  $("#rpMotivo").val(),
+                DecretoNoPromocion: $("#rpDecreto").val(),
+                GlosaNoPromocion:   $("#rpGlosa").val()
+            };
+
+            if (resultado === "No Promovido" &&
+                (!data.MotivoNoPromocion || !data.DecretoNoPromocion || !data.GlosaNoPromocion)) {
+                showToast("info", "Para 'No Promovido' complete Motivo, Decreto y Glosa.");
+                return;
+            }
+
+            $.post(urlRegistrar, data).done(function (r) {
+                if (r.success) {
+                    winResultado.close();
+                    showToast("success", r.message);
+                    $("#gridPromocion").data("kendoGrid").dataSource.read();
+                } else {
+                    showToast("error", r.message);
+                }
+            });
+        });
+
+        // Abrir ventana de autorización
+        $(document).on("click", ".btnAutorizar", function () {
+            $("#auMatriculaID").val($(this).data("id"));
+            $("#auUsuario, #auClave, #auObs").val("");
+            winAutorizar.center().open();
+        });
+
+        // Confirmar autorización
+        $("#btnConfirmarAutorizar").click(function () {
+            var data = {
+                MatriculaID:       $("#auMatriculaID").val(),
+                SupervisorUsuario: $("#auUsuario").val(),
+                SupervisorClave:   $("#auClave").val(),
+                Observacion:       $("#auObs").val()
+            };
+            if (!data.SupervisorUsuario || !data.SupervisorClave) {
+                showToast("info", "Ingrese usuario y clave de supervisor.");
+                return;
+            }
+            $.post(urlAutorizar, data).done(function (r) {
+                if (r.success) {
+                    winAutorizar.close();
+                    showToast("success", r.message);
+                    $("#gridPromocion").data("kendoGrid").dataSource.read();
+                } else {
+                    showToast("error", r.message);
+                }
+            });
+        });
+
+        // Abrir ventana de promoción masiva
+        $("#btnPromoverCurso").click(function () {
+            $.getJSON(urlCursosPend, { anioEscolarId: anioEscolarId }, function (data) {
+                var ddl = $("#pcCurso").empty();
+                if (!data || !data.length) {
+                    showToast("info", "No hay cursos con alumnos pendientes de promoción.");
+                    return;
+                }
+                ddl.append('<option value="">-- Seleccione --</option>');
+                $.each(data, function (i, c) {
+                    ddl.append($("<option>").val(c.ID).text(c.Texto));
+                });
+                winPromoverCurso.center().open();
+            });
+        });
+
+        // Confirmar promoción masiva
+        $("#btnConfirmarPromoverCurso").click(function () {
+            var cursoId = parseInt($("#pcCurso").val());
+            if (!cursoId) { showToast("info", "Seleccione un curso."); return; }
+            $.post(urlPromCurso, { anioEscolarId: anioEscolarId, cursoId: cursoId }).done(function (r) {
+                if (r.success) {
+                    winPromoverCurso.close();
+                    showToast("success", r.message);
+                    $("#gridPromocion").data("kendoGrid").dataSource.read();
+                } else {
+                    showToast("error", r.message);
+                }
+            });
+        });
+    });
+
+    function renderResultado(resultado, cancelada) {
+        var html;
+        if (resultado === "Promovido")
+            html = '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Promovido</span>';
+        else if (resultado === "No Promovido")
+            html = '<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>No Promovido</span>';
+        else
+            html = '<span class="badge bg-secondary">Pendiente</span>';
+
+        if (cancelada)
+            html += ' <span class="badge bg-warning text-dark" title="Bloqueado para el año siguiente">' +
+                    '<i class="bi bi-lock me-1"></i>Mat. Cancelada</span>';
+        return html;
+    }
+</script>
+}

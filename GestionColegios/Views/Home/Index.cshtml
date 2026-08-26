@@ -1,0 +1,252 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="home-page d-flex flex-grow-1">
+
+    <div class="home-brand d-none d-lg-flex flex-column align-items-center justify-content-center">
+        <img src="~/Content/Assets/master_perfil_con_texto_.png"
+             alt="GestiónEducacional"
+             class="home-logo mb-4">
+        <p class="home-tagline">Plataforma de gestión escolar<br>moderna y eficiente</p>
+        <div class="home-dots mt-3">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="brand-credit">
+            <img src="~/Content/Asset/logo_web_con_texto.png" alt="GestiónEducacional" class="brand-credit-logo">
+            <small class="brand-credit-text">
+                &copy; 2026 &middot; Desarrollado por
+                <a href="https://jdoconsultores.cl/" target="_blank">JDOConsultores</a>
+            </small>
+        </div>
+    </div>
+
+    <div class="home-right d-flex flex-column align-items-center justify-content-center flex-grow-1">
+        <div class="home-card text-center">
+
+            <div class="d-flex d-lg-none justify-content-center mb-4">
+                <img src="~/Content/Assets/master_perfil_con_texto_.png" alt="GestiónEducacional" style="max-width:180px">
+            </div>
+
+            <div class="home-badge mb-3">Software de Gestión Escolar</div>
+
+            <h1 class="home-title mb-2">Bienvenido a<br><span class="home-title-accent">GestiónEducacional</span></h1>
+            <p class="home-subtitle mb-5">Administra matrículas, alumnos, profesores<br>y documentos desde un solo lugar.</p>
+
+            <div class="home-features mb-5">
+                <div class="home-feature-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Gestión de Alumnos</span>
+                </div>
+                <div class="home-feature-item">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Matrículas</span>
+                </div>
+                <div class="home-feature-item">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Documentos</span>
+                </div>
+            </div>
+
+            <a href="@Url.Action("Login", "Account")" class="btn-home-login">
+                Iniciar sesión <i class="bi bi-arrow-right-short fs-5"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    html, body { margin: 0; }
+
+    .home-page { background: #f4f6fb; }
+
+    /* Panel izquierdo */
+    .home-brand {
+        width: 42%;
+        background: linear-gradient(145deg, #eafbe9 0%, #f5fbf0 55%, #fbeafc 100%);
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+        border-right: 1px solid #e6f3e2;
+    }
+
+    .home-brand::before {
+        content: '';
+        position: absolute;
+        width: 380px; height: 380px;
+        background: rgba(64, 191, 59, 0.12);
+        border-radius: 50%;
+        top: -100px; right: -100px;
+    }
+
+    .home-brand::after {
+        content: '';
+        position: absolute;
+        width: 280px; height: 280px;
+        background: rgba(241, 160, 242, 0.18);
+        border-radius: 50%;
+        bottom: -80px; left: -80px;
+    }
+
+    .home-logo {
+        max-width: 300px;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 4px 16px rgba(64, 191, 59, 0.18));
+    }
+
+    .home-tagline {
+        color: rgba(80,60,20,0.65);
+        text-align: center;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-dots span {
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: rgba(64, 191, 59, 0.35);
+        margin: 0 4px;
+    }
+    .home-dots span:nth-child(2) { background: #F1A0F2; width: 10px; height: 10px; }
+
+    /* Crédito al pie del panel izquierdo */
+    .brand-credit {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .brand-credit-logo {
+        height: 38px;
+        width: auto;
+        opacity: 0.9;
+    }
+
+    .brand-credit-text {
+        color: rgba(80,60,20,0.6);
+        font-size: 0.76rem;
+    }
+
+    .brand-credit-text a {
+        color: #2C8A29;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .brand-credit-text a:hover { text-decoration: underline; }
+
+    /* En escritorio el crédito vive en el panel izquierdo: ocultamos el footer global */
+    @@media (min-width: 992px) {
+        body > footer { display: none; }
+    }
+
+    /* Panel derecho */
+    .home-right {
+        background: #f4f6fb;
+        padding: 2rem;
+    }
+
+    .home-card {
+        max-width: 480px;
+        width: 100%;
+    }
+
+    .home-badge {
+        display: inline-block;
+        background: rgba(64, 191, 59, 0.14);
+        color: #2C8A29;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 20px;
+        border: 1px solid rgba(64, 191, 59, 0.28);
+    }
+
+    .home-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1.25;
+    }
+
+    .home-title-accent { color: #40BF3B; }
+
+    .home-subtitle {
+        color: #8a8fa8;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* Features */
+    .home-features {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .home-feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        background: #fff;
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        min-width: 110px;
+        font-size: 0.8rem;
+        color: #4a4f6a;
+        font-weight: 500;
+    }
+
+    .home-feature-item i {
+        font-size: 1.5rem;
+        color: #F29F05;
+    }
+
+    /* Botón */
+    .btn-home-login {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #40BF3B 0%, #329A2E 100%);
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 40px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 4px 16px rgba(64, 191, 59, 0.35);
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-home-login:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(64, 191, 59, 0.45);
+    }
+
+    @@media (max-width: 991.98px) {
+        html, body { overflow: auto; }
+        .home-card { padding: 1rem; }
+        .home-title { font-size: 1.6rem; }
+    }
+</style>
+

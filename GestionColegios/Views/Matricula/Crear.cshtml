@@ -1,0 +1,500 @@
+﻿@model GestionColegios.ViewModels.MatriculaFormViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.Matricula.ID > 0 ? "Editar Matrícula" : "Nueva Matrícula";
+    bool esEdicion = Model.Matricula.ID > 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>
+        <i class="bi bi-journal-bookmark-fill me-2"></i>
+        @(esEdicion ? "Editar Matrícula" : "Nueva Matrícula")
+    </h3>
+</div>
+
+<!-- Datos del alumno (solo lectura) -->
+<div class="alert @(Model.EsAlumnoNuevo ? "alert-success" : "alert-info") d-flex align-items-center gap-3 mb-3">
+    <i class="bi bi-person-circle fs-4"></i>
+    <div class="flex-grow-1">
+        <strong>@Model.AlumnoNombreCompleto</strong>
+        <span class="ms-3 text-muted">RUT: @Model.AlumnoRut</span>
+    </div>
+    @if (Model.EsAlumnoNuevo)
+    {
+        <span class="badge bg-success fs-6 px-3 py-2">
+            <i class="bi bi-star-fill me-1"></i>Alumno Nuevo
+        </span>
+    }
+    else
+    {
+        <span class="badge bg-primary fs-6 px-3 py-2">
+            <i class="bi bi-arrow-repeat me-1"></i>Alumno Antiguo
+        </span>
+    }
+</div>
+
+@using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Matricula",
+    new { id = esEdicion ? (object)Model.Matricula.ID : "" },
+    FormMethod.Post, new { id = "formMatricula" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Matricula.ID)
+    @Html.HiddenFor(m => m.Matricula.AlumnoID)
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Año Escolar <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(
+                             m => m.Matricula.AnioEscolarID,
+                             new SelectList(Model.AniosEscolares, "ID", "Texto", Model.Matricula.AnioEscolarID),
+                             "-- Seleccione --",
+                             new { @class = "form-select", id = "ddlAnioEscolar" })
+                    @Html.ValidationMessageFor(m => m.Matricula.AnioEscolarID, "",
+                             new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Curso <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(
+                             m => m.Matricula.CursoID,
+                             new SelectList(Model.Cursos, "ID", "Texto", Model.Matricula.CursoID),
+                             "-- Seleccione --",
+                             new { @class = "form-select", id = "ddlCurso" })
+                    @Html.ValidationMessageFor(m => m.Matricula.CursoID, "",
+                             new { @class = "text-danger small" })
+                    <div id="badgeCupos" class="mt-1"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Fecha Matrícula <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.Matricula.FechaMatricula,
+                             "{0:dd/MM/yyyy}",
+                             new { @class = "form-control", id = "dtpFechaMatricula" })
+                    @Html.ValidationMessageFor(m => m.Matricula.FechaMatricula, "",
+                             new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Estado <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(
+                             m => m.Matricula.EstadoMatriculaID,
+                             new SelectList(Model.EstadosMatricula, "ID", "Texto", Model.Matricula.EstadoMatriculaID),
+                             "-- Seleccione --",
+                             new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.Matricula.EstadoMatriculaID, "",
+                             new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">Observación</label>
+                    @Html.TextAreaFor(m => m.Matricula.Observacion,
+                             new { @class = "form-control", rows = "2" })
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-secondary" id="volverButton">
+                <i class="bi bi-arrow-left me-1"></i>VOLVER
+            </button>
+            <button type="button" class="btn btn-primary" id="guardarButton">
+                <i class="bi bi-save me-1"></i>GUARDAR
+            </button>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN DOCUMENTOS DE MATRÍCULA
+     ═══════════════════════════════════════════ -->
+<div class="card shadow-sm mt-3" id="cardDocumentos" style="display:none;">
+    <div class="card-header py-2 d-flex justify-content-between align-items-center">
+        <span class="fw-bold">
+            <i class="bi bi-folder2-open me-2 text-primary"></i>Documentos de Matrícula
+        </span>
+        <span id="badgeEstadoDocs"></span>
+    </div>
+    <div class="card-body p-0">
+
+        <!-- Alerta documentos faltantes -->
+        <div id="alertaDocsFaltantes" class="alert alert-warning rounded-0 mb-0 py-2 px-3 d-none">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Faltan documentos obligatorios:</strong>
+            <span id="txtDocsFaltantes"></span>
+            <br/><small class="text-muted">La matrícula quedará en estado <strong>Pre-matriculado</strong> hasta completarlos.</small>
+        </div>
+        <div id="alertaDocsCompletos" class="alert alert-success rounded-0 mb-0 py-2 px-3 d-none">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            Todos los documentos obligatorios están cargados. La matrícula quedará en estado <strong>Matriculado</strong>.
+        </div>
+
+        <div id="contenedorDocsMatricula" class="p-3">
+            <p class="text-muted text-center py-3 mb-0">
+                <i class="bi bi-calendar3 me-1"></i>Seleccione un año escolar para ver los documentos.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Ventana subir documento de matrícula -->
+<div id="windowSubirDoc" style="display:none;">
+    <div class="p-2">
+        <p class="mb-3">
+            Documento: <strong id="lblNombreDocSubir"></strong>
+            <span id="badgeObligatorioSubir" class="ms-2"></span>
+        </p>
+        <div class="mb-3">
+            <label class="form-label">Archivo <span class="text-danger">*</span></label>
+            <input type="file" id="fileDocSubir" class="form-control form-control-sm"
+                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+            <div class="form-text">PDF, imagen o Word. Máx. 10 MB.</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Observación</label>
+            <input type="text" id="txtObsDocSubir" class="form-control form-control-sm"
+                   placeholder="Opcional..." maxlength="300" />
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary btn-sm" id="btnConfirmarSubirDoc">
+                <i class="bi bi-upload me-1"></i>Subir Documento
+            </button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+    var alumnoId       = @Model.AlumnoID;
+    var matriculaId    = @Model.Matricula.ID;
+    var fichaAlumnoUrl = '@Url.Action("Ficha", "Alumnos", new { id = Model.AlumnoID })';
+    var esEdicion      = @(esEdicion ? "true" : "false");
+    var urlCursosCupos = '@Url.Action("CursosPorAnioConCupos", "Lookup")';
+
+    var urlGetEstadoDocs     = '@Url.Action("GetEstadoMatricula", "Documento")';
+    var urlVerificarObl      = '@Url.Action("VerificarObligatorios", "Documento")';
+    var urlSubirDocMatricula = '@Url.Action("SubirMatricula", "Documento")';
+    var urlEliminarDoc       = '@Url.Action("Eliminar", "Documento")';
+    var urlDescargarDoc      = '@Url.Action("Descargar", "Documento")';
+
+    var hdnTipoDocID    = 0;
+    var anioActualId    = 0;
+
+    $(document).ready(function () {
+
+        $("#dtpFechaMatricula").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            max: new Date()
+        });
+
+        // Curso previamente seleccionado (útil en edición)
+        var cursoIdSeleccionado = parseInt('@Model.Matricula.CursoID') || 0;
+
+        // Recargar cursos y documentos al cambiar año escolar
+        $("#ddlAnioEscolar").change(function () {
+            var anioId = parseInt($(this).val());
+            if (!anioId) {
+                $('#cardDocumentos').hide();
+                $('#badgeCupos').html('');
+                return;
+            }
+            anioActualId = anioId;
+
+            var cursoActual = parseInt($('#ddlCurso').val()) || cursoIdSeleccionado;
+
+            cargarCursosConCupos(anioId, cursoActual);
+            cargarDocumentosMatricula(anioId);
+        });
+
+        // Mostrar cupos al cambiar curso
+        $('#ddlCurso').change(function () {
+            actualizarBadgeCupos();
+        });
+
+        // Si ya hay año seleccionado (edición/nueva), cargar cursos y documentos al inicio
+        var anioInicial = parseInt($('#ddlAnioEscolar').val());
+        if (anioInicial) {
+            anioActualId = anioInicial;
+            cargarCursosConCupos(anioInicial, cursoIdSeleccionado);
+            cargarDocumentosMatricula(anioInicial);
+        }
+
+        // Volver
+        $('#volverButton').click(function () {
+            window.location.href = fichaAlumnoUrl;
+        });
+
+        // Guardar matrícula
+        $('#guardarButton').click(function () {
+            showLoading(true);
+            var formData = $('#formMatricula').serialize();
+            var url = esEdicion
+                ? '@Url.Action("Editar", "Matricula")'
+                : '@Url.Action("Crear",  "Matricula")';
+            $.ajax({
+                url: url, type: 'POST', data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast(response.enListaEspera ? 'warning' : 'success', response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        showToast('info', response.message);
+                        showLoading(false);
+                    }
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast('error', 'Ocurrió un error al procesar la solicitud.');
+                }
+            });
+        });
+
+        // ── Ventana subir documento ──────────────────────────────
+        var winSubir = $('#windowSubirDoc').kendoWindow({
+            title: 'Subir Documento', width: '480px',
+            modal: true, visible: false, actions: ['Close']
+        }).data('kendoWindow');
+
+        $(document).on('click', '.btn-subir-doc', function () {
+            hdnTipoDocID = $(this).data('tipoid');
+            var nombre   = $(this).data('nombre');
+            var obl      = $(this).data('obligatorio');
+            $('#lblNombreDocSubir').text(nombre);
+            $('#badgeObligatorioSubir').html(
+                obl ? '<span class="badge bg-danger">Obligatorio</span>'
+                    : '<span class="badge bg-secondary">Opcional</span>'
+            );
+            $('#fileDocSubir').val('');
+            $('#txtObsDocSubir').val('');
+            winSubir.center().open();
+        });
+
+        $('#btnConfirmarSubirDoc').click(function () {
+            if (!anioActualId) { showToast('info', 'Seleccione un año escolar primero.'); return; }
+            var file = $('#fileDocSubir')[0].files[0];
+            if (!file)        { showToast('info', 'Debe seleccionar un archivo.'); return; }
+
+            var fd = new FormData();
+            fd.append('AlumnoID',        alumnoId);
+            fd.append('TipoDocumentoID', hdnTipoDocID);
+            fd.append('AnioEscolarID',   anioActualId);
+            fd.append('Observacion',     $('#txtObsDocSubir').val());
+            fd.append('Archivo',         file);
+
+            showLoading(true);
+            $.ajax({
+                url: urlSubirDocMatricula, type: 'POST',
+                data: fd, processData: false, contentType: false,
+                success: function (r) {
+                    showLoading(false);
+                    if (r.success) {
+                        winSubir.close();
+                        showToast('success', r.message);
+                        cargarDocumentosMatricula(anioActualId);
+                    } else {
+                        showToast('error', r.message);
+                    }
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast('error', 'Error al subir el documento.');
+                }
+            });
+        });
+
+        // Eliminar documento
+        $(document).on('click', '.btn-eliminar-doc-mat', function () {
+            var docId = $(this).data('id');
+            showConfirm({
+                tipo: 'danger',
+                titulo: 'Eliminar documento',
+                mensaje: '¿Confirma que desea eliminar este documento?',
+                onOk: function () {
+                    $.post(urlEliminarDoc, { documentoId: docId }).done(function (r) {
+                        if (r.success) {
+                            showToast('success', 'Documento eliminado.');
+                            cargarDocumentosMatricula(anioActualId);
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    // ── Cupos disponibles ────────────────────────────────────────
+    var cursosData = [];
+
+    function cargarCursosConCupos(anioId, cursoSeleccionado) {
+        $.getJSON(urlCursosCupos, { anioEscolarId: anioId, matriculaId: matriculaId || 0 }, function (data) {
+            cursosData = data;
+            var ddl = $('#ddlCurso');
+            ddl.empty().append('<option value="">-- Seleccione --</option>');
+            $.each(data, function (i, c) {
+                var label = c.Texto;
+                if (c.Capacidad) {
+                    label += ' (' + c.Disponibles + '/' + c.Capacidad + ' cupos)';
+                }
+                ddl.append($('<option>').val(c.ID).text(label));
+            });
+            if (cursoSeleccionado && ddl.find('option[value="' + cursoSeleccionado + '"]').length) {
+                ddl.val(cursoSeleccionado);
+            }
+            actualizarBadgeCupos();
+        });
+    }
+
+    function actualizarBadgeCupos() {
+        var cursoId = parseInt($('#ddlCurso').val());
+        var badge   = $('#badgeCupos');
+        if (!cursoId) { badge.html(''); return; }
+
+        var curso = $.grep(cursosData, function (c) { return c.ID === cursoId; })[0];
+        if (!curso || !curso.Capacidad) { badge.html(''); return; }
+
+        var disp = curso.Disponibles;
+        var cls  = disp > 5  ? 'bg-success' :
+                   disp > 0  ? 'bg-warning text-dark' : 'bg-danger';
+        var icono = disp > 0 ? 'bi-people' : 'bi-person-x';
+        var txt   = disp > 0
+            ? disp + ' cupo(s) disponible(s) de ' + curso.Capacidad
+            : 'Sin cupos disponibles (' + curso.Matriculados + '/' + curso.Capacidad + ') · Quedará en LISTA DE ESPERA';
+
+        badge.html('<span class="badge ' + cls + '"><i class="bi ' + icono + ' me-1"></i>' + txt + '</span>');
+    }
+
+    // ── Función principal: carga y renderiza documentos ─────────
+    function cargarDocumentosMatricula(anioId) {
+        $('#cardDocumentos').show();
+        $('#contenedorDocsMatricula').html(
+            '<p class="text-muted text-center py-3 mb-0">' +
+            '<i class="bi bi-hourglass-split me-1"></i>Cargando documentos...</p>');
+        $('#alertaDocsFaltantes').addClass('d-none');
+        $('#alertaDocsCompletos').addClass('d-none');
+
+        $.getJSON(urlGetEstadoDocs, { alumnoId: alumnoId, anioEscolarId: anioId }, function (data) {
+
+            // Verificar obligatorios para mostrar alerta
+            $.getJSON(urlVerificarObl, { alumnoId: alumnoId, anioEscolarId: anioId }, function (ver) {
+                if (ver.TodosObligatoriosCargados) {
+                    $('#alertaDocsCompletos').removeClass('d-none');
+                    $('#alertaDocsFaltantes').addClass('d-none');
+                    $('#badgeEstadoDocs').html('<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Documentos completos</span>');
+                } else {
+                    $('#alertaDocsCompletos').addClass('d-none');
+                    $('#alertaDocsFaltantes').removeClass('d-none');
+                    $('#txtDocsFaltantes').text(' ' + ver.FaltanDocumentos.join(', '));
+                    $('#badgeEstadoDocs').html('<span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>' + ver.FaltanDocumentos.length + ' pendiente(s)</span>');
+                }
+            });
+
+            if (!data || !data.length) {
+                    $('#contenedorDocsMatricula').html(
+                        '<p class="text-muted text-center py-3 mb-0">No hay tipos de documento configurados.</p>');
+                    return;
+                }
+
+                // El servidor devuelve los datos ya ordenados por OrdenImportancia.
+                // Agrupar en 4 bloques de importancia.
+                var gruposImp = {
+                    1: { titulo: 'Obligatorios pendientes',  icon: 'bi-exclamation-circle-fill', cls: 'text-danger',    filaClass: 'table-danger'  },
+                    2: { titulo: 'Obligatorios cargados',    icon: 'bi-check-circle-fill',        cls: 'text-success',   filaClass: ''              },
+                    3: { titulo: 'Opcionales pendientes',    icon: 'bi-dash-circle',              cls: 'text-warning',   filaClass: 'table-warning' },
+                    4: { titulo: 'Opcionales cargados',      icon: 'bi-check-circle',             cls: 'text-secondary', filaClass: ''              }
+                };
+                var catLabels = { 'Reglamentario': 'Reglamentario', 'Autorizacion': 'Autorización', 'Interno': 'Interno' };
+
+                var grupos = { 1: [], 2: [], 3: [], 4: [] };
+                $.each(data, function (i, d) {
+                    var k = d.OrdenImportancia || 4;
+                    if (!grupos[k]) grupos[k] = [];
+                    grupos[k].push(d);
+                });
+
+                var html = '';
+                $.each([1, 2, 3, 4], function (_, imp) {
+                    var docs = grupos[imp];
+                    if (!docs || !docs.length) return;
+                    var g = gruposImp[imp];
+
+                    html += '<div class="mb-3">';
+                    html += '<p class="fw-bold small mb-2 d-flex align-items-center gap-1 ' + g.cls + '">' +
+                            '<i class="bi ' + g.icon + '"></i>' + g.titulo +
+                            ' <span class="badge rounded-pill bg-light border text-dark fw-normal ms-1">' + docs.length + '</span>' +
+                            '</p>';
+                    html += '<div class="table-responsive">';
+                    html += '<table class="table table-sm table-hover align-middle mb-0">';
+                    html += '<thead class="table-light"><tr>' +
+                            '<th>Documento</th>' +
+                            '<th style="width:105px" class="text-center">Categoría</th>' +
+                            '<th style="width:120px">Archivo</th>' +
+                            '<th style="width:100px">Fecha carga</th>' +
+                            '<th style="width:120px" class="text-center">Acciones</th>' +
+                            '</tr></thead><tbody>';
+
+                    $.each(docs, function (j, doc) {
+                        var catLabel = catLabels[doc.Categoria] || (doc.Categoria || '—');
+                        var badgeCat = doc.Obligatorio
+                            ? '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle small">' + catLabel + '</span>'
+                            : '<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle small">' + catLabel + '</span>';
+
+                        var badgeEst = doc.Cargado
+                            ? '<i class="bi bi-check-circle-fill text-success" title="Cargado"></i>'
+                            : '<i class="bi bi-clock-fill text-warning" title="Pendiente"></i>';
+
+                        var archivo = doc.NombreArchivo
+                            ? '<span class="text-truncate d-inline-block small" style="max-width:110px" title="' + doc.NombreArchivo + '">' +
+                              '<i class="bi bi-file-earmark me-1 text-muted"></i>' + doc.NombreArchivo + '</span>'
+                            : '<span class="text-muted small">—</span>';
+                        var fecha = doc.FechaCarga ? formatFechaJson(doc.FechaCarga) : '—';
+
+                        var acciones = '<button class="btn btn-sm ' +
+                                (!doc.Cargado ? 'btn-primary' : 'btn-outline-primary') +
+                                ' btn-subir-doc" ' +
+                                'data-tipoid="' + doc.TipoDocumentoID + '" ' +
+                                'data-nombre="' + doc.Nombre + '" ' +
+                                'data-obligatorio="' + (doc.Obligatorio ? 1 : 0) + '" ' +
+                                'title="' + (doc.Cargado ? 'Reemplazar' : 'Subir documento') + '">' +
+                                '<i class="bi bi-upload"></i>' +
+                                (!doc.Cargado ? ' <span class="small">Subir</span>' : '') +
+                                '</button>';
+                        if (doc.Cargado) {
+                            acciones += ' <a href="' + urlDescargarDoc + '/' + doc.DocumentoAlumnoID + '" target="_blank" ' +
+                                    'class="btn btn-outline-secondary btn-sm" title="Descargar">' +
+                                    '<i class="bi bi-download"></i></a>' +
+                                    ' <button class="btn btn-outline-danger btn-sm btn-eliminar-doc-mat" ' +
+                                    'data-id="' + doc.DocumentoAlumnoID + '" title="Eliminar">' +
+                                    '<i class="bi bi-trash"></i></button>';
+                        }
+
+                        html += '<tr class="' + g.filaClass + '">' +
+                                '<td class="small fw-semibold">' + badgeEst + ' ' + doc.Nombre + '</td>' +
+                                '<td class="text-center">' + badgeCat + '</td>' +
+                                '<td>' + archivo + '</td>' +
+                                '<td class="small">' + fecha + '</td>' +
+                                '<td class="text-center">' + acciones + '</td>' +
+                                '</tr>';
+                    });
+
+                    html += '</tbody></table></div></div>';
+                });
+
+            $('#contenedorDocsMatricula').html(html);
+        }).fail(function () {
+            $('#contenedorDocsMatricula').html(
+                '<p class="text-danger text-center py-3 mb-0">' +
+                '<i class="bi bi-exclamation-triangle me-1"></i>Error al cargar documentos.</p>');
+        });
+    }
+
+    function formatFechaJson(val) {
+        if (!val) return '—';
+        var ts = parseInt(val.replace('/Date(', '').replace(')/', ''));
+        if (isNaN(ts)) return val;
+        var d = new Date(ts);
+        return ('0' + d.getDate()).slice(-2) + '/' +
+               ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+    }
+    </script>
+}

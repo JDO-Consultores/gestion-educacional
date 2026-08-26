@@ -1,0 +1,429 @@
+@model GestionColegios.ViewModels.EstablecimientoViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Certificados";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-award me-2"></i>Configuración de Certificados</h2>
+</div>
+
+<ul class="nav nav-tabs mb-3" id="tabsCert" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-est-btn" data-bs-toggle="tab" data-bs-target="#tab-est" type="button">
+            <i class="bi bi-building me-1"></i>Establecimiento
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-plant-btn" data-bs-toggle="tab" data-bs-target="#tab-plant" type="button">
+            <i class="bi bi-file-earmark-word me-1"></i>Plantillas
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-firm-btn" data-bs-toggle="tab" data-bs-target="#tab-firm" type="button">
+            <i class="bi bi-pen me-1"></i>Firmantes
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- ?? ESTABLECIMIENTO ?? -->
+    <div class="tab-pane fade show active" id="tab-est" role="tabpanel">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <form id="formEst">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="estID" value="@Model.ID" />
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label small fw-semibold">Nombre del Establecimiento</label>
+                                    <input type="text" id="estNombre" class="form-control form-control-sm" value="@Model.Nombre" maxlength="150" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-semibold">RBD</label>
+                                    <input type="text" id="estRBD" class="form-control form-control-sm" value="@Model.RBD" maxlength="10" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Direcci&oacute;n</label>
+                                    <input type="text" id="estDireccion" class="form-control form-control-sm" value="@Model.Direccion" maxlength="200" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-semibold">Regi&oacute;n</label>
+                                    <select id="estRegion" class="form-select form-select-sm">
+                                        <option value="">-- Seleccione --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-semibold">Comuna</label>
+                                    <select id="estComuna" class="form-select form-select-sm">
+                                        <option value="">-- Seleccione --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-semibold">Teléfono(s)</label>
+                                    <input type="text" id="estTelefono" class="form-control form-control-sm" value="@Model.Telefono" maxlength="20" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-semibold">Correo electrónico</label>
+                                    <input type="text" id="estEmail" class="form-control form-control-sm" value="@Model.Email" maxlength="100" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-semibold">Sitio web</label>
+                                    <input type="text" id="estWeb" class="form-control form-control-sm" value="@Model.SitioWeb" maxlength="200" />
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-primary btn-sm" id="btnGuardarEst">
+                                    <i class="bi bi-save me-1"></i>Guardar Datos
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 border-start">
+                        <label class="form-label small fw-semibold d-block">Logo del establecimiento</label>
+                        <div class="text-center mb-2">
+                            <img id="imgLogo" src="@Url.Action("Logo","CertificadoAdmin")?t=@DateTime.Now.Ticks"
+                                 alt="Logo" class="img-fluid border rounded p-2 bg-white"
+                                 style="max-height:140px;@(Model.TieneLogo ? "" : "display:none;")" />
+                            <div id="logoVacio" class="text-muted small py-4 @(Model.TieneLogo ? "d-none" : "")">
+                                <i class="bi bi-image fs-1 d-block"></i>Sin logo cargado
+                            </div>
+                        </div>
+                        <input type="file" id="fileLogo" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" />
+                        <div class="form-text">PNG o JPG. Se usa en el membrete de los certificados.</div>
+                        <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-2" id="btnSubirLogo">
+                            <i class="bi bi-upload me-1"></i>Actualizar Logo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ?? PLANTILLAS ?? -->
+    <div class="tab-pane fade" id="tab-plant" role="tabpanel">
+        <div class="alert alert-info py-2 small">
+            <i class="bi bi-info-circle me-1"></i>
+            Suba el archivo Word (<strong>.docx</strong>) de cada certificado con los <strong>tags</strong>
+            (ej. <code>{{ALUMNO_NOMBRE}}</code>, <code>{{COLEGIO_NOMBRE}}</code>, <code>{{FIRMANTE_NOMBRE}}</code>).
+            El logo del membrete se reemplaza automáticamente.
+        </div>
+        <div id="tablaPlantillas"></div>
+    </div>
+
+    <!-- ?? FIRMANTES ?? -->
+    <div class="tab-pane fade" id="tab-firm" role="tabpanel">
+        <div class="d-flex justify-content-end mb-2">
+            <button class="btn btn-outline-primary btn-sm" id="btnNuevoFirmante">
+                <i class="bi bi-plus me-1"></i>Nuevo Firmante
+            </button>
+        </div>
+        <div id="tablaFirmantes"></div>
+    </div>
+
+</div>
+
+<!-- Ventana subir plantilla -->
+<div id="winSubirPlantilla" style="display:none;">
+    <div class="p-2">
+        <input type="hidden" id="plantillaIdSubir" />
+        <div class="mb-2">
+            <label class="form-label small">Certificado: <strong id="lblPlantillaNombre"></strong></label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">Archivo Word (.docx) <span class="text-danger">*</span></label>
+            <input type="file" id="filePlantilla" class="form-control form-control-sm" accept=".docx" />
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary btn-sm" id="btnConfirmarSubirPlantilla">
+                <i class="bi bi-upload me-1"></i>Subir Plantilla
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Ventana firmante -->
+<div id="winFirmante" style="display:none;">
+    <div class="p-2">
+        <input type="hidden" id="firmanteId" />
+        <div class="mb-2">
+            <label class="form-label small fw-semibold">Nombre <span class="text-danger">*</span></label>
+            <input type="text" id="firmanteNombre" class="form-control form-control-sm" maxlength="200" />
+        </div>
+        <div class="mb-2">
+            <label class="form-label small fw-semibold">Cargo <span class="text-danger">*</span></label>
+            <input type="text" id="firmanteCargo" class="form-control form-control-sm" maxlength="200" />
+        </div>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="firmanteActivo" checked />
+            <label class="form-check-label small" for="firmanteActivo">Activo</label>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary btn-sm" id="btnGuardarFirmante">
+                <i class="bi bi-save me-1"></i>Guardar
+            </button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+<script>
+var urlGuardarEst    = '@Url.Action("GuardarEstablecimiento","CertificadoAdmin")';
+var urlSubirLogo     = '@Url.Action("SubirLogo","CertificadoAdmin")';
+var urlLogo          = '@Url.Action("Logo","CertificadoAdmin")';
+var urlGetPlantillas = '@Url.Action("GetPlantillas","CertificadoAdmin")';
+var urlSubirPlant    = '@Url.Action("SubirPlantilla","CertificadoAdmin")';
+var urlDescargarPlant= '@Url.Action("DescargarPlantilla","CertificadoAdmin")';
+var urlSetFirmDef    = '@Url.Action("SetFirmanteDefecto","CertificadoAdmin")';
+var urlSetPlantAct   = '@Url.Action("SetPlantillaActiva","CertificadoAdmin")';
+var urlGetFirmantes  = '@Url.Action("GetFirmantes","CertificadoAdmin")';
+var urlGuardarFirm   = '@Url.Action("GuardarFirmante","CertificadoAdmin")';
+var urlEliminarFirm  = '@Url.Action("EliminarFirmante","CertificadoAdmin")';
+var antiForgery      = $('#formEst input[name="__RequestVerificationToken"]').val();
+
+var firmantesCache = [];
+
+// ?? Region / Comuna en cascada (datos del establecimiento) ??
+var urlRegiones      = '@Url.Action("Regiones","Lookup")';
+var urlComunasRegion = '@Url.Action("ComunasPorRegion","Lookup")';
+var estRegionActual  = '@(Model.RegionID.HasValue ? Model.RegionID.Value.ToString() : "")';
+var estComunaActual  = '@(Model.ComunaID.HasValue ? Model.ComunaID.Value.ToString() : "")';
+
+function cargarComunasEst(regionId, comunaId) {
+    var ddl = $('#estComuna');
+    ddl.empty().append('<option value="">-- Seleccione --</option>');
+    if (!regionId) return;
+    $.getJSON(urlComunasRegion, { regionId: regionId }, function (data) {
+        $.each(data, function (i, item) { ddl.append($('<option>').val(item.ID).text(item.Texto)); });
+        if (comunaId) ddl.val(comunaId);
+    });
+}
+
+$.getJSON(urlRegiones, function (data) {
+    var ddl = $('#estRegion');
+    $.each(data, function (i, item) { ddl.append($('<option>').val(item.ID).text(item.Texto)); });
+    if (estRegionActual) { ddl.val(estRegionActual); cargarComunasEst(estRegionActual, estComunaActual); }
+});
+
+$('#estRegion').change(function () { cargarComunasEst($(this).val() || null, null); });
+
+// ?? ESTABLECIMIENTO ??
+$('#btnGuardarEst').click(function () {
+    showLoading(true);
+    $.post(urlGuardarEst, {
+        __RequestVerificationToken: antiForgery,
+        ID:        $('#estID').val(),
+        Nombre:    $('#estNombre').val(),
+        RBD:       $('#estRBD').val(),
+        Direccion: $('#estDireccion').val(),
+        RegionID:  $('#estRegion').val() || null,
+        ComunaID:  $('#estComuna').val() || null,
+        Telefono:  $('#estTelefono').val(),
+        Email:     $('#estEmail').val(),
+        SitioWeb:  $('#estWeb').val()
+    }).done(function (r) {
+        showLoading(false);
+        showToast(r.success ? 'success' : 'error', r.message);
+    }).fail(function (xhr) {
+        showLoading(false);
+        var msg = 'Error al guardar.';
+        if (xhr && xhr.responseJSON && xhr.responseJSON.message) { msg = xhr.responseJSON.message; }
+        else if (xhr && xhr.status) { msg = 'Error al guardar (' + xhr.status + ').'; }
+        showToast('error', msg);
+    });
+});
+
+$('#btnSubirLogo').click(function () {
+    var file = $('#fileLogo')[0].files[0];
+    if (!file) { showToast('info', 'Seleccione una imagen.'); return; }
+    var fd = new FormData();
+    fd.append('Logo', file);
+    showLoading(true);
+    $.ajax({
+        url: urlSubirLogo, type: 'POST', data: fd, processData: false, contentType: false,
+        success: function (r) {
+            showLoading(false);
+            showToast(r.success ? 'success' : 'error', r.message);
+            if (r.success) {
+                $('#imgLogo').attr('src', urlLogo + '?t=' + new Date().getTime()).show();
+                $('#logoVacio').addClass('d-none');
+            }
+        },
+        error: function () { showLoading(false); showToast('error', 'Error al subir el logo.'); }
+    });
+});
+
+// ?? PLANTILLAS ??
+function cargarPlantillas() {
+    $.getJSON(urlGetPlantillas, function (data) {
+        var opcFirmantes = '<option value="">— Sin firmante —</option>';
+        firmantesCache.forEach(function (f) {
+            opcFirmantes += '<option value="' + f.ID + '">' + f.Nombre + ' — ' + f.Cargo + '</option>';
+        });
+
+        var html = '<div class="table-responsive"><table class="table table-sm align-middle">' +
+            '<thead class="table-light"><tr>' +
+            '<th>Certificado</th><th>Archivo</th><th style="width:230px;">Firmante por defecto</th>' +
+            '<th class="text-center" style="width:90px;">Activo</th>' +
+            '<th class="text-center" style="width:140px;">Acciones</th></tr></thead><tbody>';
+
+        if (!data || !data.length) {
+            html += '<tr><td colspan="5" class="text-center text-muted py-3">No hay plantillas configuradas.</td></tr>';
+        } else {
+            data.forEach(function (p) {
+                var estadoArchivo = p.TienePlantilla
+                    ? '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>' + (p.NombreArchivo || 'Cargada') + '</span>'
+                    : '<span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Sin archivo</span>';
+
+                var sel = '<select class="form-select form-select-sm sel-firmante" data-id="' + p.ID + '">' + opcFirmantes + '</select>';
+
+                var btnDescargar = p.TienePlantilla
+                    ? '<a class="btn btn-outline-success btn-sm me-1" href="' + urlDescargarPlant + '?plantillaId=' + p.ID + '" title="Descargar Word actual"><i class="bi bi-download"></i></a>'
+                    : '';
+
+                html += '<tr>' +
+                    '<td><div class="fw-semibold small">' + p.Nombre + '</div><div class="text-muted" style="font-size:.75rem;">' + (p.Descripcion || '') + '</div></td>' +
+                    '<td class="small">' + estadoArchivo + '</td>' +
+                    '<td>' + sel + '</td>' +
+                    '<td class="text-center"><div class="form-check form-switch d-inline-block"><input class="form-check-input chk-activa" type="checkbox" data-id="' + p.ID + '" ' + (p.IsActive ? 'checked' : '') + '></div></td>' +
+                    '<td class="text-center">' + btnDescargar + '<button class="btn btn-outline-primary btn-sm btn-subir-plant" data-id="' + p.ID + '" data-nombre="' + p.Nombre + '" title="Subir/Reemplazar Word"><i class="bi bi-upload"></i></button></td>' +
+                    '</tr>';
+            });
+        }
+        html += '</tbody></table></div>';
+        $('#tablaPlantillas').html(html);
+
+        // Setear firmante seleccionado por fila
+        data.forEach(function (p) {
+            $('.sel-firmante[data-id="' + p.ID + '"]').val(p.FirmanteDefectoID || '');
+        });
+    });
+}
+
+$(document).on('change', '.sel-firmante', function () {
+    var plantillaId = $(this).data('id');
+    var firmanteId = $(this).val() || null;
+    $.post(urlSetFirmDef, { __RequestVerificationToken: antiForgery, plantillaId: plantillaId, firmanteId: firmanteId })
+        .done(function (r) { showToast(r.success ? 'success' : 'error', r.success ? 'Firmante por defecto actualizado.' : 'No se pudo actualizar.'); });
+});
+
+$(document).on('change', '.chk-activa', function () {
+    var plantillaId = $(this).data('id');
+    var activa = $(this).is(':checked');
+    $.post(urlSetPlantAct, { __RequestVerificationToken: antiForgery, plantillaId: plantillaId, activa: activa })
+        .done(function (r) { showToast(r.success ? 'success' : 'error', r.success ? 'Estado actualizado.' : 'No se pudo actualizar.'); });
+});
+
+var winPlant = $('#winSubirPlantilla').kendoWindow({
+    title: 'Subir Plantilla Word', width: '460px', modal: true, visible: false, actions: ['Close']
+}).data('kendoWindow');
+
+$(document).on('click', '.btn-subir-plant', function () {
+    $('#plantillaIdSubir').val($(this).data('id'));
+    $('#lblPlantillaNombre').text($(this).data('nombre'));
+    $('#filePlantilla').val('');
+    winPlant.center().open();
+});
+
+$('#btnConfirmarSubirPlantilla').click(function () {
+    var file = $('#filePlantilla')[0].files[0];
+    if (!file) { showToast('info', 'Seleccione un archivo .docx.'); return; }
+    var fd = new FormData();
+    fd.append('plantillaId', $('#plantillaIdSubir').val());
+    fd.append('Archivo', file);
+    showLoading(true);
+    $.ajax({
+        url: urlSubirPlant, type: 'POST', data: fd, processData: false, contentType: false,
+        success: function (r) {
+            showLoading(false);
+            showToast(r.success ? 'success' : 'error', r.message);
+            if (r.success) { winPlant.close(); cargarPlantillas(); }
+        },
+        error: function () { showLoading(false); showToast('error', 'Error al subir la plantilla.'); }
+    });
+});
+
+// ?? FIRMANTES ??
+function cargarFirmantes(callback) {
+    $.getJSON(urlGetFirmantes, function (data) {
+        firmantesCache = (data || []).filter(function (f) { return f.IsActive; });
+
+        var html = '<div class="table-responsive"><table class="table table-sm align-middle">' +
+            '<thead class="table-light"><tr><th>Nombre</th><th>Cargo</th>' +
+            '<th class="text-center" style="width:90px;">Activo</th>' +
+            '<th class="text-center" style="width:120px;">Acciones</th></tr></thead><tbody>';
+
+        if (!data || !data.length) {
+            html += '<tr><td colspan="4" class="text-center text-muted py-3">No hay firmantes registrados.</td></tr>';
+        } else {
+            data.forEach(function (f) {
+                var badge = f.IsActive ? '<span class="badge bg-success">Sí</span>' : '<span class="badge bg-secondary">No</span>';
+                html += '<tr>' +
+                    '<td class="small fw-semibold">' + f.Nombre + '</td>' +
+                    '<td class="small">' + f.Cargo + '</td>' +
+                    '<td class="text-center">' + badge + '</td>' +
+                    '<td class="text-center">' +
+                    '<button class="btn btn-outline-secondary btn-sm me-1 btn-editar-firm" data-id="' + f.ID + '" data-nombre="' + f.Nombre + '" data-cargo="' + f.Cargo + '" data-activo="' + f.IsActive + '"><i class="bi bi-pencil"></i></button>' +
+                    (f.IsActive ? '<button class="btn btn-outline-danger btn-sm btn-eliminar-firm" data-id="' + f.ID + '"><i class="bi bi-trash"></i></button>' : '') +
+                    '</td></tr>';
+            });
+        }
+        html += '</tbody></table></div>';
+        $('#tablaFirmantes').html(html);
+        if (callback) callback();
+    });
+}
+
+var winFirm = $('#winFirmante').kendoWindow({
+    title: 'Firmante', width: '420px', modal: true, visible: false, actions: ['Close']
+}).data('kendoWindow');
+
+$('#btnNuevoFirmante').click(function () {
+    $('#firmanteId').val('');
+    $('#firmanteNombre').val('');
+    $('#firmanteCargo').val('');
+    $('#firmanteActivo').prop('checked', true);
+    winFirm.center().open();
+});
+
+$(document).on('click', '.btn-editar-firm', function () {
+    $('#firmanteId').val($(this).data('id'));
+    $('#firmanteNombre').val($(this).data('nombre'));
+    $('#firmanteCargo').val($(this).data('cargo'));
+    $('#firmanteActivo').prop('checked', $(this).data('activo') === true || $(this).data('activo') === 'True');
+    winFirm.center().open();
+});
+
+$('#btnGuardarFirmante').click(function () {
+    var nombre = $('#firmanteNombre').val().trim();
+    var cargo  = $('#firmanteCargo').val().trim();
+    if (!nombre || !cargo) { showToast('info', 'Nombre y cargo son obligatorios.'); return; }
+    showLoading(true);
+    $.post(urlGuardarFirm, {
+        __RequestVerificationToken: antiForgery,
+        ID: $('#firmanteId').val() || 0,
+        Nombre: nombre, Cargo: cargo, IsActive: $('#firmanteActivo').is(':checked')
+    }).done(function (r) {
+        showLoading(false);
+        showToast(r.success ? 'success' : 'error', r.message);
+        if (r.success) { winFirm.close(); cargarFirmantes(cargarPlantillas); }
+    }).fail(function () { showLoading(false); showToast('error', 'Error al guardar.'); });
+});
+
+$(document).on('click', '.btn-eliminar-firm', function () {
+    var id = $(this).data('id');
+    if (!confirm('¿Desactivar este firmante?')) return;
+    $.post(urlEliminarFirm, { __RequestVerificationToken: antiForgery, firmanteId: id })
+        .done(function (r) {
+            showToast(r.success ? 'success' : 'error', r.success ? 'Firmante desactivado.' : 'No se pudo desactivar.');
+            if (r.success) cargarFirmantes(cargarPlantillas);
+        });
+});
+
+// Inicio: cargar firmantes y luego plantillas (las plantillas usan el cache de firmantes).
+cargarFirmantes(cargarPlantillas);
+</script>
+}

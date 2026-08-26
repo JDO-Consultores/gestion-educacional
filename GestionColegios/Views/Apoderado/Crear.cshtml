@@ -1,0 +1,272 @@
+@model GestionColegios.ViewModels.ApoderadoFormViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esEdicion = Model.Apoderado.ID > 0;
+    ViewBag.Title = esEdicion ? "Editar Apoderado" : "Registrar Apoderado";
+}
+<style>
+    .form-section { border-left: 4px solid transparent; border-radius: .45rem; padding: .9rem 1.1rem .7rem; background: #fafafa; margin-bottom: .9rem; }
+    .form-section.sec-id      { border-left-color: #0d6efd; }
+    .form-section.sec-laboral { border-left-color: #F29F05; }
+    .form-section.sec-contact { border-left-color: #40BF3B; }
+    .form-section.sec-vinculo { border-left-color: #6f42c1; }
+    .form-section .sec-title  { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#495057; margin-bottom:.65rem; display:flex; align-items:center; gap:.35rem; }
+    .form-label { font-size:.85rem; font-weight:500; margin-bottom:.2rem; }
+    .req { color:#dc3545; margin-left:2px; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>
+        <i class="bi bi-person-lines-fill me-2"></i>
+        @(esEdicion ? "Editar Apoderado" : "Registrar Apoderado")
+    </h3>
+</div>
+
+<div class="alert alert-info d-flex align-items-center gap-3 mb-3 py-2">
+    <i class="bi bi-person-circle fs-5"></i>
+    <div>
+        <strong>@Model.AlumnoNombreCompleto</strong>
+        <span class="ms-3 text-muted small">RUT: @Model.AlumnoRut</span>
+    </div>
+</div>
+
+@using (Html.BeginForm(esEdicion ? "Editar" : "Crear", "Apoderado", FormMethod.Post, new { id = "formApoderado" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.AlumnoID)
+    @Html.HiddenFor(m => m.Apoderado.ID)
+
+    if (!esEdicion)
+    {
+        <div class="alert alert-light border mb-3 py-2">
+            <span class="small text-muted"><i class="bi bi-search me-1"></i>Si el apoderado ya existe, ingrese su RUT para pre-llenar los datos:</span>
+            <div class="d-flex gap-2 mt-2">
+                <input type="text" id="txtBuscarRut" class="form-control form-control-sm" style="max-width:180px" placeholder="12.345.678-9" />
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnBuscarApoderado">
+                    <i class="bi bi-search me-1"></i>Buscar
+                </button>
+                <span id="buscarFeedback" class="small align-self-center text-muted"></span>
+            </div>
+        </div>
+    }
+
+    <div class="form-section sec-id">
+        <p class="sec-title"><i class="bi bi-person-vcard-fill"></i> Datos del Apoderado/a</p>
+        <div class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label">RUT <span class="req">*</span></label>
+                @Html.TextBoxFor(m => m.Apoderado.Rut, new { @class = "form-control", id = "txtRutApoderado", placeholder = "12.345.678-9", autocomplete = "off" })
+                <div id="rutApoFeedback" class="small mt-1"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Apellido Paterno <span class="req">*</span></label>
+                @Html.TextBoxFor(m => m.Apoderado.ApellidoPaterno, new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Apellido Materno</label>
+                @Html.TextBoxFor(m => m.Apoderado.ApellidoMaterno, new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Nombres <span class="req">*</span></label>
+                @Html.TextBoxFor(m => m.Apoderado.Nombres, new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Nacionalidad</label>
+                @Html.DropDownListFor(m => m.Apoderado.NacionalidadID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select", id = "ddlNacionalidadApo" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section sec-laboral">
+        <p class="sec-title"><i class="bi bi-briefcase-fill"></i> Datos educacionales y laborales</p>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Nivel Educacional</label>
+                @Html.DropDownListFor(m => m.Apoderado.NivelEducacionalID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select", id = "ddlNivelEduc" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Situacion Laboral</label>
+                @Html.DropDownListFor(m => m.Apoderado.SituacionLaboralID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select", id = "ddlSitLaboral" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Lugar de Trabajo</label>
+                @Html.TextBoxFor(m => m.Apoderado.LugarTrabajo, new { @class = "form-control", placeholder = "Empresa / institucion" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section sec-contact">
+        <p class="sec-title"><i class="bi bi-geo-alt-fill"></i> Datos de contacto</p>
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">Direccion</label>
+                @Html.TextBoxFor(m => m.Apoderado.Direccion, new { @class = "form-control", placeholder = "Calle / numero / villa" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Region</label>
+                <select id="ddlRegionApo" class="form-select">
+                    <option value="">-- Seleccione --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Comuna</label>
+                @Html.DropDownListFor(m => m.Apoderado.ComunaID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select", id = "ddlComunaApo" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Telefono Fijo</label>
+                @Html.TextBoxFor(m => m.Apoderado.Telefono, new { @class = "form-control", placeholder = "+56 2 XXXX XXXX" })
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Celular de Respaldo</label>
+                @Html.TextBoxFor(m => m.Apoderado.TelefonoCelular, new { @class = "form-control", placeholder = "+56 9 XXXX XXXX" })
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Correo Electronico</label>
+                @Html.TextBoxFor(m => m.Apoderado.Email, new { @class = "form-control", type = "email", placeholder = "correo@dominio.cl" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section sec-vinculo">
+        <p class="sec-title"><i class="bi bi-link-45deg"></i> Vínculo con el alumno/a</p>
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <label class="form-label">Parentesco <span class="req">*</span></label>
+                @Html.DropDownListFor(m => m.ParentescoID,
+                    new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text"),
+                    "-- Seleccione --",
+                    new { @class = "form-select", id = "ddlParentesco" })
+            </div>
+            <div class="col-md-auto d-flex flex-wrap gap-4 mt-3 pt-1">
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.EsApoderadoTitular, new { @class = "form-check-input" })
+                    <label class="form-check-label fw-semibold text-primary">Apoderado Titular</label>
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <label class="form-label d-block">Tipo</label>
+                <div class="d-flex gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="TipoApoderado" id="rdPadre" value="Padre"
+                               @(Model.TipoApoderado == "Padre" ? "checked" : "") />
+                        <label class="form-check-label" for="rdPadre">Es Padre</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="TipoApoderado" id="rdMadre" value="Madre"
+                               @(Model.TipoApoderado == "Madre" ? "checked" : "") />
+                        <label class="form-check-label" for="rdMadre">Es Madre</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="TipoApoderado" id="rdApoderado" value="Apoderado"
+                               @(Model.TipoApoderado != "Padre" && Model.TipoApoderado != "Madre" ? "checked" : "") />
+                        <label class="form-check-label" for="rdApoderado">Otro apoderado</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mt-2">
+        <a href="@Url.Action("Ficha","Alumnos",new{id=Model.AlumnoID})" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Volver
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-floppy me-1"></i>@(esEdicion ? "Guardar cambios" : "Registrar apoderado")
+        </button>
+    </div>
+}
+
+@section scripts {
+<script>
+$(document).ready(function () {
+
+    var regionIdActual = @Html.Raw(Model.Apoderado.RegionID.HasValue ? Model.Apoderado.RegionID.Value.ToString() : "null");
+    var comunaIdActual = @Html.Raw(Model.Apoderado.ComunaID.HasValue  ? Model.Apoderado.ComunaID.Value.ToString()  : "null");
+
+    function cargarDdl(url, $ddl, valorActual) {
+        $.getJSON(url, function (data) {
+            $.each(data, function (i, d) { $ddl.append($("<option>").val(d.ID).text(d.Texto)); });
+            if (valorActual) $ddl.val(valorActual);
+        });
+    }
+
+    cargarDdl("@Url.Action("Nacionalidades","Lookup")",       $("#ddlNacionalidadApo"), @Html.Raw(Model.Apoderado.NacionalidadID.HasValue ? Model.Apoderado.NacionalidadID.Value.ToString() : "null"));
+    cargarDdl("@Url.Action("NivelesEducacionales","Lookup")", $("#ddlNivelEduc"),       @Html.Raw(Model.Apoderado.NivelEducacionalID.HasValue ? Model.Apoderado.NivelEducacionalID.Value.ToString() : "null"));
+    cargarDdl("@Url.Action("SituacionesLaborales","Lookup")", $("#ddlSitLaboral"),      @Html.Raw(Model.Apoderado.SituacionLaboralID.HasValue ? Model.Apoderado.SituacionLaboralID.Value.ToString() : "null"));
+    cargarDdl("@Url.Action("Parentescos","Lookup")",          $("#ddlParentesco"),      @Html.Raw(Model.ParentescoID > 0 ? Model.ParentescoID.ToString() : "null"));
+
+    $.getJSON("@Url.Action("Regiones","Lookup")", function (data) {
+        $.each(data, function (i, d) { $("#ddlRegionApo").append($("<option>").val(d.ID).text(d.Texto)); });
+        if (regionIdActual) {
+            $("#ddlRegionApo").val(regionIdActual);
+            cargarComunas(regionIdActual, comunaIdActual);
+        }
+    });
+
+    $("#ddlRegionApo").change(function () { cargarComunas($(this).val(), null); });
+
+    function cargarComunas(regionId, comunaId) {
+        if (!regionId) return;
+        $.getJSON("@Url.Action("ComunasPorRegion","Lookup")", { regionId: regionId }, function (data) {
+            var $ddl = $("#ddlComunaApo").empty().append('<option value="">-- Seleccione --</option>');
+            $.each(data, function (i, d) { $ddl.append($("<option>").val(d.ID).text(d.Texto)); });
+            if (comunaId) $ddl.val(comunaId);
+        });
+    }
+
+    $("#btnBuscarApoderado").click(function () {
+        var rut = $("#txtBuscarRut").val().trim();
+        if (!rut) return;
+        $("#buscarFeedback").text("Buscando...");
+        $.getJSON("@Url.Action("BuscarPorRut","Apoderado")", { rut: rut }, function (apo) {
+            if (!apo) {
+                $("#buscarFeedback").text("No encontrado. Complete los datos manualmente.");
+            } else {
+                $("#txtRutApoderado").val(apo.Rut);
+                $("#Apoderado_Nombres").val(apo.Nombres);
+                $("#Apoderado_ApellidoPaterno").val(apo.ApellidoPaterno);
+                $("#Apoderado_ApellidoMaterno").val(apo.ApellidoMaterno);
+                $("#Apoderado_ID").val(apo.ID);
+                $("#Apoderado_LugarTrabajo").val(apo.LugarTrabajo);
+                $("#Apoderado_Direccion").val(apo.Direccion);
+                $("#Apoderado_Telefono").val(apo.Telefono);
+                $("#Apoderado_TelefonoCelular").val(apo.TelefonoCelular);
+                $("#Apoderado_Email").val(apo.Email);
+                if (apo.NacionalidadID)    $("#ddlNacionalidadApo").val(apo.NacionalidadID);
+                if (apo.NivelEducacionalID) $("#ddlNivelEduc").val(apo.NivelEducacionalID);
+                if (apo.SituacionLaboralID) $("#ddlSitLaboral").val(apo.SituacionLaboralID);
+                if (apo.RegionID) {
+                    $("#ddlRegionApo").val(apo.RegionID);
+                    cargarComunas(apo.RegionID, apo.ComunaID);
+                }
+                $("#buscarFeedback").text("Datos cargados correctamente.").css("color","green");
+            }
+        });
+    });
+
+    function formatearRut(rut) {
+        rut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+        if (rut.length < 2) return rut;
+        var cuerpo = rut.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return cuerpo + '-' + rut.slice(-1);
+    }
+
+    $("#txtRutApoderado, #txtBuscarRut").on("input", function () {
+        var raw = $(this).val().replace(/[^0-9kK]/g, '').toUpperCase();
+        if (raw.length > 1) $(this).val(formatearRut(raw));
+    });
+});
+</script>
+}

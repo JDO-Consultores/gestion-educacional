@@ -1,0 +1,68 @@
+@model GestionColegios.ViewModels.AlumnoFichaViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Editar Alumno";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3><i class="bi bi-pencil-square me-2"></i>Editar Alumno &mdash; @Model.NombreCompleto</h3>
+</div>
+
+@using (Html.BeginForm("Editar", "Alumnos", FormMethod.Post, new { id = "formEditarAlumno", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ID)
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @Html.Partial("_FormAlumno", Model)
+        </div>
+        <div class="card-footer d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-primary" id="volverButton">VOLVER</button>
+            <button type="button" class="btn btn-primary" id="guardarButton">GUARDAR</button>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+    var fichaUrl = '@Url.Action("Ficha", "Alumnos", new { id = Model.ID })';
+
+    $(document).ready(function () {
+        $('#volverButton').click(function () {
+            window.location.href = fichaUrl;
+        });
+
+        $('#guardarButton').click(function () {
+            if (!validarFormulario()) return;
+            var rut = $('#txtRut').val();
+            if (!rut || $('#rutFeedback').hasClass('text-danger')) {
+                showToast('info', 'Corrija el RUT antes de continuar.');
+                return;
+            }
+            showLoading(true);
+            var formData = new FormData(document.getElementById('formEditarAlumno'));
+            $.ajax({
+                url: EditarAlumnoAsync,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        showToast("info", response.message);
+                        showLoading(false);
+                    }
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurri\u00f3 un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+    </script>
+}

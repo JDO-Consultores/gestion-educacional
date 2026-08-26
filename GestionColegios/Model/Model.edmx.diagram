@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7890bfd34585446fb8166718d1dc208c" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.tbl_Roles" Width="1.5" PointX="0.75" PointY="6" />
+        <EntityTypeShape EntityType="Model.tbl_RolesUsuarios" Width="1.5" PointX="3" PointY="1.75" />
+        <EntityTypeShape EntityType="Model.tbl_Usuarios" Width="1.5" PointX="0.75" PointY="1" />
+        <EntityTypeShape EntityType="Model.tbl_Alumno" Width="1.5" PointX="3" PointY="20.75" />
+        <EntityTypeShape EntityType="Model.tbl_AlumnoAlergia" Width="1.5" PointX="8.25" PointY="24" />
+        <EntityTypeShape EntityType="Model.tbl_AlumnoApoderado" Width="1.5" PointX="11.25" PointY="24.25" />
+        <EntityTypeShape EntityType="Model.tbl_AlumnoDiscapacidad" Width="1.5" PointX="8.25" PointY="19.125" />
+        <EntityTypeShape EntityType="Model.tbl_AnioEscolar" Width="1.5" PointX="9" PointY="11" />
+        <EntityTypeShape EntityType="Model.tbl_Apoderado" Width="1.5" PointX="6" PointY="23.375" />
+        <EntityTypeShape EntityType="Model.tbl_Asignatura" Width="1.5" PointX="9" PointY="15.875" />
+        <EntityTypeShape EntityType="Model.tbl_CatalogoAlergia" Width="1.5" PointX="8.25" PointY="49.875" />
+        <EntityTypeShape EntityType="Model.tbl_CausalRetiro" Width="1.5" PointX="3" PointY="18" />
+        <EntityTypeShape EntityType="Model.tbl_Comuna" Width="1.5" PointX="0.75" PointY="19.625" />
+        <EntityTypeShape EntityType="Model.tbl_CondicionSocioeconomica" Width="1.5" PointX="0.75" PointY="28" />
+        <EntityTypeShape EntityType="Model.tbl_ContactoEmergencia" Width="1.5" PointX="5.25" PointY="30.375" />
+        <EntityTypeShape EntityType="Model.tbl_Curso" Width="1.5" PointX="9" PointY="43.375" />
+        <EntityTypeShape EntityType="Model.tbl_CursoAsignatura" Width="1.5" PointX="11.25" PointY="15.75" />
+        <EntityTypeShape EntityType="Model.tbl_DocumentoAlumno" Width="1.5" PointX="8.25" PointY="29" />
+        <EntityTypeShape EntityType="Model.tbl_Establecimiento" Width="1.5" PointX="6.75" PointY="11" />
+        <EntityTypeShape EntityType="Model.tbl_EstadoAlumno" Width="1.5" PointX="0.75" PointY="35.625" />
+        <EntityTypeShape EntityType="Model.tbl_EstadoMatricula" Width="1.5" PointX="9" PointY="37.25" />
+        <EntityTypeShape EntityType="Model.tbl_EstadoProfesor" Width="1.5" PointX="4.5" PointY="42.875" />
+        <EntityTypeShape EntityType="Model.tbl_Etnia" Width="1.5" PointX="0.75" PointY="33" />
+        <EntityTypeShape EntityType="Model.tbl_FirmanteCertificado" Width="1.5" PointX="2.75" PointY="5.375" />
+        <EntityTypeShape EntityType="Model.tbl_Grado" Width="1.5" PointX="6.75" PointY="46.375" />
+        <EntityTypeShape EntityType="Model.tbl_LogActividad" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.tbl_Matricula" Width="1.5" PointX="11.25" PointY="29" />
+        <EntityTypeShape EntityType="Model.tbl_Nacionalidad" Width="1.5" PointX="0.75" PointY="25" />
+        <EntityTypeShape EntityType="Model.tbl_NivelEducacional" Width="1.5" PointX="3.75" PointY="14.875" />
+        <EntityTypeShape EntityType="Model.tbl_NivelEnsenanza" Width="1.5" PointX="4.5" PointY="46.75" />
+        <EntityTypeShape EntityType="Model.tbl_Nota" Width="1.5" PointX="13.5" PointY="30.375" />
+        <EntityTypeShape EntityType="Model.tbl_Parentesco" Width="1.5" PointX="9" PointY="34.5" />
+        <EntityTypeShape EntityType="Model.tbl_PIE" Width="1.5" PointX="11.25" PointY="19.5" />
+        <EntityTypeShape EntityType="Model.tbl_PlantillaCertificado" Width="1.5" PointX="5" PointY="5" />
+        <EntityTypeShape EntityType="Model.tbl_ProfesorJefe" Width="1.5" PointX="6.75" PointY="41.75" />
+        <EntityTypeShape EntityType="Model.tbl_Region" Width="1.5" PointX="1.5" PointY="14" />
+        <EntityTypeShape EntityType="Model.tbl_RetiroAlumno" Width="1.5" PointX="5.25" PointY="19.5" />
+        <EntityTypeShape EntityType="Model.tbl_Sexo" Width="1.5" PointX="0.75" PointY="30.5" />
+        <EntityTypeShape EntityType="Model.tbl_SistemaSalud" Width="1.5" PointX="0.75" PointY="38.125" />
+        <EntityTypeShape EntityType="Model.tbl_SituacionLaboral" Width="1.5" PointX="3.75" PointY="35.375" />
+        <EntityTypeShape EntityType="Model.tbl_TipoAlergia" Width="1.5" PointX="6" PointY="35.125" />
+        <EntityTypeShape EntityType="Model.tbl_TipoDiscapacidad" Width="1.5" PointX="6" PointY="16.125" />
+        <EntityTypeShape EntityType="Model.tbl_TipoDocumento" Width="1.5" PointX="6" PointY="37.875" />
+        <EntityTypeShape EntityType="Model.tbl_TraspasoRut" Width="1.5" PointX="5.25" PointY="60.75" />
+        <EntityTypeShape EntityType="Model.tbl_ViveCon" Width="1.5" PointX="0.75" PointY="17.125" />
+        <AssociationConnector Association="Model.FK_tbl_RolesUsuarios_tbl_Roles" />
+        <AssociationConnector Association="Model.FK_tbl_RolesUsuarios_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__Alumn__1881A0DE" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__Alumn__23F3538A" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__Condi__1699586C" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__Etnia__15A53433" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__ViveC__178D7CA5" />
+        <AssociationConnector Association="Model.FK__tbl_Trasp__Alumn__1B5E0D89" />
+        <AssociationConnector Association="Model.FK__tbl_Trasp__Alumn__1C5231C2" />
+        <AssociationConnector Association="Model.FK_AlumApo_Alumno" />
+        <AssociationConnector Association="Model.FK_Alumno_Comuna" />
+        <AssociationConnector Association="Model.FK_Alumno_Estado" />
+        <AssociationConnector Association="Model.FK_Alumno_Nacionalidad" />
+        <AssociationConnector Association="Model.FK_Alumno_SalUD" />
+        <AssociationConnector Association="Model.FK_Alumno_Sexo" />
+        <AssociationConnector Association="Model.FK_AlumnoAlergia_Alumno" />
+        <AssociationConnector Association="Model.FK_Contacto_Alumno" />
+        <AssociationConnector Association="Model.FK_DocAlumno_Alumno" />
+        <AssociationConnector Association="Model.FK_Matricula_Alumno" />
+        <AssociationConnector Association="Model.FK_PIE_Alumno" />
+        <AssociationConnector Association="Model.FK_Retiro_Alumno" />
+        <AssociationConnector Association="Model.FK_AlumnoAlergia_TipoAlergia" />
+        <AssociationConnector Association="Model.FK_AlumApo_Apoderado" />
+        <AssociationConnector Association="Model.FK_AlumApo_Parentesco" />
+        <AssociationConnector Association="Model.FK__tbl_Alumn__TipoD__24E777C3" />
+        <AssociationConnector Association="Model.FK_AnioEscolar_Establ" />
+        <AssociationConnector Association="Model.FK_Curso_AnioEscolar" />
+        <AssociationConnector Association="Model.FK_DocumentoAlumno_AnioEscolar" />
+        <AssociationConnector Association="Model.FK_Matricula_AnioEscolar" />
+        <AssociationConnector Association="Model.FK_PIE_AnioEscolar" />
+        <AssociationConnector Association="Model.FK_Apoderado_Comuna" />
+        <AssociationConnector Association="Model.FK_Apoderado_Nacionalidad" />
+        <AssociationConnector Association="Model.FK_Apoderado_NivelEduc" />
+        <AssociationConnector Association="Model.FK_Apoderado_SitLaboral" />
+        <AssociationConnector Association="Model.FK_CursoAsig_Asig" />
+        <AssociationConnector Association="Model.FK_CatalogoAlergia_TipoAlergia" />
+        <AssociationConnector Association="Model.FK_Retiro_CausalRetiro" />
+        <AssociationConnector Association="Model.FK_Comuna_Region" />
+        <AssociationConnector Association="Model.FK_Establecimiento_Com" />
+        <AssociationConnector Association="Model.FK_Contacto_Parentesco" />
+        <AssociationConnector Association="Model.FK_Curso_Grado" />
+        <AssociationConnector Association="Model.FK_Curso_ProfesorJefe_New" />
+        <AssociationConnector Association="Model.FK_CursoAsig_Curso" />
+        <AssociationConnector Association="Model.FK_Matricula_Curso" />
+        <AssociationConnector Association="Model.FK_Nota_CursoAsig" />
+        <AssociationConnector Association="Model.FK_DocAlumno_TipoDoc" />
+        <AssociationConnector Association="Model.FK_Matricula_EstadoMat" />
+        <AssociationConnector Association="Model.FK_ProfesorJefe_EstadoProfesor" />
+        <AssociationConnector Association="Model.FK_PlantillaCert_Firmante" />
+        <AssociationConnector Association="Model.FK_Grado_Nivel" />
+        <AssociationConnector Association="Model.FK_Nota_Matricula" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

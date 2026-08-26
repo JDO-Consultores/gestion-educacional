@@ -1,0 +1,190 @@
+@model GestionColegios.ViewModels.ProfesorJefeViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esNuevo = Model.ID == 0;
+    ViewBag.Title = esNuevo ? "Registrar Profesor Jefe" : "Editar Profesor Jefe";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>
+        <i class="bi bi-person-badge me-2"></i>
+        @(esNuevo ? "Registrar Profesor Jefe" : "Editar Profesor Jefe")
+    </h3>
+</div>
+
+@using (Html.BeginForm(esNuevo ? "Crear" : "Editar", "ProfesorJefe",
+        FormMethod.Post, new { id = "formProfesor" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ID)
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+
+                <!-- RUT -->
+                <div class="col-md-3">
+                    <label class="form-label">RUT <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.Rut, new {
+                        @class        = "form-control",
+                        placeholder   = "12345678-9",
+                        id            = "txtRutProfesor",
+                        autocomplete  = "off"
+                    })
+                    <div id="rutProfesorFeedback" class="small mt-1"></div>
+                    @Html.ValidationMessageFor(m => m.Rut, "", new { @class = "text-danger small" })
+                </div>
+
+                <!-- Nombre -->
+                <div class="col-md-4">
+                    <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger small" })
+                </div>
+
+                <!-- Apellido -->
+                <div class="col-md-4">
+                    <label class="form-label">Apellido <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger small" })
+                </div>
+
+                <!-- Correo -->
+                <div class="col-md-5">
+                    <label class="form-label">Correo electrónico</label>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "correo@ejemplo.cl" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                </div>
+
+                <!-- Teléfono -->
+                <div class="col-md-3">
+                    <label class="form-label">Teléfono</label>
+                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", placeholder = "+56 9 XXXX XXXX" })
+                </div>
+
+                <!-- Estado -->
+                <div class="col-md-3">
+                    <label class="form-label">Estado <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(m => m.EstadoProfesorID,
+                        new SelectList(Model.EstadosDisponibles, "ID", "Texto", Model.EstadoProfesorID),
+                        "-- Seleccione --",
+                        new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.EstadoProfesorID, "", new { @class = "text-danger small" })
+                </div>
+
+                <!-- Vigente (solo en edición) -->
+                @if (!esNuevo)
+                {
+                    <div class="col-md-2 d-flex align-items-end">
+                        <div class="form-check form-switch mb-2">
+                            @Html.CheckBoxFor(m => m.Vigente, new { @class = "form-check-input", id = "chkVigente", role = "switch" })
+                            <label class="form-check-label" for="chkVigente">Vigente</label>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-center gap-3">
+            <a href="@Url.Action("Index", "ProfesorJefe")" class="btn btn-outline-secondary">
+                Cancelar
+            </a>
+            <button type="button" class="btn btn-primary" id="btnGuardarProfesor">
+                <i class="bi bi-save me-1"></i> Guardar
+            </button>
+        </div>
+    </div>
+}
+
+@section scripts {
+<script>
+var profesorIdActual = @Model.ID;
+
+// ?? Formateo y validación RUT ?????????????????????????????????????????
+function formatearRut(rut) {
+    rut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+    if (rut.length < 2) return rut;
+    var cuerpo = rut.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return cuerpo + '-' + rut.slice(-1);
+}
+function calcularDv(rut) {
+    var suma = 0, mult = 2;
+    for (var i = rut.length - 1; i >= 0; i--) {
+        suma += parseInt(rut.charAt(i)) * mult;
+        mult = mult < 7 ? mult + 1 : 2;
+    }
+    var res = 11 - (suma % 11);
+    return res === 11 ? '0' : res === 10 ? 'K' : String(res);
+}
+function validarRutFormato(rut) {
+    rut = rut.replace(/[.\-]/g, '').toUpperCase();
+    if (!/^\d{7,8}[0-9K]$/.test(rut)) return false;
+    return calcularDv(rut.slice(0, -1)) === rut.slice(-1);
+}
+function feedbackRut(msg, tipo) {
+    var map = { ok: 'text-success', error: 'text-danger', info: 'text-warning' };
+    var ico = { ok: '?', error: '?', info: '?' };
+    $('#rutProfesorFeedback')
+        .removeClass('text-success text-danger text-warning')
+        .addClass(map[tipo] || '')
+        .text(msg ? (ico[tipo] + ' ' + msg) : '');
+}
+
+var rutTimer;
+$('#txtRutProfesor').on('input', function () {
+    var raw = $(this).val().replace(/[^0-9kK]/g, '').toUpperCase();
+    if (raw.length > 1) $(this).val(formatearRut(raw));
+
+    clearTimeout(rutTimer);
+    var rut = $(this).val();
+    if (!rut) { feedbackRut('', ''); return; }
+    if (!validarRutFormato(rut)) { feedbackRut('RUT inválido.', 'error'); return; }
+
+    feedbackRut('Verificando…', 'info');
+    rutTimer = setTimeout(function () {
+        $.getJSON('@Url.Action("ValidarRut", "ProfesorJefe")',
+            { rut: rut, profesorId: profesorIdActual },
+            function (r) {
+                if (r.duplicado) feedbackRut('Este RUT ya está registrado.', 'error');
+                else             feedbackRut('RUT válido.', 'ok');
+            });
+    }, 500);
+});
+
+// ?? Guardar ???????????????????????????????????????????????????????????
+$('#btnGuardarProfesor').click(function () {
+    var errores = [];
+    if (!$.trim($('#txtRutProfesor').val())) errores.push('El RUT es obligatorio.');
+    else if (!validarRutFormato($('#txtRutProfesor').val())) errores.push('El RUT no es válido.');
+    else if ($('#rutProfesorFeedback').hasClass('text-danger')) errores.push('Corrija el RUT antes de continuar.');
+    if (!$.trim($('#Nombre').val()))   errores.push('El nombre es obligatorio.');
+    if (!$.trim($('#Apellido').val())) errores.push('El apellido es obligatorio.');
+
+    if (errores.length) {
+        showToast('info', errores[0]);
+        return;
+    }
+
+    showLoading(true);
+    $.ajax({
+        url:  $('#formProfesor').attr('action'),
+        type: 'POST',
+        data: $('#formProfesor').serialize(),
+        success: function (r) {
+            if (r.success) {
+                showToast('success', r.message);
+                window.location.href = r.redirectUrl;
+            } else {
+                showToast('error', r.message);
+                showLoading(false);
+            }
+        },
+        error: function () {
+            showLoading(false);
+            showToast('error', 'Error al procesar la solicitud.');
+        }
+    });
+});
+</script>
+}

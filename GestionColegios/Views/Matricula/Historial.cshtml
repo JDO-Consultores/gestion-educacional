@@ -1,0 +1,171 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Historial de Matrículas";
+    int alumnoId = (int)ViewBag.AlumnoID;
+    bool isAdmin = (bool)ViewBag.IsAdmin;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3><i class="bi bi-journal-bookmark-fill me-2"></i>Historial de Matrículas</h3>
+    <div class="d-flex gap-2">
+        @if (isAdmin)
+        {
+            <a href="@Url.Action("Crear", "Matricula", new { alumnoId })"
+               class="k-button k-button-solid-primary">
+                <span class="k-icon k-i-plus"></span> Nueva Matrícula
+            </a>
+        }
+        <a href="@Url.Action("Ficha", "Alumnos", new { id = alumnoId })" class="k-button">
+            <span class="k-icon k-i-arrow-left"></span> Volver a Ficha
+        </a>
+    </div>
+</div>
+
+<div id="gridMatriculas"></div>
+
+<!-- Ventana anulación -->
+<div id="windowAnular" style="display:none;">
+    <p>¿Desea anular esta matrícula?</p>
+    <input type="hidden" id="anularMatriculaID" />
+    <div class="mb-2">
+        <textarea id="anularObservacion" class="k-textbox" rows="3"
+                  placeholder="Motivo de anulación..." style="width:100%"></textarea>
+    </div>
+    <div class="text-end">
+        <button id="btnConfirmarAnular" class="k-button k-button-solid-error">
+            <span class="k-icon k-i-check"></span> Confirmar Anulación
+        </button>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+    var alumnoId = @alumnoId;
+    var isAdmin  = @isAdmin.ToString().ToLower();
+
+    $(document).ready(function () {
+
+        var windowAnular = $("#windowAnular").kendoWindow({
+            title:   "Anular Matrícula",
+            width:   "420px",
+            modal:   true,
+            visible: false,
+            actions: ["Close"]
+        }).data("kendoWindow");
+
+        $("#gridMatriculas").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Url.Action("GetMatriculas", "Matricula")",
+                        contentType: "application/json",
+                        type: "POST"
+                    },
+                    parameterMap: function (options, operation) {
+                        return kendo.stringify($.extend({ alumnoId: alumnoId }, options));
+                    }
+                },
+                pageSize: 10,
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID:              { type: "number" },
+                            AnioEscolar:     { type: "number" },
+                            CursoNombre:     { type: "string" },
+                            NroMatricula:    { type: "string" },
+                            NroMatriculaAnterior: { type: "string" },
+                            FechaMatricula:  { type: "date" },
+                            EstadoMatricula: { type: "string" },
+                            CreatedBy:       { type: "string" }
+                        }
+                    },
+                    data: "Data",
+                    total: "Total"
+                }
+            },
+            pageable: true,
+            sortable: true,
+            resizable: true,
+            filterable: {
+                extra: false,
+                operators: { string: { contains: "Contiene" } }
+            },
+            columns: [
+                { field: "AnioEscolar",    title: "Año",           width: "80px" },
+                { field: "NroMatricula",   title: "N° Matrícula",  width: "150px",
+                  template: "#= renderNroMatricula(NroMatricula, NroMatriculaAnterior) #" },
+                { field: "CursoNombre",    title: "Curso",         width: "160px" },
+                { field: "FechaMatricula", title: "Fecha",         width: "110px", format: "{0:dd/MM/yyyy}" },
+                {
+                    field: "EstadoMatricula",
+                    title: "Estado",
+                    width: "120px",
+                    template: "#= renderEstadoMatricula(EstadoMatricula) #"
+                },
+                { field: "CreatedBy", title: "Registrado por", width: "150px" },
+                {
+                    title: "Acciones",
+                    width: "170px",
+                    attributes: { style: "text-align:center" },
+                    template: function (dataItem) {
+                        if (!isAdmin) return "";
+                        var html = '<a class="k-button k-button-sm" href="@Url.Action("Editar","Matricula")/' + dataItem.ID + '">Editar</a> ';
+                        if (dataItem.EstadoMatricula === "Matriculado" ||
+                            dataItem.EstadoMatricula === "Pre-Matriculado" ||
+                            dataItem.EstadoMatricula === "Vigente") {
+                            html += '<button class="k-button k-button-sm btnAnular" data-id="' + dataItem.ID + '">Anular</button>';
+                        }
+                        return html;
+                    }
+                }
+            ]
+        });
+
+        $(document).on("click", ".btnAnular", function () {
+            $("#anularMatriculaID").val($(this).data("id"));
+            $("#anularObservacion").val("");
+            windowAnular.center().open();
+        });
+
+        $("#btnConfirmarAnular").click(function () {
+            var id  = $("#anularMatriculaID").val();
+            var obs = $("#anularObservacion").val();
+            $.post("@Url.Action("Anular", "Matricula")",
+                { matriculaId: id, observacion: obs })
+                .done(function (r) {
+                    if (r.success) {
+                        windowAnular.close();
+                        $("#gridMatriculas").data("kendoGrid").dataSource.read();
+                    }
+                });
+        });
+    });
+
+    function renderEstadoMatricula(e) {
+        var m = {
+            "Vigente":          "bg-success",
+            "Matriculado":      "bg-success",
+            "Anulada":          "bg-danger",
+            "Pre-matriculado":  "bg-warning text-dark",
+            "Pre-Matriculado":  "bg-warning text-dark",
+            "Lista de Espera":  "bg-secondary",
+            "Trasladada":       "bg-info text-dark"
+        };
+        return '<span class="badge ' + (m[e] || "bg-secondary") + '">' + (e || "") + '</span>';
+    }
+
+    function renderNroMatricula(nro, nroAnterior) {
+        var html = '<span class="fw-semibold">' + (nro || "") + '</span>';
+        if (nroAnterior) {
+            html += '<br/><small class="text-muted" title="N° de matrícula anterior (reingreso)">' +
+                    '<i class="bi bi-clock-history me-1"></i>Ant: ' + nroAnterior + '</small>';
+        }
+        return html;
+    }
+    </script>
+}

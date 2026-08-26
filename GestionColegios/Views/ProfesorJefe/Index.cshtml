@@ -1,0 +1,124 @@
+@using System.Linq
+@using GestionColegios.ViewModels
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Profesores Jefe";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-person-badge me-2"></i>Profesores Jefe</h2>
+    @if ((bool)ViewBag.IsAdmin)
+    {
+        <a href="@Url.Action("Crear", "ProfesorJefe")" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Registrar Profesor
+        </a>
+    }
+</div>
+
+<div id="gridProfesores"></div>
+
+@section scripts {
+<script>
+var urlGetEstadosProfesor = '@Url.Action("GetEstadosProfesor", "ProfesorJefe")';
+
+$(document).ready(function () {
+
+    $("#gridProfesores").kendoGrid({
+        dataSource: {
+            type: "json",
+            transport: {
+                read: {
+                    url: "@Url.Action("GetProfesores", "ProfesorJefe")",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                parameterMap: function (options) {
+                    return kendo.stringify(options);
+                }
+            },
+            pageSize: 20,
+            serverPaging: true,
+            serverSorting: true,
+            serverFiltering: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        Rut:             { type: "string" },
+                        Nombre:          { type: "string" },
+                        Apellido:        { type: "string" },
+                        Email:           { type: "string" },
+                        Telefono:        { type: "string" },
+                        EstadoProfesor:  { type: "string" },
+                        CursosAsignados: { type: "number" }
+                    }
+                },
+                data:  "Data",
+                total: "Total"
+            }
+        },
+        pageable: { refresh: true, pageSizes: [20, 50, 100] },
+        sortable:   true,
+        filterable: {
+            extra: false,
+            operators: {
+                string: { contains: "Contiene" }
+            }
+        },
+        resizable:  true,
+        columns: [
+            { field: "Rut",      title: "RUT",      width: "120px" },
+            { field: "Apellido", title: "Apellido", width: "160px" },
+            { field: "Nombre",   title: "Nombres",  width: "160px" },
+            { field: "Email",    title: "Correo" },
+            { field: "Telefono", title: "Teléfono", width: "130px" },
+            {
+                field: "CursosAsignados",
+                title: "Cursos",
+                width: "90px",
+                attributes: { style: "text-align:center" },
+                template: "#= CursosAsignados > 0 ? '<span class=\"badge bg-primary\">' + CursosAsignados + '</span>' : '<span class=\"text-muted\">—</span>' #"
+            },
+            {
+                field: "EstadoProfesor",
+                title: "Estado",
+                width: "130px",
+                template: "#= renderEstadoProf(EstadoProfesor) #",
+                filterable: {
+                    multi: true,
+                    search: true,
+                    dataSource: {
+                        transport: {
+                            read: { url: urlGetEstadosProfesor, dataType: "json" }
+                        },
+                        EstadoProfesor: "EstadoProfesor"
+                    }
+                }
+            },
+            {
+                title: "Acciones",
+                width: "130px",
+                attributes: { style: "text-align:center" },
+                template: function (item) {
+                    var btns = '<a class="btn btn-outline-secondary btn-sm me-1" href="@Url.Action("Editar","ProfesorJefe")/' + item.ID + '" title="Editar">' +
+                               '<i class="bi bi-pencil"></i></a>';
+                    return btns;
+                }
+            }
+        ]
+    });
+
+    });
+
+    function renderEstadoProf(estado) {
+        var map = {
+            "Vigente":      "bg-success",
+            "Con Licencia": "bg-warning text-dark",
+            "Suspendido":   "bg-danger",
+            "Retirado":     "bg-secondary"
+        };
+        var cls = map[estado] || "bg-secondary";
+        return '<span class="badge ' + cls + '">' + (estado || "") + '</span>';
+    }
+    </script>
+    }

@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutError.cshtml";
+    ViewBag.Title = "Página no encontrada";
+}
+
+<div class="error-icon" style="background: rgba(64, 191, 59, 0.12); color: #40BF3B;">
+    <i class="bi bi-compass"></i>
+</div>
+
+<div class="error-code">Error 404</div>
+<h1 class="error-title">Página no encontrada</h1>
+<p class="error-text">
+    La página que busca no existe, fue movida o el enlace ya no está disponible.
+    Verifique la dirección o regrese a la página principal.
+</p>
+
+<div class="error-actions">
+    <a href="@Url.Action("Dashboard", "Home")" class="btn-error btn-error-primary">
+        <i class="bi bi-house-door"></i> Ir al inicio
+    </a>
+    <a href="javascript:history.back()" class="btn-error btn-error-ghost">
+        <i class="bi bi-arrow-left"></i> Volver atrás
+    </a>
+</div>

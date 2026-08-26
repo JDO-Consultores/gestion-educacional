@@ -1,0 +1,179 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Alumnos";
+    int anioActivo = ViewBag.AnioActivo ?? 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2">
+        <h2 class="mb-0">Gestión de Alumnos</h2>
+        @if (anioActivo > 0)
+        {
+            <span class="badge bg-secondary fs-6">@anioActivo</span>
+        }
+    </div>
+    @if ((bool)ViewBag.IsAdmin)
+    {
+        <a href="@Url.Action("Crear", "Alumnos")" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Registrar Alumno Nuevo
+        </a>
+    }
+</div>
+<div id="gridAlumnos"></div>
+
+<script>
+    var filtroEstadoInicial = '@Request.QueryString["filtroEstado"]';
+
+    $(document).ready(function () {
+        debugger
+        $("#gridAlumnos").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Url.Action("GetAlumnosIndexAsync", "Alumnos")",
+                        contentType: "application/json",
+                        type: "POST"
+                    },
+                    parameterMap: function (options, operation) {
+                        return kendo.stringify(options);
+                    }
+                },
+                filter: {
+                    logic: "and",
+                    filters: [{
+                        field: "AnioEscolar",
+                        operator: "eq",
+                        value: '@anioActivo'
+                    }
+                    ]
+                },
+                pageSize: 20,
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID:             { type: "number" },
+                            Rut:            { type: "string" },
+                            NombreCompleto: { type: "string" },
+                            Curso:          { type: "string" },
+                            AnioEscolar:    { type: "string" },
+                            EstadoAlumno:   { type: "string" },
+                            TienePIE:       { type: "boolean" }
+                        }
+                    },
+                    data: "Data",
+                    total: "Total"
+                }
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: [20, 50, 100]
+            },
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: { contains: "Contiene", startswith: "Comienza con" }
+                }
+            },
+            columns: [
+                {
+                    field: "NroMatricula",
+                    title: "N° Matrícula",
+                    width: "130px",
+                    template: "#= NroMatricula ? NroMatricula : '<span class=\"text-muted\">—</span>' #"
+                },
+                { field: "Rut",            title: "RUT",             width: "130px" },
+                { field: "NombreCompleto", title: "Nombre Completo",  width: "250px" },
+                { field: "Curso",          title: "Curso",            width: "150px" },
+                { field: "AnioEscolar", title: "Año", width: "80px",
+                    filterable: {
+                        multi: true,
+                        search: true,
+                        dataSource: {
+                            transport: {
+                                read: { url: "@Url.Action("GetAniosAlumnos", "Alumnos")", dataType: "json" }
+                            },
+                            AnioEscolar: "AnioEscolar",
+                        }
+                    }
+                },
+                {
+                    field: "TienePIE",
+                    title: "PIE",
+                    width: "70px",
+                    template: "#= TienePIE ? '<span class=\"badge bg-info text-dark\"><i class=\"bi bi-universal-access\"></i></span>' : '' #",
+                    filterable: {
+                        ui: function (element) {
+                            element.kendoDropDownList({
+                                dataSource: [
+                                    { text: "-- Todos --", value: "" },
+                                    { text: "Con PIE",     value: "true" },
+                                    { text: "Sin PIE",     value: "false" }
+                                ],
+                                dataTextField:  "text",
+                                dataValueField: "value",
+                                valuePrimitive: true
+                            });
+                        }
+                    }
+                },
+                {
+                    field: "EstadoAlumno",
+                    title: "Estado",
+                    width: "120px",
+                    template: "#= renderEstado(EstadoAlumno) #",
+                    filterable: {
+                        multi: true,
+                        search: true,
+                        dataSource: {
+                            transport: {
+                                read: { url: "@Url.Action("GetEstadosAlumno", "Alumnos")", dataType: "json" }
+                            },
+                        },
+                    }
+                },
+                {
+                    command: [
+                        {
+                            text: "Ficha",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.location.href = "@Url.Action("Ficha", "Alumnos")/" + dataItem.ID;
+                            }
+                        },
+                        {
+                            text: "Editar",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.location.href = "@Url.Action("Editar", "Alumnos")/" + dataItem.ID;
+                            }
+                        }
+                    ],
+                    title: "Acciones",
+                    width: "160px",
+                    attributes: { style: "text-align:center" }
+                }
+            ]
+        });
+    });
+
+    function renderEstado(estado) {
+        var map = {
+            "Activo":         "bg-success",
+            "Retirado":        "bg-danger",
+            "Suspendido":        "bg-warning",
+            "Traspasado (Cambio RUT)": "bg-info"
+        };
+        var cls = map[estado] || "bg-secondary";
+        return '<span class="badge ' + cls + '">' + (estado || "") + '</span>';
+    }
+</script>

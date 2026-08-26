@@ -19,10 +19,10 @@ jobs:
         uses: microsoft/setup-msbuild@v1
   
       - name: Restore NuGet packages
-        run: nuget restore ./Gestionador.sln
+        run: nuget restore ./GestionColegios.sln
   
       - name: Build and Publish solution
-        run: msbuild ./Gestionador.sln /p:Configuration=Release /t:Build /t:Publish /p:OutDir=${{ github.workspace }}/publish-output/
+        run: msbuild ./GestionColegios.sln /p:Configuration=Release /t:Build /t:Publish /p:OutDir=${{ github.workspace }}/publish-output/
         
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -30,5 +30,5 @@ jobs:
           server: ${{ secrets.ftp_host }}
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          local-dir: ${{ github.workspace }}/publish-output/_PublishedWebsites/Gestionador/
-          server-dir: ${{ secrets.ftp_dir }}
+          local-dir: ${{ github.workspace }}/publish-output/_PublishedWebsites/GestionColegios/
+          server-dir: /gestioneducacional.cl/

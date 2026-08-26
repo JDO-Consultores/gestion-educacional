@@ -1,0 +1,219 @@
+﻿/* ── Paleta de colores del sitio ─────────────────────────────
+   Colores principales (dominantes) y de acento.
+   primary    : verde     #40BF3B  (principal)
+   secondary  : rosado    #F1A0F2  (principal)
+   accent     : naranja   #F29F05  (acento: iconos, botones secundarios)
+   accent-2   : durazno   #F2C3A7  (acento: superficies suaves)             */
+:root {
+    --color-primary: #40BF3B;
+    --color-primary-dark: #39AB35;
+    --color-primary-darker: #329A2E;
+    --color-secondary: #F1A0F2;
+    --color-accent: #F29F05;
+    --color-accent-2: #F2C3A7;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Asegura que los modales Bootstrap queden siempre encima de las Kendo Windows
+   (z-index ~10001) y, sobre todo, que cada modal quede por ENCIMA de su backdrop.
+   Antes '.modal-backdrop' se elevaba a 19999 de forma global, lo que dejaba el
+   overlay negro por encima de modales normales (ej: Crear Usuario) bloqueando la
+   interacción. */
+.modal                         { z-index: 20000 !important; }
+.modal-backdrop                { z-index: 19990 !important; }
+/* El modal de confirmación / alerta global debe quedar por encima del resto de modales */
+#modalConfirm, #modalAlert     { z-index: 20050 !important; }
+
+main {
+    flex: 1;
+}
+
+/* ── Tooltips personalizados ────────────────────────────────── */
+.tooltip .tooltip-inner {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    font-size: .78rem;
+    font-weight: 500;
+    padding: .35rem .7rem;
+    border-radius: .4rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,.3);
+    max-width: 240px;
+    text-align: center;
+    letter-spacing: .01em;
+}
+.tooltip.bs-tooltip-top    .tooltip-arrow::before { border-top-color:    #1e293b; }
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: #1e293b; }
+.tooltip.bs-tooltip-start  .tooltip-arrow::before { border-left-color:   #1e293b; }
+.tooltip.bs-tooltip-end    .tooltip-arrow::before { border-right-color:  #1e293b; }
+
+.gradient-custom {
+    height: auto !important;
+    background: var(--color-primary);
+    background: -webkit-linear-gradient(to right, #40BF3B, #F1A0F2);
+    background: linear-gradient(to right, #40BF3B, #F1A0F2)
+}
+
+.toast-container {
+    z-index: 99999;
+}
+
+.toast {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+    .toast.show {
+        opacity: 1;
+    }
+
+.toast-success { border-left-color: #22c55e !important; }
+.toast-error   { border-left-color: #ef4444 !important; }
+.toast-info    { border-left-color: #3b82f6 !important; }
+.toast-warning { border-left-color: #f59e0b !important; }
+
+.a-logo-grid {
+    background-image: url(Assets/Logos/png/logo_300x300.png);
+    display: inline-block;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 5rem;
+    height: 3.7875rem
+}
+
+    .a-logo-grid.a-sm {
+        width: 2rem;
+        height: 1.5125rem
+    }
+
+    .a-logo-grid.a-md {
+        width: 3.5rem;
+        min-width: 3.5rem;
+        height: 3.5rem
+    }
+
+    .a-logo-grid.a-lg {
+        width: 6.25rem;
+        height: 4.7375rem
+    }
+
+.user-circle.initials {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #40BF3B;
+    text-decoration: none;
+}
+
+.no-caret::after {
+    display: none !important;
+}
+
+input[type="text"], textarea {
+    text-transform: uppercase;
+}
+
+/* Aplica el estilo a todas las celdas de la grilla de Kendo */
+.k-grid td {
+    text-transform: uppercase;
+}
+
+/* Opcional: Aplica el estilo también a los encabezados de columna */
+.k-grid th {
+    text-transform: uppercase;
+}
+
+#notfound {
+    position: relative;
+    height: 100vh;
+}
+
+    #notfound .notfound {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+.notfound {
+    max-width: 767px;
+    width: 100%;
+    line-height: 1.4;
+    text-align: center;
+    padding: 15px;
+}
+
+    .notfound .notfound-404 {
+        position: relative;
+        height: 220px;
+    }
+
+        .notfound .notfound-404 h1 {
+            font-family: 'Kanit', sans-serif;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            font-size: 186px;
+            font-weight: 200;
+            margin: 0px;
+            background: linear-gradient(130deg, #40BF3B, #F1A0F2);
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-transform: uppercase;
+        }
+
+    .notfound h2 {
+        font-family: 'Kanit', sans-serif;
+        font-size: 33px;
+        font-weight: 200;
+        text-transform: uppercase;
+        margin-top: 0px;
+        margin-bottom: 25px;
+        letter-spacing: 3px;
+    }
+
+
+    .notfound p {
+        font-family: 'Kanit', sans-serif;
+        font-size: 16px;
+        font-weight: 200;
+        margin-top: 0px;
+        margin-bottom: 25px;
+    }
+
+#sectoresContainer .badge {
+    text-transform: uppercase;
+}
+
+/* ── Dashboard: íconos circulares perfectos ─────────────────── */
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

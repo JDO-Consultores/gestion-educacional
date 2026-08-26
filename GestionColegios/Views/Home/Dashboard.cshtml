@@ -1,0 +1,454 @@
+﻿@model GestionColegios.ViewModels.DashboardViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Dashboard";
+    bool isAdmin = ViewBag.IsAdmin != null && (bool)ViewBag.IsAdmin;
+    bool hayPendientes = Model.AlumnosConDocumentosPendientes > 0;
+    bool hayPreMatriculados = Model.MatriculasPreMatriculadas > 0;
+}
+
+<!-- ── Cabecera ──────────────────────────────────────────────────── -->
+<div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-3">
+        <img src="~/Content/Assets/logo_icono_sin_texto.png" alt="Logo"
+             style="height:48px;width:48px;object-fit:contain;">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">Panel Principal</h4>
+            <p class="text-muted mb-0 small">
+                <i class="bi bi-person-circle me-1"></i>Bienvenido/a, <strong>@User.Identity.Name</strong>
+            </p>
+        </div>
+    </div>
+    <div class="text-muted small text-end">
+        <i class="bi bi-calendar3 me-1"></i>
+        <span id="fechaActual"></span>
+    </div>
+</div>
+
+<!-- ── Alertas importantes ───────────────────────────────────────── -->
+@if (hayPendientes || hayPreMatriculados)
+{
+    <div class="mb-3">
+        @if (hayPreMatriculados)
+        {
+            <div class="alert alert-warning d-flex align-items-center gap-2 py-2 mb-2">
+                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                <div>
+                    <strong>@Model.MatriculasPreMatriculadas</strong> matrícula(s) en estado
+                    <strong>Pre-Matriculado</strong> — faltan documentos obligatorios por cargar.
+                    <a href="@Url.Action("Index","Matricula")" class="ms-2 alert-link small">Ver matrículas →</a>
+                </div>
+            </div>
+        }
+        @if (hayPendientes)
+        {
+            <div class="alert alert-danger d-flex align-items-center gap-2 py-2 mb-2">
+                <i class="bi bi-folder-x fs-5"></i>
+                <div>
+                    <strong>@Model.AlumnosConDocumentosPendientes</strong> alumno(s) con
+                    <strong>documentos obligatorios pendientes</strong> para el año @Model.AnioEscolarActivo.
+                    <a href="@Url.Action("Index","Matricula")" class="ms-2 alert-link small">Revisar →</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- ── Sección Alumnos ───────────────────────────────────────────── -->
+<p class="fw-bold text-muted text-uppercase small mb-2 d-flex align-items-center gap-1">
+    <i class="bi bi-people-fill text-primary"></i> Alumnos
+</p>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Alumnos")" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-primary bg-opacity-10">
+                        <i class="bi bi-people-fill fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-primary">@Model.TotalAlumnos</div>
+                        <div class="text-muted small">Total</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Alumnos")?filtroEstado=Activo" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-success bg-opacity-10">
+                        <i class="bi bi-person-check-fill fs-4 text-success"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-success">@Model.AlumnosVigentes</div>
+                        <div class="text-muted small">Activos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Alumnos")?filtroEstado=Retirado" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-danger bg-opacity-10">
+                        <i class="bi bi-person-x-fill fs-4 text-danger"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-danger">@Model.AlumnosRetirados</div>
+                        <div class="text-muted small">Retirados</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Alumnos")?filtroPIE=true" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-warning bg-opacity-10">
+                        <i class="bi bi-heart-pulse-fill fs-4 text-warning"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-warning">@Model.AlumnosConPIE</div>
+                        <div class="text-muted small">Con PIE</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- ── Sección Matrículas ─────────────────────────────────────────── -->
+<p class="fw-bold text-muted text-uppercase small mb-2 d-flex align-items-center gap-1">
+    <i class="bi bi-journal-bookmark-fill text-info"></i> Matrículas
+    @if (Model.AnioEscolarActivo > 0)
+    {
+        <span class="badge bg-secondary fw-normal ms-1">@Model.AnioEscolarActivo</span>
+    }
+</p>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Matricula")?filtroEstado=Matriculado" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-success bg-opacity-10">
+                        <i class="bi bi-journal-check fs-4 text-success"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-success">@Model.MatriculasVigentes</div>
+                        <div class="text-muted small">Matriculados</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Matricula")?filtroEstado=Pre-Matriculado" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat @(hayPreMatriculados ? "border-start border-3 border-warning" : "")">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-warning bg-opacity-10">
+                        <i class="bi bi-journal-x fs-4 text-warning"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-warning">@Model.MatriculasPreMatriculadas</div>
+                        <div class="text-muted small">Pre-Matriculados</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Matricula")?filtroNuevo=true" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-info bg-opacity-10">
+                        <i class="bi bi-star-fill fs-4 text-info"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-info">@Model.MatriculasAlumnosNuevos</div>
+                        <div class="text-muted small">Alumnos Nuevos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="@Url.Action("Index","Matricula")?filtroEstado=Pre-Matriculado" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 card-stat @(hayPendientes ? "border-start border-3 border-danger" : "")">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon @(hayPendientes ? "bg-danger" : "bg-secondary") bg-opacity-10">
+                        <i class="bi bi-folder-x fs-4 @(hayPendientes ? "text-danger" : "text-secondary")"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold @(hayPendientes ? "text-danger" : "text-secondary")">
+                            @Model.AlumnosConDocumentosPendientes
+                        </div>
+                        <div class="text-muted small">Docs. Pendientes</div>
+                    </div>
+                </div>
+                @if (hayPendientes)
+                {
+                    <div class="card-footer bg-danger bg-opacity-10 border-0 py-1 px-3">
+                        <small class="text-danger fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>Requieren atención
+                        </small>
+                    </div>
+                }
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- ── Accesos rápidos ────────────────────────────────────────────── -->
+<p class="fw-bold text-muted text-uppercase small mb-2 d-flex align-items-center gap-1">
+    <i class="bi bi-lightning-fill text-secondary"></i> Accesos Rápidos
+</p>
+<div class="row g-3">
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-people-fill text-primary me-2"></i>Alumnos
+                </h6>
+                <p class="text-muted small mb-3">Gestiona el registro de alumnos del establecimiento.</p>
+                <div class="d-flex flex-column gap-2">
+                    <a href="@Url.Action("Index","Alumnos")" class="k-button k-button-solid-base w-100">
+                        <i class="bi bi-list-ul me-2"></i>Ver listado
+                    </a>
+                    @if (isAdmin)
+                    {
+                        <a href="@Url.Action("Crear","Alumnos")" class="k-button k-button-solid-primary w-100">
+                            <i class="bi bi-person-plus me-2"></i>Registrar Alumno Nuevo
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title d-flex align-items-center gap-2">
+                    <i class="bi bi-journal-bookmark-fill text-info"></i>Matrículas
+                    @if (Model.AnioEscolarActivo > 0)
+                    {
+                        <span class="badge bg-secondary fw-normal">@Model.AnioEscolarActivo</span>
+                    }
+                </h6>
+                <p class="text-muted small mb-3">
+                    Consulta y gestiona el proceso de matrícula del año escolar activo.
+                </p>
+                <div class="d-flex flex-column gap-2">
+                    <a href="@Url.Action("Index","Matricula")" class="k-button k-button-solid-base w-100">
+                        <i class="bi bi-journal-bookmark-fill me-2"></i>Ver Matrículas
+                    </a>
+                    @if (isAdmin && hayPreMatriculados)
+                    {
+                        <a href="@Url.Action("Index","Matricula")" class="k-button k-button-solid-warning w-100">
+                            <i class="bi bi-exclamation-triangle me-2"></i>@Model.MatriculasPreMatriculadas Pre-matriculado(s)
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (isAdmin)
+    {
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-gear-fill text-secondary me-2"></i>Administración
+                    </h6>
+                    <p class="text-muted small mb-3">Configuración general del sistema.</p>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="@Url.Action("Usuarios","Users")" class="k-button k-button-solid-base w-100">
+                            <i class="bi bi-person-gear me-2"></i>Gestión de Usuarios
+                        </a>
+                        <a href="@Url.Action("Index","AnioEscolar")" class="k-button k-button-solid-base w-100">
+                            <i class="bi bi-calendar-range me-2"></i>Años Escolares
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<!-- ── Widgets: Alumnos por Curso + Actividad Reciente ───────────── -->
+<div class="row g-3 mt-1">
+
+    <!-- Alumnos por Curso -->
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2">
+                <span class="fw-bold small">
+                    <i class="bi bi-bar-chart-fill text-primary me-1"></i>
+                    Alumnos por Curso
+                    @if (Model.AnioEscolarActivo > 0)
+                    {
+                        <span class="badge bg-secondary fw-normal ms-1">@Model.AnioEscolarActivo</span>
+                    }
+                </span>
+                <a href="@Url.Action("Index","Matricula")" class="small text-muted text-decoration-none">
+                    Ver todo <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.AlumnosPorCurso != null && Model.AlumnosPorCurso.Count > 0)
+                {
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Curso</th>
+                                <th class="text-center" style="width:70px">Total</th>
+                                <th class="text-center pe-3" style="width:80px">Vigentes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.AlumnosPorCurso)
+                            {
+                                var pct = c.Total > 0 ? (int)((double)c.Vigentes / c.Total * 100) : 0;
+                                <tr>
+                                    <td class="ps-3 small fw-semibold">@c.Curso</td>
+                                    <td class="text-center small">@c.Total</td>
+                                    <td class="pe-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-success" style="min-width:28px">@c.Vigentes</span>
+                                            <div class="progress flex-grow-1" style="height:6px">
+                                                <div class="progress-bar bg-success" style="width:@pct%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-center text-muted py-4 small">
+                        <i class="bi bi-inbox fs-3 d-block mb-1 opacity-50"></i>
+                        Sin datos para el año activo.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Actividad Reciente -->
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2">
+                <span class="fw-bold small">
+                    <i class="bi bi-clock-history text-secondary me-1"></i>Actividad Reciente
+                </span>
+                <button class="btn btn-link btn-sm text-muted p-0" id="btnRefrescarActividad" title="Actualizar">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+            <div class="card-body p-0" id="panelActividad" style="max-height:340px;overflow-y:auto;">
+                @if (Model.ActividadReciente != null && Model.ActividadReciente.Count > 0)
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var a in Model.ActividadReciente)
+                        {
+                            string entCls = a.Entidad == "Matrícula" ? "bg-success"
+                                          : a.Entidad == "Documento" ? "bg-primary"
+                                          : a.Entidad == "Alumno" ? "bg-info text-dark"
+                                          : "bg-secondary";
+                            <li class="list-group-item px-3 py-2 border-0 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <span class="badge @entCls me-1" style="font-size:.68rem">@a.Entidad</span>
+                                        <span class="fw-semibold small text-uppercase">@a.Accion</span>
+                                        @if (!string.IsNullOrEmpty(a.Detalle))
+                                        {
+                                            <div class="text-muted small text-truncate">@a.Detalle</div>
+                                        }
+                                        <div class="text-muted" style="font-size:.72rem">
+                                            <i class="bi bi-person me-1"></i>@a.Usuario
+                                        </div>
+                                    </div>
+                                    <span class="text-muted flex-shrink-0" style="font-size:.72rem">
+                                        @a.FechaAccion.ToString("dd-MM HH:mm")
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="text-center text-muted py-4 small">
+                        <i class="bi bi-clock-history fs-3 d-block mb-1 opacity-50"></i>
+                        Sin actividad reciente.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+        <style>
+            .card-stat {
+                transition: transform .15s, box-shadow .15s;
+            }
+
+                .card-stat:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1) !important;
+                }
+
+            .border-3 {
+                border-width: 3px !important;
+            }
+        </style>
+
+        <script>
+    document.getElementById('fechaActual').textContent =
+        new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Refrescar actividad reciente vía AJAX
+    document.getElementById('btnRefrescarActividad').addEventListener('click', function () {
+        var panel = document.getElementById('panelActividad');
+        panel.innerHTML = '<div class="text-center text-muted py-4 small"><i class="bi bi-hourglass-split me-1"></i>Cargando...</div>';
+        fetch('@Url.Action("GetActividadReciente","Home")')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data || !data.length) {
+                    panel.innerHTML = '<div class="text-center text-muted py-4 small">Sin actividad reciente.</div>';
+                    return;
+                }
+                var entCls = { 'Matrícula': 'bg-success', 'Documento': 'bg-primary', 'Alumno': 'bg-info text-dark' };
+                var html = '<ul class="list-group list-group-flush">';
+                data.forEach(function(a) {
+                    var ts  = parseInt(a.FechaAccion.replace('/Date(','').replace(')/',''));
+                    var d   = new Date(ts);
+                    var fStr = ('0'+d.getDate()).slice(-2)+'-'+('0'+(d.getMonth()+1)).slice(-2)+' '+
+                               ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+                    var cls = entCls[a.Entidad] || 'bg-secondary';
+                    html += '<li class="list-group-item px-3 py-2 border-0 border-bottom">' +
+                            '<div class="d-flex justify-content-between align-items-start gap-2">' +
+                            '<div class="flex-grow-1 overflow-hidden">' +
+                            '<span class="badge '+cls+' me-1" style="font-size:.68rem">'+a.Entidad+'</span>' +
+                            '<span class="fw-semibold small text-uppercase">'+a.Accion+'</span>' +
+                            (a.Detalle ? '<div class="text-muted small text-truncate">'+a.Detalle+'</div>' : '') +
+                            '<div class="text-muted" style="font-size:.72rem"><i class="bi bi-person me-1"></i>'+a.Usuario+'</div>' +
+                            '</div>' +
+                            '<span class="text-muted flex-shrink-0" style="font-size:.72rem">'+fStr+'</span>' +
+                            '</div></li>';
+                });
+                html += '</ul>';
+                panel.innerHTML = html;
+            });
+    });
+        </script>

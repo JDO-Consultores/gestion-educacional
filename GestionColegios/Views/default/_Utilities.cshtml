@@ -1,0 +1,93 @@
+﻿<div id="modales"></div>
+<div class="modal fade" id="modal-loading" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modal-loading-label" aria-hidden="true" style="z-index: 10000">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="background-color: transparent !important; box-shadow:0 0 0 0;border:0">
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10001">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="myToast" data-bs-delay="5000">
+        <div class="toast-body">
+            <span class="content" id="respuesta"></span>
+        </div>
+    </div>
+</div>*@
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 99999">
+    <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="myToast" data-bs-delay="4000" data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-icon me-2" id="toastIcon"></div>
+            <div class="toast-body">
+                <div class="toast-title fw-semibold small mb-1" id="toastTitle"></div>
+                <div class="toast-message" id="respuesta"></div>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #myToast {
+        min-width: 300px;
+        max-width: 420px;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        overflow: hidden;
+        border-left: 5px solid transparent;
+        background-color: #1e1e2e;
+        color: #f0f0f0;
+        font-size: 0.88rem;
+        opacity: 0;
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        transform: translateY(20px);
+    }
+
+    #myToast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .toast-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.75;
+    }
+
+    .toast-message {
+        font-size: 0.92rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .toast-icon {
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        padding: 0 4px 0 16px;
+    }
+
+    /* success */
+    #myToast.toast-success { border-left-color: #22c55e; }
+    #myToast.toast-success .toast-title { color: #22c55e; }
+
+    /* error */
+    #myToast.toast-error { border-left-color: #ef4444; }
+    #myToast.toast-error .toast-title { color: #ef4444; }
+
+    /* info */
+    #myToast.toast-info { border-left-color: #3b82f6; }
+    #myToast.toast-info .toast-title { color: #3b82f6; }
+
+    /* warning */
+    #myToast.toast-warning { border-left-color: #f59e0b; }
+    #myToast.toast-warning .toast-title { color: #f59e0b; }
+</style>

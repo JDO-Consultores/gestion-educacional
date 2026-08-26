@@ -361,12 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Gestionador/Content/Assets/Logos/png/logo_120x120.png
-/Gestionador/Content/Assets/Logos/png/logo_300x300.png
-/Gestionador/Content/Assets/Logos/png/logo_512x512.png
-/Gestionador/Content/Assets/Logos/svg/logo_120x120.svg
-/Gestionador/Content/Assets/Logos/svg/logo_300x300.svg
-/Gestionador/Content/Assets/Logos/svg/logo_512x512.svg
-/Gestionador/Content/Assets/Reglamento/qr-code.png
-/Gestionador/Content/Assets/Reglamento/ReglamentoInterno.pdf
-/Gestionador/Content/Assets/Favicon/favicon.ico

@@ -1,0 +1,91 @@
+@model GestionColegios.ViewModels.AnioEscolarFormViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esNuevo = Model.ID == 0;
+    ViewBag.Title = esNuevo ? "Nuevo Año Escolar" : "Editar Año Escolar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>
+        <i class="bi bi-calendar-plus me-2"></i>
+        @(esNuevo ? "Nuevo Año Escolar" : "Editar Año Escolar " + Model.Anio)
+    </h3>
+</div>
+
+@using (Html.BeginForm(esNuevo ? "Crear" : "Editar", "AnioEscolar",
+        FormMethod.Post, new { id = "formAnioEscolar" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ID)
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Año <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.Anio, new { @class = "form-control", placeholder = "ej: 2025", type = "number", min = "2000", max = "2100" })
+                    @Html.ValidationMessageFor(m => m.Anio, "", new { @class = "text-danger small" })
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Establecimiento <span class="text-danger">*</span></label>
+                    <select name="EstablecimientoID" id="ddlEstablecimiento" class="form-select">
+                        <option value="">-- Seleccione --</option>
+                        @foreach (var e in Model.Establecimientos)
+                        {
+                            <option value="@e.ID" @(Model.EstablecimientoID == e.ID ? "selected" : "")>@e.Texto</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.EstablecimientoID, "", new { @class = "text-danger small" })
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de Inicio</label>
+                    @Html.TextBoxFor(m => m.FechaInicio, "{0:dd/MM/yyyy}",
+                        new { @class = "form-control", id = "dtpFechaInicio" })
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de Término</label>
+                    @Html.TextBoxFor(m => m.FechaTermino, "{0:dd/MM/yyyy}",
+                        new { @class = "form-control", id = "dtpFechaTermino" })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-center gap-3">
+            <a href="@Url.Action("Index", "AnioEscolar")" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="button" class="btn btn-primary" id="btnGuardarAnio">
+                <i class="bi bi-save me-1"></i> Guardar
+            </button>
+        </div>
+    </div>
+}
+
+@section scripts {
+<script>
+$(document).ready(function () {
+    $("#dtpFechaInicio").kendoDatePicker({ format: "dd/MM/yyyy" });
+    $("#dtpFechaTermino").kendoDatePicker({ format: "dd/MM/yyyy" });
+
+    $("#btnGuardarAnio").click(function () {
+        showLoading(true);
+        var formData = $("#formAnioEscolar").serialize();
+        $.ajax({
+            url: $("#formAnioEscolar").attr("action"),
+            type: "POST",
+            data: formData,
+            success: function (r) {
+                if (r.success) {
+                    showToast("success", r.message);
+                    window.location.href = r.redirectUrl;
+                } else {
+                    showToast("error", r.message);
+                    showLoading(false);
+                }
+            },
+            error: function () {
+                showLoading(false);
+                showToast("error", "Error al procesar la solicitud.");
+            }
+        });
+    });
+});
+</script>
+}

@@ -1,0 +1,277 @@
+@using System.Linq
+@using GestionColegios.ViewModels
+@model GestionColegios.ViewModels.MatriculaResumenAnioViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Matrículas";
+    bool isAdmin = (bool)ViewBag.IsAdmin;
+}
+
+<!-- Encabezado + selector de año -->
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h3 class="mb-0">
+        <i class="bi bi-journal-bookmark-fill me-2"></i>Matrículas
+        @if (Model.Anio > 0)
+        {
+            <span class="badge bg-secondary fs-6 ms-2">@Model.Anio</span>
+        }
+    </h3>
+    <div class="d-flex gap-2 align-items-center">
+        <select id="ddlAnioFiltro" class="form-select form-select-sm" style="width:120px">
+            @foreach (var a in Model.AniosDisponibles)
+            {
+                <option value="@a.ID" @(a.ID == Model.AnioEscolarID ? "selected" : "")>@a.Texto</option>
+            }
+        </select>
+        @if (isAdmin)
+        {
+            <a href="@Url.Action("Index","Alumnos")" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus me-1"></i>Nueva Matrícula
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Tarjetas resumen -->
+<div class="d-flex flex-wrap flex-md-nowrap gap-2 mb-3">
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-primary bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-primary" id="cntTotal">@Model.TotalMatriculas</div>
+                <div class="small text-muted">Total</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-success bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-success" id="cntVigentes">@Model.Vigentes</div>
+                <div class="small text-muted">Matriculados</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-warning bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-warning" id="cntPre">@Model.PreMatriculados</div>
+                <div class="small text-muted">Pre-matriculados</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-secondary bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-secondary" id="cntEspera">@Model.EnListaEspera</div>
+                <div class="small text-muted">Lista de Espera</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-danger bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-danger" id="cntAnuladas">@Model.Anuladas</div>
+                <div class="small text-muted">Anuladas</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-info bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-info" id="cntNuevos">@Model.AlumnosNuevos</div>
+                <div class="small text-muted">Alumnos Nuevos</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-fill" style="min-width:110px">
+        <div class="card border-0 bg-secondary bg-opacity-10 text-center h-100 shadow-sm">
+            <div class="card-body py-2 px-2">
+                <div class="fs-4 fw-bold text-secondary" id="cntAntiguos">@Model.AlumnosAntiguos</div>
+                <div class="small text-muted">Alumnos Antiguos</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grid de matrículas -->
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div id="gridMatriculas"></div>
+    </div>
+</div>
+
+@section scripts {
+<script>
+var isAdmin        = @isAdmin.ToString().ToLower();
+var anioEscolarId  = @Model.AnioEscolarID;
+var urlGetData     = '@Url.Action("GetMatriculasIndex", "Matricula")';
+var urlEditar      = '@Url.Action("Editar", "Matricula")';
+var urlAnular      = '@Url.Action("Anular", "Matricula")';
+var urlFicha       = '@Url.Action("Ficha", "Alumnos")';
+var urlIndex       = '@Url.Action("Index", "Matricula")';
+var urlGetEstadosMatricula = '@Url.Action("GetEstadosMatricula", "Matricula")';
+var estadosMatricula = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+    ((IEnumerable<GestionColegios.ViewModels.SelectItemViewModel>)ViewBag.EstadosMatricula)
+    .Select(e => e.Texto).ToList()
+));
+var filtroEstadoInicial = '@Request.QueryString["filtroEstado"]';
+var filtroNuevoInicial  = '@Request.QueryString["filtroNuevo"]';
+
+$(document).ready(function () {
+
+    // Cambio de año ? recargar página con nuevo año
+    $('#ddlAnioFiltro').change(function () {
+        window.location.href = urlIndex + '?anioEscolarId=' + $(this).val();
+    });
+
+    $("#gridMatriculas").kendoGrid({
+        dataSource: {
+            type: "json",
+            transport: {
+                read: {
+                    url: urlGetData,
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                parameterMap: function (o) {
+                    return kendo.stringify($.extend({ anioEscolarId: anioEscolarId }, o));
+                }
+            },
+            pageSize: 20,
+            serverPaging: true, serverSorting: true, serverFiltering: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        AlumnoNombreCompleto: { type: "string" },
+                        AlumnoRut:            { type: "string" },
+                        CursoNombre:          { type: "string" },
+                        NroMatricula:         { type: "string" },
+                        NroMatriculaAnterior: { type: "string" },
+                        FechaMatricula:       { type: "date"   },
+                        EstadoMatricula:      { type: "string" },
+                        EsAlumnoNuevo:        { type: "boolean" }
+                    }
+                },
+                data: "Data", total: "Total"
+            }
+        },
+        pageable: { pageSizes: [10, 20, 50] },
+        sortable: true,
+        filterable: {
+            extra: false,
+            operators: {
+                string: { contains: "Contiene" }
+            }
+        },
+        resizable: true,
+        noRecords: { template: '<div class="text-center text-muted py-4"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No hay matrículas para este año.</div>' },
+        columns: [
+            { field: "NroMatricula",         title: "N° Matrícula", width: "150px",
+              template: "#= renderNroMatricula(NroMatricula, NroMatriculaAnterior) #" },
+            { field: "AlumnoNombreCompleto", title: "Alumno",       width: "260px",
+              template: '<a href="' + urlFicha + '/#= AlumnoID #" class="text-decoration-none fw-semibold">#= AlumnoNombreCompleto #</a>' },
+            { field: "AlumnoRut",            title: "RUT",          width: "110px" },
+            { field: "CursoNombre",          title: "Curso",        width: "100px" },
+            { field: "FechaMatricula",       title: "Fecha",        width: "100px", format: "{0:dd/MM/yyyy}" },
+            {
+                field: "EsAlumnoNuevo", title: "Tipo", width: "110px",
+                template: "#= EsAlumnoNuevo ? '<span class=\"badge bg-success\"><i class=\"bi bi-star-fill me-1\"></i>Nuevo</span>' : '<span class=\"badge bg-primary\"><i class=\"bi bi-arrow-repeat me-1\"></i>Antiguo</span>' #",
+                filterable: {
+                    ui: function (element) {
+                        element.kendoDropDownList({
+                            dataSource: [
+                                { text: "-- Todos --", value: "" },
+                                { text: "Nuevo",      value: "true"  },
+                                { text: "Antiguo",    value: "false" }
+                            ],
+                            dataTextField:  "text",
+                            dataValueField: "value",
+                            valuePrimitive: true
+                        });
+                    }
+                }
+            },
+            {
+                field: "EstadoMatricula", title: "Estado", width: "130px",
+                template: "#= badgeMat(EstadoMatricula) #",
+                filterable: {
+                    multi: true,
+                    search: true,
+                    dataSource: {
+                        transport: {
+                            read: { url: urlGetEstadosMatricula, dataType: "json" }
+                        },
+                        Text: "EstadoMatricula"
+                    }
+                }
+            },
+            {
+                title: "", width: "110px", filterable: false, sortable: false,
+                attributes: { style: "text-align:center" },
+                template: function (item) {
+                    if (!isAdmin) return '<a href="' + urlFicha + '/' + item.AlumnoID + '" class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-lines-fill"></i></a>';
+                    var b = '<a class="btn btn-outline-secondary btn-sm me-1" href="' + urlFicha + '/' + item.AlumnoID + '" title="Ficha alumno"><i class="bi bi-person-lines-fill"></i></a>';
+                    b    += '<a class="btn btn-outline-primary btn-sm me-1" href="' + urlEditar + '/' + item.ID + '" title="Editar matrícula"><i class="bi bi-pencil"></i></a>';
+                    if (item.EstadoMatricula === "Matriculado" ||
+                        item.EstadoMatricula === "Pre-Matriculado" ||
+                        item.EstadoMatricula === "Vigente" ||
+                        item.EstadoMatricula === "Pre-matriculado")
+                        b += '<button class="btn btn-outline-danger btn-sm btnAnular" data-id="' + item.ID + '" title="Anular"><i class="bi bi-x-circle"></i></button>';
+                    return b;
+                }
+            }
+        ]
+    });
+
+    // Aplicar filtro inicial desde dashboard
+    if (filtroEstadoInicial) {
+        var grid = $("#gridMatriculas").data("kendoGrid");
+        grid.dataSource.filter({ field: "EstadoMatricula", operator: "eq", value: filtroEstadoInicial });
+    } else if (filtroNuevoInicial === "true") {
+        var grid = $("#gridMatriculas").data("kendoGrid");
+        grid.dataSource.filter({ field: "EsAlumnoNuevo", operator: "eq", value: true });
+    }
+
+    // Anular desde el listado
+    $(document).on("click", ".btnAnular", function () {
+        var matId = $(this).data("id");
+        showConfirm({
+            tipo: 'danger',
+            titulo: 'Anular matrícula',
+            mensaje: 'Esta acción no se puede deshacer. La matrícula quedará en estado Anulada.',
+            onOk: function () {
+                $.post(urlAnular, { matriculaId: matId, observacion: "Anulada desde listado." })
+                  .done(function (r) {
+                      if (r.success) {
+                          showToast('success', 'Matrícula anulada.');
+                          $("#gridMatriculas").data("kendoGrid").dataSource.read();
+                      }
+                  });
+            }
+        });
+    });
+});
+
+function badgeMat(e) {
+    var m = {
+        "Vigente":          "bg-success",
+        "Matriculado":      "bg-success",
+        "Anulada":          "bg-danger",
+        "Pre-matriculado":  "bg-warning text-dark",
+        "Pre-Matriculado":  "bg-warning text-dark",
+        "Lista de Espera":  "bg-secondary",
+        "Trasladada":       "bg-info text-dark"
+    };
+    return '<span class="badge ' + (m[e] || "bg-secondary") + '">' + (e || "") + '</span>';
+}
+
+function renderNroMatricula(nro, nroAnterior) {
+    var html = '<span class="fw-semibold">' + (nro || "") + '</span>';
+    if (nroAnterior) {
+        html += '<br/><small class="text-muted" title="N° de matrícula anterior (reingreso)">' +
+                '<i class="bi bi-clock-history me-1"></i>Ant: ' + nroAnterior + '</small>';
+    }
+    return html;
+}
+</script>
+}

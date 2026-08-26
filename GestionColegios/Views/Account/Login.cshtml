@@ -1,0 +1,322 @@
+﻿@model GestionColegios.Models.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="login-page d-flex flex-grow-1">
+
+    <div class="login-brand d-none d-lg-flex flex-column align-items-center justify-content-center">
+        <img src="~/Content/Assets/master_perfil_con_texto_.png" alt="Gestión Educacional" class="brand-logo mb-3">
+        <p class="brand-tagline">Plataforma de gestión escolar<br>moderna y eficiente</p>
+        <div class="brand-dots mt-4">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="brand-credit">
+            <img src="~/Content/Asset/logo_web_con_texto.png" alt="GestiónEducacional" class="brand-credit-logo">
+            <small class="brand-credit-text">
+                &copy; 2026 &middot; Desarrollado por
+                <a href="https://jdoconsultores.cl/" target="_blank">JDOConsultores</a>
+            </small>
+        </div>
+    </div>
+
+    <div class="login-form-panel d-flex flex-column align-items-center justify-content-center flex-grow-1">
+        <div class="login-card">
+            <h4 class="login-title">Bienvenido de vuelta</h4>
+            <p class="login-subtitle">Ingrese sus credenciales para continuar</p>
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @id = "loginForm" }))
+            {
+                <div class="input-group-login mb-3">
+                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control login-input", type = "email", placeholder = "Correo electrónico", autocomplete = "username" })
+                </div>
+
+                <div class="input-group-login mb-2">
+                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control login-input", placeholder = "Contraseña", @id = "passwordField", autocomplete = "current-password" })
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="bi bi-eye" id="passwordIcon"></i>
+                    </button>
+                </div>
+
+                <div class="d-flex justify-content-end mb-4">
+                    <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-link">¿Olvidó su contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-login w-100">
+                    <span>Ingresar</span>
+                    <i class="bi bi-arrow-right-short fs-5"></i>
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    html, body { margin: 0; }
+
+    .login-page {
+        background: #f4f6fb;
+    }
+
+    /* --- Panel izquierdo --- */
+    .login-brand {
+        width: 42%;
+        background: linear-gradient(145deg, #eafbe9 0%, #f5fbf0 45%, #fbeafc 100%);
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+        border-right: 1px solid #e6f3e2;
+    }
+
+    .login-brand::before {
+        content: '';
+        position: absolute;
+        width: 400px; height: 400px;
+        background: rgba(64, 191, 59, 0.12);
+        border-radius: 50%;
+        top: -100px; right: -100px;
+    }
+
+    .login-brand::after {
+        content: '';
+        position: absolute;
+        width: 300px; height: 300px;
+        background: rgba(241, 160, 242, 0.18);
+        border-radius: 50%;
+        bottom: -80px; left: -80px;
+    }
+
+    .brand-logo {
+        max-width: 300px;
+        filter: drop-shadow(0 4px 24px rgba(64, 191, 59, 0.30));
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-name-gestion { color: #1a1a2e; }
+    .brand-name-edu     { color: #40BF3B; }
+    .brand-name-cl      { color: rgba(80,60,20,0.45); font-size: 1rem; font-weight: 400; }
+
+    .brand-tagline {
+        color: rgba(80, 60, 20, 0.65);
+        text-align: center;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-dots span {
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: rgba(64, 191, 59, 0.35);
+        margin: 0 4px;
+    }
+    .brand-dots span:nth-child(2) { background: #F1A0F2; width:10px; height:10px; }
+
+    /* Crédito al pie del panel izquierdo */
+    .brand-credit {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .brand-credit-logo {
+        height: 38px;
+        width: auto;
+        opacity: 0.9;
+    }
+
+    .brand-credit-text {
+        color: rgba(80,60,20,0.6);
+        font-size: 0.76rem;
+    }
+
+    .brand-credit-text a {
+        color: #2C8A29;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .brand-credit-text a:hover { text-decoration: underline; }
+
+    /* En escritorio el crédito vive en el panel izquierdo: ocultamos el footer global */
+    @@media (min-width: 992px) {
+        body > footer { display: none; }
+    }
+
+    /* --- Panel derecho --- */
+    .login-form-panel {
+        background: #f4f6fb;
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 2.5rem 2.8rem;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+
+    .login-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #1a1a2e;
+        margin-bottom: 0.3rem;
+    }
+
+    .login-subtitle {
+        color: #8a8fa8;
+        font-size: 0.88rem;
+        margin-bottom: 1.8rem;
+    }
+
+    /* Inputs */
+    .input-group-login {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 14px;
+        color: #aab0c4;
+        font-size: 1rem;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .login-input {
+        padding-left: 42px !important;
+        padding-right: 42px !important;
+        height: 50px;
+        border: 1.5px solid #e4e8f0;
+        border-radius: 12px !important;
+        background: #f8f9fc !important;
+        font-size: 0.93rem;
+        color: #1a1a2e;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-shadow: none !important;
+    }
+
+    .login-input:focus {
+        border-color: #40BF3B !important;
+        background: #fff !important;
+        box-shadow: 0 0 0 3px rgba(64, 191, 59, 0.14) !important;
+        outline: none;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        color: #aab0c4;
+        cursor: pointer;
+        padding: 0;
+        font-size: 1rem;
+        line-height: 1;
+        z-index: 2;
+    }
+
+    .toggle-password:hover { color: #40BF3B; }
+
+    .forgot-link {
+        font-size: 0.82rem;
+        color: #40BF3B;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Botón */
+    .btn-login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #40BF3B 0%, #329A2E 100%);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        height: 50px;
+        font-size: 0.97rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 16px rgba(64, 191, 59, 0.35);
+    }
+
+    .btn-login:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(64, 191, 59, 0.45);
+    }
+
+    .btn-login:active { transform: translateY(0); }
+
+    @@media (max-width: 991.98px) {
+        .login-card { padding: 2rem 1.5rem; }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#togglePassword').on('click', function () {
+            var f = $('#passwordField');
+            var i = $('#passwordIcon');
+            if (f.attr('type') === 'password') {
+                f.attr('type', 'text');
+                i.removeClass('bi-eye').addClass('bi-eye-slash');
+            } else {
+                f.attr('type', 'password');
+                i.removeClass('bi-eye-slash').addClass('bi-eye');
+            }
+        });
+
+        $('#loginForm').submit(function (event) {
+            localStorage.clear('jwtToken');
+            showLoading(true);
+            event.preventDefault();
+            $.ajax({
+                url: '/Account/Login',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        window.location.href = '@Url.Action("Dashboard", "Home")';
+                    } else {
+                        showToast('error', 'Los datos ingresados son incorrectos.');
+                        showLoading(false);
+                    }
+                },
+                error: function () {
+                    showToast('error', 'Ocurrió un error al procesar la solicitud.');
+                    showLoading(false);
+                }
+            });
+        });
+    });
+</script>

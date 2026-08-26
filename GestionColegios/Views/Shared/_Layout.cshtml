@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(ViewBag.Title != null ? ViewBag.Title + " — " : "")GESTIÓN EDUCACIONAL</title>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+    <script src="~/Scripts/kendo/kendo.all.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <link rel="stylesheet" href="~/Content/kendo/kendo.default-main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="~/Scripts/global.js" type="text/javascript"></script>
+    <script src="~/Scripts/kendo-ui-license.js"></script>
+    <link rel="icon" type="image/svg+xml" href="~/Content/Assets/logo_icono_sin_texto.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/Assets/logo_icono_sin_texto.ico">
+    <script src="~/Scripts/kendo/cultures/kendo.culture.es-CL.min.js"></script>
+    <script>kendo.culture("es-CL");</script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    @{
+        var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+    }
+
+    <script type="text/javascript">
+    var isAdmin = @Html.Raw(Json.Encode(ViewBag.IsAdmin));
+    function getInitials(fullName) {
+        if (!fullName) return '';
+        return fullName.substring(0, 2).toUpperCase();
+    }
+    window.onload = function () {
+        document.getElementById('user-initials').textContent = getInitials('@User.Identity.Name');
+    };
+    </script>
+
+    <!-- ══ NAVBAR ══════════════════════════════════════════════════════ -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom shadow-sm">
+        <div class="container-fluid">
+
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2"
+               href="@Url.Action("Dashboard", "Home")">
+                <img src="~/Content/Assets/logo_web_con_texto.png" alt="GestiónEducacional" style="height:38px; width:auto;">
+            </a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link @(ctrl == "Home" && action == "Dashboard" ? "active fw-semibold" : "")"
+                           href="@Url.Action("Dashboard", "Home")">
+                            <i class="bi bi-house-door me-1"></i> Inicio
+                        </a>
+                    </li>
+
+                    <!-- Alumnos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @(ctrl == "Alumnos" ? "active fw-semibold" : "")"
+                           href="#" id="ddAlumnos" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people-fill me-1"></i> Alumnos
+                        </a>
+                        <ul class="dropdown-menu shadow-sm" aria-labelledby="ddAlumnos">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Index", "Alumnos")">
+                                    <i class="bi bi-list-ul me-2 text-primary"></i> Listado de Alumnos
+                                </a>
+                            </li>
+                            @if (ViewBag.IsAdmin != null && (bool)ViewBag.IsAdmin)
+                            {
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Crear", "Alumnos")">
+                                        <i class="bi bi-person-plus me-2 text-success"></i> Registrar Alumno Nuevo
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+
+                    <!-- Matrículas -->
+                    <li class="nav-item">
+                        <a class="nav-link @(ctrl == "Matricula" ? "active fw-semibold" : "")"
+                           href="@Url.Action("Index", "Matricula")">
+                            <i class="bi bi-journal-bookmark-fill me-1"></i> Matrículas
+                        </a>
+                    </li>
+
+                    <!-- Administración — solo Administrador -->
+                    @if (ViewBag.IsAdmin != null && (bool)ViewBag.IsAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @(ctrl == "Users" ? "active fw-semibold" : "")"
+                               href="#" id="ddAdmin" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear-fill me-1"></i> Administración
+                            </a>
+                            <ul class="dropdown-menu shadow-sm" aria-labelledby="ddAdmin">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Usuarios", "Users")">
+                                        <i class="bi bi-person-gear me-2 text-secondary"></i> Usuarios
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a class="dropdown-item @(ctrl == "AnioEscolar" ? "active" : "")" href="@Url.Action("Index", "AnioEscolar")">
+                                        <i class="bi bi-calendar3 me-2 text-secondary"></i> Años Escolares
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item @(ctrl == "ProfesorJefe" ? "active" : "")" href="@Url.Action("Index", "ProfesorJefe")">
+                                        <i class="bi bi-person-badge me-2 text-secondary"></i> Profesores Jefe
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a class="dropdown-item @(ctrl == "CertificadoAdmin" ? "active" : "")" href="@Url.Action("Index", "CertificadoAdmin")">
+                                        <i class="bi bi-award me-2 text-secondary"></i> Certificados
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+
+                <!-- Ayuda -->
+                <a target="_blank" href="@Url.Action("Ayuda", "Home")"
+                   class="btn btn-link text-primary me-2 p-0"
+                   title="Ayuda"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="bi bi-question-circle fs-5"></i>
+                </a>
+
+                <!-- Usuario -->
+                <div class="dropdown">
+                    <a href="#" class="user-circle initials dropdown-toggle no-caret"
+                       id="user-initials-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="user-initials"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm"
+                        aria-labelledby="user-initials-dropdown">
+                        <li>
+                            <span class="dropdown-item-text">
+                                <div class="fw-semibold">@User.Identity.Name</div>
+                                <small class="text-muted">
+                                    @(ViewBag.IsAdmin != null && (bool)ViewBag.IsAdmin
+                                    ? "Administrador" : "Usuario")
+                                </small>
+                            </span>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item" id="ChangePasswordButton">
+                                <i class="bi bi-key me-2"></i> Cambiar Contraseña
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item text-danger"
+                               href="@Url.Action("Logout", "Account")"
+                               onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                        <form id="logout-form" action="@Url.Action("Logout", "Account")"
+                              method="post" style="display:none;">
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══ BREADCRUMB ════════════════════════════════════════════════════ -->
+    @if (!(ctrl == "Home" && action == "Dashboard"))
+    {
+        <div class="bg-light border-bottom py-1 px-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Dashboard", "Home")">
+                            <i class="bi bi-house-door"></i> Inicio
+                        </a>
+                    </li>
+                    @if (ctrl == "Alumnos")
+                    {
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Alumnos")">Alumnos</a>
+                        </li>
+                        if (action != "Index")
+                        {
+                            <li class="breadcrumb-item active">@ViewBag.Title</li>
+                        }
+                    }
+                    else if (ctrl == "Matricula")
+                    {
+                        <li class="breadcrumb-item">Matrículas</li>
+                        <li class="breadcrumb-item active">@ViewBag.Title</li>
+                    }
+                    else if (ctrl == "Users")
+                    {
+                        <li class="breadcrumb-item">Administración</li>
+                        <li class="breadcrumb-item active">Usuarios</li>
+                    }
+                    else if (ctrl == "CertificadoAdmin")
+                    {
+                        <li class="breadcrumb-item">Administración</li>
+                        <li class="breadcrumb-item active">Certificados</li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item active">@ViewBag.Title</li>
+                    }
+                </ol>
+            </nav>
+        </div>
+    }
+
+    <!-- ══ CONTENIDO ═════════════════════════════════════════════════════ -->
+    <div class="container-fluid body-content py-3 px-4">
+        <div id="modalUtilities"></div>
+        @RenderBody()
+    </div>
+
+    <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
+    <footer class="bg-light border-top mt-auto py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 d-flex align-items-center gap-2">
+                    <img src="~/Content/Asset/logo_web_con_texto.png" alt="GestiónEducacional" style="height:34px; width:auto;">
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    <small class="text-muted">
+                        &copy; 2026. Desarrollado por
+                        <a href="https://jdoconsultores.cl/" target="_blank"
+                           class="text-decoration-none text-muted fw-medium">JDOConsultores</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    @RenderSection("scripts", required: false)
+    @Html.Action("_UrlAccionesAjax", "Default")
+
+    <!-- ══ MODAL CONFIRMACIÓN GLOBAL ════════════════════════════════════ -->
+    <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="z-index:20000">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <span id="modalConfirmIcon" class="fs-4"></span>
+                        <h6 class="modal-title fw-bold mb-0" id="modalConfirmTitle">Confirmar acción</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2 pb-1">
+                    <p class="text-muted mb-0" id="modalConfirmMsg"></p>
+                </div>
+                <div class="modal-footer border-0 pt-1 gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3"
+                            data-bs-dismiss="modal" id="modalConfirmCancel">
+                        <i class="bi bi-x me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-sm px-3" id="modalConfirmOk">
+                        <i class="bi bi-check me-1"></i>Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ MODAL ALERTA GLOBAL ═══════════════════════════════════════════ -->
+    <div class="modal fade" id="modalAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:400px">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <span id="modalAlertIcon" class="fs-4"></span>
+                        <h6 class="modal-title fw-bold mb-0" id="modalAlertTitle">Aviso</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2 pb-1">
+                    <p class="mb-0" id="modalAlertMsg"></p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm px-4" id="modalAlertOk"
+                            data-bs-dismiss="modal">
+                        <i class="bi bi-check me-1"></i>Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Helpers globales ────────────────────────────────────────────────
+        /**
+         * showConfirm(opciones)
+         *   tipo:    'danger' | 'warning' | 'info'  (default 'warning')
+         *   titulo:  texto del título
+         *   mensaje: texto del cuerpo
+         *   onOk:    callback al confirmar
+         */
+        function showConfirm(opciones) {
+            var cfg = $.extend({ tipo: 'warning', titulo: 'Confirmar', mensaje: '', onOk: null }, opciones);
+            var iconos = { danger: '🗑️', warning: '⚠️', info: 'ℹ️' };
+            var btnClases = { danger: 'btn-danger', warning: 'btn-warning', info: 'btn-primary' };
+
+            $('#modalConfirmIcon').text(iconos[cfg.tipo] || '⚠️');
+            $('#modalConfirmTitle').text(cfg.titulo);
+            $('#modalConfirmMsg').html(cfg.mensaje);
+            $('#modalConfirmOk')
+                .removeClass('btn-danger btn-warning btn-primary btn-success')
+                .addClass(btnClases[cfg.tipo] || 'btn-warning');
+
+            var $modal = $('#modalConfirm');
+            // limpiar listener previo
+            $('#modalConfirmOk').off('click.confirm').on('click.confirm', function () {
+                $modal.modal('hide');
+                if (typeof cfg.onOk === 'function') cfg.onOk();
+            });
+            $modal.modal('show');
+        }
+
+        /**
+         * showAlert(opciones)
+         *   tipo:    'success' | 'danger' | 'warning' | 'info'
+         *   titulo:  texto del título
+         *   mensaje: texto del cuerpo
+         */
+        function showAlert(opciones) {
+            var cfg = $.extend({ tipo: 'info', titulo: 'Aviso', mensaje: '' }, opciones);
+            var iconos = { success: '✅', danger: '❌', warning: '⚠️', info: 'ℹ️' };
+            var btnCls = { success: 'btn-success', danger: 'btn-danger', warning: 'btn-warning', info: 'btn-primary' };
+
+            $('#modalAlertIcon').text(iconos[cfg.tipo] || 'ℹ️');
+            $('#modalAlertTitle').text(cfg.titulo);
+            $('#modalAlertMsg').html(cfg.mensaje);
+            $('#modalAlertOk')
+                .removeClass('btn-success btn-danger btn-warning btn-primary')
+                .addClass(btnCls[cfg.tipo] || 'btn-primary');
+
+            $('#modalAlert').modal('show');
+        }
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        loadView($("#modalUtilities"), '@Url.Action("_Utilities", "Default")');
+        $("#ChangePasswordButton").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalChangePassword));
+            showLoading(false);
+        });
+
+        // Convertir TODOS los [title] del DOM a tooltips Bootstrap (excepto inputs y selects)
+        activarTooltipsGlobal();
+
+        // Re-activar cuando el DOM cambie (grids Kendo, contenido Ajax, etc.)
+        $(document).on('DOMNodeInserted', function (e) {
+            var $nuevo = $(e.target);
+            if ($nuevo.find('[title]').length || $nuevo.is('[title]')) {
+                setTimeout(function () { activarTooltipsGlobal(); }, 150);
+            }
+        });
+    });
+
+    function activarTooltipsGlobal() {
+        // Selecciona todos los elementos con title que NO sean inputs, selects, textareas
+        $('[title]').not('input, select, textarea, [data-bs-original-title]').each(function () {
+            var $el = $(this);
+            // Evitar doble inicializacion
+            if ($el.attr('data-bs-original-title')) return;
+            $el.attr('data-bs-toggle', 'tooltip')
+               .attr('data-bs-placement', $el.data('bs-placement') || 'top');
+            new bootstrap.Tooltip(this, {
+                trigger:  'hover',
+                boundary: 'window',
+                html:     false
+            });
+        });
+    }
+    </script>
+</body>
+</html>
