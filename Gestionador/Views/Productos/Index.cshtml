@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Gestionador.Responses.ConceptoResponse>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Productos</h2>
+    <button id="btnCrearConcepto" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Crear Producto
+    </button>
+</div>
+<div id="grid"></div>
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetConceptos,
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: false, nullable: true },
+                            Concepto: { type: "string", validation: { required: true } },
+                            IsActive: { type: "boolean" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            },
+            groupable: false,
+            pageable: true,
+            sortable: true,
+            scrollable: true,
+            editable: "inline",
+            columns: [
+                { field: "Concepto", title: "Producto", width: "200px" },
+                { field: "IsActive", title: "Activo", width: "100px", template: "#= IsActive ? 'Si' : 'No' #" },
+                {
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalUpsertConcepto, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ]
+        });
+
+        $("#btnCrearConcepto").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalUpsertConcepto));
+            showLoading(false);
+        });
+    });
+</script>

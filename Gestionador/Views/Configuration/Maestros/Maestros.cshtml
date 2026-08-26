@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Gestionador.Responses.PersonaResponse>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Maestros</h2>
+    <button id="btnCrearMaestro" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Registrar Maestro
+    </button>
+</div>
+<div id="grid"></div>
+<script>$(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetMaestrosAdmin,
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: false, nullable: true },
+                            Rut: { type: "string" },
+                            Nombre: { type: "string" },
+                            Apellido: { type: "string" },
+                            Telefono: { type: "string" },
+                            Email: { type: "string" },
+                            Direccion1: { type: "string" },
+                            DirNum: { type: "string" },
+                            IsActive: { type: "boolean" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            },
+            groupable: false,
+            pageable: true,
+            sortable: true,
+            scrollable: true,
+            editable: "inline",
+            columns: [
+                { field: "Rut", title: "Rut" },
+                {
+                    field: "Nombre", title: "Nombre", template: function (dataItem) {
+                        return dataItem.Nombre + " " + dataItem.Apellido
+                    }
+                },
+                {
+                    field: "Dirección", title: "Dirección", template: function (dataItem) {
+                        return dataItem.Direccion1 + " " + dataItem.DirNum + " - " + dataItem.NombreComuna
+                    }
+                },
+                { field: "Telefono", title: "Teléfono" },
+                { field: "Email", title: "Email" },
+                { field: "IsActive", title: "Activo", width: "100px", template: "#= IsActive ? 'Si' : 'No' #" },
+                {
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalUpsertMaestro, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ]
+        });
+
+        $("#btnCrearMaestro").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalUpsertMaestro));
+            showLoading(false);
+        });
+    });</script>

@@ -1,0 +1,154 @@
+﻿@model Gestionador.Models.PersonaViewModel
+@{
+    var isEditing = Model.ID.HasValue;
+    var regiones = (List<dynamic>)ViewBag.Regiones;
+}
+
+<div class="modal fade" id="createMaestro" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    <text>Crear Maestro</text>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateMaestroAsync", "Configuration", FormMethod.Post, new { id = "crearMaestroForm" }))
+                {
+                    if (isEditing)
+                    {
+                        @Html.HiddenFor(Model => Model.ID);
+                    }
+                    @Html.AntiForgeryToken();
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Rut</span>
+                                @Html.TextBoxFor(Model => Model.Rut, new { @class = "form-control rut-input", id = "CompRut", maxlength = "12" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Nombre</span>
+                                @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control", id = "CompNombre" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Apellido</span>
+                                @Html.TextBoxFor(Model => Model.Apellido, new { @class = "form-control", id = "CompApellido" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Región</span>
+                                @Html.DropDownList("CompRegionId", new SelectList(regiones, "ID", "FullData",7), new { @class = "form-select", id = "CompRegionId" })
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Comuna</span>
+                                @Html.DropDownListFor(Model => Model.ComunaID, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Comuna"), new { @class = "form-select", id = "CompComunaID" })
+                            </div>
+                        </div>
+                        <div class="col-md-9 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Dirección</span>
+                                @Html.TextBoxFor(Model => Model.Direccion1, new { @class = "form-control", id = "CompDireccion1" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Número</span>
+                                @Html.TextBoxFor(Model => Model.DirNum, new { @class = "form-control", id = "CompDirNum" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Teléfono</span>
+                                @Html.TextBoxFor(Model => Model.Telefono, new { @class = "form-control", id = "CompTelefono" })
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">Email</span>
+                                @Html.TextBoxFor(Model => Model.Email, new { @class = "form-control", @type = "email", id = "CompEmail" })
+                            </div>
+                        </div>
+                        @if (isEditing)
+                        {
+                            <div class="form-check form-switch form-check-reverse">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                                @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#createMaestro").modal('show');
+
+        $ComComuna = $("#CompComunaID");
+
+        changeSelectCascade(GetComunasByRegionIdAsync, $("#CompRegionId").val(), $("#CompComunaID")).then(function () {
+            $("#CompComunaID").val(7);
+        });
+
+        $('#CompRegionId').on("change", function () {
+            changeSelectCascade(GetComunasByRegionIdAsync, $(this).val(), $ComComuna)
+        });
+
+        $('.rut-input').on('input', function () {
+            var formattedRut = formatRut($(this).val());
+            $(this).val(formattedRut);
+        });
+
+        $('.rut-input').on('blur', function () {
+            var rut = $(this).val();
+            if (!validateRut(rut)) {
+                showToast("info", "Rut Invalido");
+                $(this).val('');
+            }
+        });
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var formData = $('#crearMaestroForm').serialize();
+            $.ajax({
+                url: UpsertMaestroAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createMaestro").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

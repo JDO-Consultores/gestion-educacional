@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "NotFound";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div id="notfound">
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>404</h1>
+        </div>
+        <h2>¡Ups! La página que buscas no ha sido encontrada.</h2>
+        <p>La página que estás buscando puede haber sido eliminada, su nombre puede haber cambiado o estar temporalmente no disponible. <a href="@Url.Action("Login", "Account")">Volver a la página de inicio</a></p>
+    </div>
+</div>

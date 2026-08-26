@@ -1,0 +1,132 @@
+﻿@model Gestionador.Responses.AdquisicionResponse
+@{
+    List<dynamic> parrocos = (List<dynamic>)ViewBag.Parrocos;
+}
+
+<div class="modal fade" id="imprimirPdfModal" tabindex="-1" aria-labelledby="imprimirPdfModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imprimirPdfModal">Configuración Reporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ImprimirPdf", "Solicitudes", FormMethod.Post, new { id = "", autocomplete = "off" }))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(Model => Model.ID)
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Administración</span>
+                            @Html.DropDownList("parrocoId", new SelectList(parrocos, "ID", "Text"), new { @class = "form-select", id = "parrocoId" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Comprador" id="flexCheckComprador" checked>
+                            <label class="form-check-label" for="flexCheckComprador">
+                                Comprador
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Referente" id="flexCheckReferente" checked>
+                            <label class="form-check-label" for="flexCheckReferente">
+                                Referente
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Adquisicion" id="flexCheckAdquisicion" checked>
+                            <label class="form-check-label" for="flexCheckAdquisicion">
+                                Adquisición de Derechos
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Mantenciones" id="flexCheckMantenciones" checked>
+                            <label class="form-check-label" for="flexCheckMantenciones">
+                                Mantenciones
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Servicios" id="flexCheckServicios" checked>
+                            <label class="form-check-label" for="flexCheckServicios">
+                                Servicios
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Difuntos" id="flexCheckDifuntos" checked>
+                            <label class="form-check-label" for="flexCheckDifuntos">
+                                Difuntos
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Pagos" id="flexCheckPagos" checked>
+                            <label class="form-check-label" for="flexCheckPagos">
+                                Pagos
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Observaciones" id="flexCheckObservaciones" checked>
+                            <label class="form-check-label" for="flexCheckObservaciones">
+                                Observaciones
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="imprimirPdfButton">Imprimir PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#imprimirPdfModal").modal('show');
+
+        $('#imprimirPdfButton').click(function () {            
+            showLoading(true);
+            var id = $("#ID").val();
+            var parrocoId = $("#parrocoId").val();
+            var checkStates = [];
+            $('input[type="checkbox"]').each(function () {
+                checkStates.push({
+                    value: $(this).val(),
+                    checked: $(this).is(':checked')
+                });
+            });
+
+            $.ajax({
+                url: ImprimirPdf,
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: {
+                    id: id,
+                    parrocoId: parrocoId,
+                    checkStates: JSON.stringify(checkStates)
+                },
+                success: function (data, status, xhr) {
+                    var blob = new Blob([data], { type: 'application/pdf' });
+
+                    var link = document.createElement('a');
+                    var url = window.URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = `${new Date().toLocaleString()}-Adquisición.pdf`;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                    showLoading(false);
+                    $("#imprimirPdfModal").modal('hide');
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("Error",'Error generating PDF.');
+                }
+            });
+
+        });
+    });
+</script>

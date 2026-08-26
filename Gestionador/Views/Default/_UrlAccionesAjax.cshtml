@@ -1,0 +1,80 @@
+﻿<script type="text/javascript">
+    var GetComunasByRegionIdAsync = '@Url.Action("GetComunasByRegionId", "Search")';
+    var GetConceptosBySectorId = '@Url.Action("GetConceptosBySectorId", "Search")';
+    var GetSectoresByIdAsync = '@Url.Action("GetSectoresByIdAsync", "Search")';
+    var GetSeccionConceptoById = '@Url.Action("GetSeccionConceptoById", "Search")';
+    var GetCausas = '@Url.Action("GetCausas", "Search")';
+    var GetCausasAdmin = '@Url.Action("GetCausasAdmin", "Search")';
+    var GetValorMonedaAdmin = '@Url.Action("GetValorMonedasAdmin", "Search")';
+    var GetLugarDefuncionAdmin = '@Url.Action("GetLugarDefuncionAdmin", "Search")';
+    var GetPatiosByCementerioID = '@Url.Action("GetPatiosByCementerioID", "Search")';
+    var GetParrocosAdmin = '@Url.Action("GetParrocosAdmin", "Search")';
+    var GetTipoMonedas = '@Url.Action("GetTipoMonedas", "Search")';
+    var GetMaestrosAdmin = '@Url.Action("GetMaestrosAdmin", "Search")';
+    var GetMaestros = '@Url.Action("GetMaestros", "Search")';
+
+    var GetBancos = '@Url.Action("GetBancos", "Search")';
+    var GetLugarDefuncion = '@Url.Action("GetLugarDefuncion", "Search")';
+    var GetFormasPago = '@Url.Action("GetFormasPago", "Search")';
+    var GetCementerios = '@Url.Action("GetCementerios", "Search")';
+    var GetServiciosCategories = '@Url.Action("GetServiciosCategories", "Search")';
+    var GetMantencionesCategories = '@Url.Action("GetMantencionesCategories", "Search")';
+    var GetServiciosByConceptoId = '@Url.Action("GetServiciosByConceptoId", "Search")';
+    var GetCompradorByRut = '@Url.Action("GetCompradorByRut","Search")';
+    var GetAnios = '@Url.Action("GetAnios", "Search")';
+    var GetCategorias = '@Url.Action("GetCategorias", "Search")';
+    var GetTipoAdministrador = '@Url.Action("GetTipoAdministrador", "Search")';
+
+    var CreateFicha = '@Url.Action("CreateAsync", "Solicitudes")';
+    var GetSolicitudesIndexAsync = '@Url.Action("GetSolicitudesIndexAsync", "Solicitudes")';
+    var ImprimirPdf = '@Url.Action("ImprimirPdf", "Solicitudes")';
+    var EditFicha = '@Url.Action("EditAsync", "Solicitudes")';
+    var ModalTransferAdquisicion = '@Url.Action("_TransferAdquisicion", "Solicitudes", new { id = "param-id" })';
+    var ModalAnularAdquisicion = '@Url.Action("_AnularAdquisicion", "Solicitudes", new { id = "param-id" })';
+    var AnularAdquisicionAsync = '@Url.Action("AnularFicha", "Solicitudes")';
+    var TransferAdquisicionAsync = '@Url.Action("TransferAdquisicionAsync", "Solicitudes")';
+    var BuscarAdquisicionAsync = '@Url.Action("BuscarAdquisicionAsync", "Solicitudes")';
+    var ModalGenerarPdf = '@Url.Action("_GenerarPdf", "Solicitudes", new { id = "param-id" })';
+
+    var GetUsuarios = '@Url.Action("GetUsers", "Users")';
+    var GetRoles = '@Url.Action("GetRoles", "Users")';
+    var ModalDeleteUser = '@Url.Action("_DeleteUser", "Users", new { id = "param-id" })';
+    var ModalEditUser = '@Url.Action("_EditUser", "Users", new { id = "param-id" })';
+    var ModalCreateUser = '@Url.Action("_CreateUser", "Users", new { id = "param-id" })';
+    var EditUserAsync = '@Url.Action("EditUserAsync", "Users")';
+    var CreateUserAsync = '@Url.Action("CreateUserAsync", "Users")';
+
+    var ModalChangePassword = '@Url.Action("_ChangePassword", "Account")';
+    var ChangePasswordAsync = '@Url.Action("ChangePasswordAsync", "Account")';
+
+    var GetServicios = '@Url.Action("GetServicios", "Servicios")';
+    var UpsertServicioAsync = '@Url.Action("UpsertServicioAsync", "Servicios")';
+    var ModalUpsertServicio = '@Url.Action("_UpsertServicio", "Servicios", new { id = "param-id" })';
+
+    var GetConceptos = '@Url.Action("GetConceptos", "Productos")';
+    var UpsertConceptoAsync = '@Url.Action("UpsertProductoAsync", "Productos")';
+    var ModalUpsertConcepto = '@Url.Action("_UpsertConcepto", "Productos", new { id = "param-id" })';
+
+    var ModalEditSeccionConcepto = '@Url.Action("_EditSeccionConcepto", "Patios", new { id = "param-id" })';
+    var ModalAssingSeccionesByConcepto = '@Url.Action("_AssignSeccionesByConcepto", "Patios", new { id = "param-id" })';
+    var GetPatios = '@Url.Action("GetPatios", "Patios")';
+    var CreateSeccionConcepto = '@Url.Action("CreateSeccionConcepto", "Patios")';
+    var EditSeccionConcepto = '@Url.Action("EditSeccionConcepto", "Patios")';
+    var ModalCreatePatio = '@Url.Action("_CreatePatio", "Patios")';
+    var ModalEditPatio = '@Url.Action("_EditPatio", "Patios", new { id = "param-id" })';
+    var CreatePatios = '@Url.Action("CreatePatios", "Patios")';
+    var EditPatios = '@Url.Action("EditPatios", "Patios")';
+    var GetCementerios = '@Url.Action("GetCementeriosAsync", "Patios")';
+    var GetPatiosByCementerioId = '@Url.Action("GetPatiosByCementerioId", "Patios")';
+
+    var UpsertMaestroAsync = '@Url.Action("UpsertMaestroAsync", "Configuration")';
+    var ModalUpsertMaestro = '@Url.Action("_UpsertMaestro", "Configuration", new { id = "param-id" })';
+    var UpsertValorMonedaAsync = '@Url.Action("UpsertValorMonedaAsync", "Configuration")';
+    var ModalUpsertValorMoneda = '@Url.Action("_UpsertValorMoneda", "Configuration", new { id = "param-id" })';
+    var UpsertCausaAsync = '@Url.Action("UpsertCausaAsync", "Configuration")';
+    var ModalUpsertCausa = '@Url.Action("_UpsertCausa", "Configuration", new { id = "param-id" })';
+    var UpsertLugarDefuncionAsync = '@Url.Action("UpsertLugarDefuncionAsync", "Configuration")';
+    var ModalUpsertLugarDefuncion = '@Url.Action("_UpsertLugarDefuncion", "Configuration", new { id = "param-id" })';
+    var UpsertParrocoAsync = '@Url.Action("UpsertParrocoAsync", "Configuration")';
+    var ModalUpsertParrocos = '@Url.Action("_UpsertParrocos", "Configuration", new { id = "param-id" })';
+</script>

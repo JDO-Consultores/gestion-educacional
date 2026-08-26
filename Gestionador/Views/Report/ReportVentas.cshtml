@@ -1,0 +1,236 @@
+﻿@{
+    ViewBag.Title = "ReportVentas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var formasPago = (List<dynamic>)ViewBag.FormasPago;
+}
+
+<h2>Reporte formas de pago</h2>
+<div class="container-md">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Criterios de búsqueda</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-6">
+                        <div class="d-flex flex-wrap align-items-center col-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Inicio</span>
+                                <input type="date" id="startDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center col-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Termino</span>
+                                <input type="date" id="endDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <div class="col-12">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Formas de Pago</span>
+                                <select id="formasPagoSelect" multiple="multiple" class="form-control">
+                                    @foreach (var fp in formasPago)
+                                    {
+                                        <option value="@fp.ID">@fp.FormaPago</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="button" class="btn btn-primary" id="filterButton">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+    </div>
+
+    <div id="gridReport" class="mt-4"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        let myChart;
+        $('#startDate').val(getCurrentDate());
+        $('#endDate').val(getCurrentDate());
+
+        $("#formasPagoSelect").kendoMultiSelect({
+            placeholder: "Seleccionar formas de pago...",
+            dataTextField: "FormaPago",
+            dataValueField: "ID",
+            autoClose: false,
+            dataSource: {
+                data: @Html.Raw(Json.Encode(formasPago))
+            },
+            change: function() {
+            }
+        });
+
+        var multiSelect = $("#formasPagoSelect").data("kendoMultiSelect");
+        var allValues = @Html.Raw(Json.Encode(formasPago.Select(x => x.ID).ToList()));
+        multiSelect.value(allValues);
+
+        $("#gridReport").kendoGrid({
+            dataSource: {
+                schema: {
+                    model: {
+                        fields: {
+                            FormaPago: { type: "string" },
+                            Total: { type: "number" },
+                            Fecha: { type: "date" }
+                        }
+                    }
+                },
+                pageSize: 20,
+                data: [],
+                aggregate: [
+                    { field: "Total", aggregate: "sum" }
+                ]
+            },
+            pageable: true,
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            toolbar: ["excel"],
+            excel: {
+                fileName: "reporte.xlsx",
+                filterable: true,
+                allPages: true
+            },
+            columns: [
+                {
+                    field: "FormaPago", title: "Forma Pago", width: "20%", filterable: {
+                        multi: true,
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: GetFormasPago,
+                                }
+                            }
+                        }
+                    },
+                },
+                {
+                    field: "Fecha", title: "Fecha", width: "15%", format: "{0:dd-MM-yyyy}",
+                    template: function (dataitem) {
+                        return kendo.toString(kendo.parseDate(dataitem.Fecha), "dd-MM-yyyy");
+                    }
+                },
+                { field: "Total", title: "Total", width: "10%", format: "{0:n0}", footerTemplate: "Total: #= kendo.toString(data.Total.sum, 'n0') #" },
+            ],
+            excelExport: function (e) {
+                var sheet = e.workbook.sheets[0];
+                sheet.columns.forEach(function (column) {
+                    column.width = 200;
+                });
+                for (var i = 1; i < sheet.rows.length; i++) {
+                    var row = sheet.rows[i];
+                    var cellFecha = row.cells[1];
+                    if (cellFecha && cellFecha.value) {
+                        if (typeof cellFecha.value === "string" && cellFecha.value.indexOf("/Date(") === 0) {
+                            var timestamp = parseInt(cellFecha.value.replace(/\/Date\((\d+)\)\//, '$1'));
+                            var date = new Date(timestamp);
+                            cellFecha.value = date;
+                            cellFecha.format = "dd-MM-yyyy";
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateChart(startDate, endDate, formasPagoIds) {
+            $.ajax({
+                url: '@Url.Action("GetReportVentas", "Report")',
+                type: 'GET',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    formasPagoIds: formasPagoIds
+                },
+                traditional: true,
+                success: function (response) {
+                    if (response.data.length > 0) {
+                        if (myChart) {
+                            myChart.destroy();
+                        }
+                        var groupedData = response.data.reduce(function (acc, item) {
+                            if (!acc[item.FormaPago]) {
+                                acc[item.FormaPago] = 0;
+                            }
+                            acc[item.FormaPago] += item.Total;
+                            return acc;
+                        }, {});
+
+                        var xValues = Object.keys(groupedData);
+                        var yValues = Object.values(groupedData);
+                        var barColors = xValues.map(function () {
+                            return getRandomColor();
+                        });
+
+                        myChart = new Chart("myChart", {
+                            type: "pie",
+                            data: {
+                                labels: xValues,
+                                datasets: [{
+                                    backgroundColor: barColors,
+                                    data: yValues
+                                }]
+                            }
+                        });
+
+                        var gridData = response.data.map(function (item) {
+                            return {
+                                FormaPago: item.FormaPago,
+                                Total: item.Total,
+                                Fecha: item.FechaRegistro
+                            };
+                        });
+
+                        var grid = $("#gridReport").data("kendoGrid");
+                        grid.dataSource.data(gridData);
+                    } else {
+                        showToast("info", "No existe información para los criterios seleccionados.");
+                    }
+                },
+                error: function () {
+                    showToast("error", "Ha ocurrido un error al obtener la información");
+                }
+            });
+        };
+
+        updateChart($('#startDate').val(), $('#endDate').val(), allValues);
+
+        $('#filterButton').click(function () {
+            showLoading(true);
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var multiSelect = $("#formasPagoSelect").data("kendoMultiSelect");
+            var selectedFormasPago = multiSelect.value();
+
+            if (selectedFormasPago.length === 0) {
+                showToast("info", "Debe seleccionar al menos una forma de pago.");
+                showLoading(false);
+                return;
+            }
+
+            updateChart(startDate, endDate, selectedFormasPago);
+            showLoading(false);
+        });
+    });
+</script>

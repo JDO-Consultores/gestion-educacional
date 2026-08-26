@@ -1,0 +1,81 @@
+﻿@model Gestionador.Models.ConceptoRequest
+@{
+    var isEditing = Model.ID.HasValue;
+}
+
+<div class="modal fade" id="createProducto" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    @if (isEditing)
+                    {
+                        <text>Editar Producto</text>
+                    }
+                    else
+                    {
+                        <text>Crear Producto</text>
+                    }
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateProductoAsync", "Producto", FormMethod.Post, new { id = "crearProductoForm" }))
+                {
+                    if (isEditing)
+                    {
+                        @Html.HiddenFor(Model => Model.ID);
+                    }
+                    @Html.AntiForgeryToken();
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Producto</span>
+                            @Html.TextBoxFor(Model => Model.Concepto, new { @class = "form-control", id = "Producto" })
+                        </div>
+                    </div>
+                    <div class="form-check form-switch form-check-reverse">
+                        <label class="form-check-label" for="flexSwitchIsNicho">¿Es un Nicho?</label>
+                        @Html.CheckBoxFor(Model => Model.IsNicho, new { @class = "form-check-input", role = "switch", id = "flexSwitchIsNicho" })
+                    </div>
+                    <div class="form-check form-switch form-check-reverse">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                        @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#createProducto").modal('show');
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var formData = $('#crearProductoForm').serialize();
+            $.ajax({
+                url: UpsertConceptoAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createProducto").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

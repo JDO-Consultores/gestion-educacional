@@ -1,0 +1,106 @@
+﻿@model Gestionador.Models.UserCreateViewModel
+
+<div class="modal fade" id="createUser" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">Crear Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateUserAsync", "Users", FormMethod.Post, new { id = "crearUserForm" }))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(Model => Model.ID)
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Username</span>
+                            @Html.TextBoxFor(Model => Model.Username, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Nombre</span>
+                            @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control", id = "Nombre" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Apellido</span>
+                            @Html.TextBoxFor(Model => Model.Apellido, new { @class = "form-control", id = "Apellido" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <div class="form-check form-switch form-check-reverse">
+                                @Html.CheckBoxFor(Model => Model.IsActive, new { id = "IsActive", @class = "form-check-input", type = "checkbox", name = "IsActive" })
+                                <label class="form-check-label" for="IsActive">¿Usuario Habilitado?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <div class="form-check form-switch form-check-reverse">
+                                @Html.CheckBoxFor(Model => Model.IsAdmin, new { id = "IsAdmin", @class = "form-check-input", type = "checkbox", name = "IsAdmin" })
+                                <label class="form-check-label" for="IsAdmin">¿Permisos de administrador?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Contraseña</span>
+                            @Html.TextBoxFor(Model => Model.Password, new { @class = "form-control", id = "Password", type = "password" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Confirmar Contraseña</span>
+                            @Html.TextBoxFor(Model => Model.PasswordConfirm, new { @class = "form-control", id = "PasswordConfirm", type = "password" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#createUser").modal('show');
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var formData = $('#crearUserForm').serialize();
+            $.ajax({
+                url: CreateUserAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createUser").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

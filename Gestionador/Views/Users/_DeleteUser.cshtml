@@ -1,0 +1,44 @@
+﻿@model Gestionador.Responses.UserResponse
+
+<div class="modal fade" id="deleteUsuario" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar este usuario?
+                <input type="hidden" id="deleteUserId" value="@Model.ID">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="deleteUser()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#deleteUsuario").modal('show');
+
+        function deleteUser() {
+            showLoading(true);
+            const userId = $("#deleteUserId").val();
+
+            $.ajax({
+                url: `/usuarios/eliminar/${userId}`,
+                type: 'DELETE',
+                success: function () {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    $('#deleteUsuario').modal('hide');
+                    showLoading(false);
+                },
+                error: function () {
+                    alert("Error al eliminar el usuario");
+                    showLoading(false);
+                }
+            });
+        }
+    });
+</script>

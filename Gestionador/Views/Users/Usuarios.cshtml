@@ -1,0 +1,117 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Usuarios</h2>
+    <button id="btnCrearUsuario" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Crear Usuario
+    </button>
+</div>
+
+<div id="grid"></div>
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetUsuarios,
+                        contentType: "application/json",
+                        type: "GET"
+                    }
+                },
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "number" },
+                            Username: { type: "string" },
+                            Nombre: { type: "string" },
+                            Apellido: { type: "string" },
+                            IsActive: { type: "boolean" },
+                            Roles: { type: "object" }
+                        }
+                    },
+                }
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            editable: "inline",
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            columns: [
+                {
+                    field: "Username",
+                    title: "Identificador",
+                    width: "20%"
+                },
+                {
+                    field: "Nombre",
+                    title: "Nombre",
+                    width: "15%"
+                },
+                {
+                    field: "Apellido",
+                    title: "Apellido",
+                    width: "15%"
+                },
+                {
+                    field: "IsActive",
+                    title: "Activo",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return dataItem.IsActive ? "Si" : "No"
+                    }
+                },
+                {
+                    field: "Roles",
+                    title: "Roles",
+                    width: "20%",
+                    template: function (dataItem) {
+                        if (dataItem.Roles && dataItem.Roles.length > 0) {
+                            return dataItem.Roles.map(function (role) {
+                                return `<span class='badge bg-primary me-1'>${role.Roles.Rol}</span>`;
+                            }).join(" ");
+                        } else {
+                            return "";
+                        }
+                    },
+                },
+                { 
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalEditUser, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ],
+        });
+
+        $("#btnCrearUsuario").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalCreateUser));
+            showLoading(false);
+        });
+    });
+</script>

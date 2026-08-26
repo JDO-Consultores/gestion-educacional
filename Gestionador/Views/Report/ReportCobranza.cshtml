@@ -1,0 +1,195 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Reporte Cobranza</h2>
+<div class="container-md">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Criterios de búsqueda</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="d-flex flex-wrap align-items-center col-4">
+                            <div class="input-group input-group-sm mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Inicio</span>
+                                <input type="date" id="startDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center col-4">
+                            <div class="input-group input-group-sm mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Termino</span>
+                                <input type="date" id="endDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="button" class="btn btn-primary" id="filterButton">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gridReport"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#startDate').val(getCurrentDate());
+        $('#endDate').val(getCurrentDate());
+
+        $("#gridReport").kendoGrid({
+            dataSource: {
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "number" },
+                            NroFicha: { type: "string" },
+                            CompRut: { type: "string" },
+                            CompNombreApellido: { type: "string" },
+                            CompComuna: { type: "string" },
+                            CompTelefono: { type: "string" },
+                            Ubicacion: { type: "string" },
+                            Deuda: { type: "number" }
+                        }
+                    }
+                },
+                pageSize: 20,
+                data: [],
+                aggregate: [
+                    { field: "Deuda", aggregate: "sum" }
+                ]
+            },
+            pageable: true,
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            toolbar: ["excel"],
+            excel: {
+                fileName: "reporte.xlsx",
+                filterable: true,
+                allPages: true
+            },
+            columns: [
+                {
+                    field: "NroFicha",
+                    title: "Nro Ficha",
+                    width: "15%"
+                },
+                {
+                    field: "CompRut",
+                    title: "Rut Comprador",
+                    width: "20%"
+                },
+                {
+                    field: "CompNombreApellido",
+                    title: "Nombre Comprador",
+                    width: "25%"
+                },
+                {
+                    field: "CompComuna",
+                    title: "Comuna",
+                    width: "15%"
+                },
+                {
+                    field: "CompTelefono",
+                    title: "Teléfono",
+                    width: "15%",
+                },
+                {
+                    field: "Ubicacion",
+                    title: "Ubicación",
+                    width: "15%"
+                },
+                {
+                    field: "Deuda",
+                    title: "Deuda",
+                    width: "15%",
+                    format: "{0:n0}",
+                    footerTemplate: "Total: #= kendo.toString(data.Deuda.sum, 'n0') #" 
+                },
+                {
+                    command: [
+                        {
+                            text: "Ver",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.open("/Solicitudes/ViewSolicitud?id=" + encodeURIComponent(dataItem.ID), "_blank");
+                            },
+                        },
+                    ],
+                    title: "",
+                    width: "15%",
+                    attributes: {
+                        style: "text-align: center",
+                    }
+                }
+            ],
+            excelExport: function (e) {
+                var sheet = e.workbook.sheets[0];
+                sheet.columns.forEach(function (column) {
+                    column.width = 200;
+                });
+            }
+        });
+
+        $('#filterButton').click(function () {
+            showLoading(true);
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+
+            $.ajax({
+                url: '@Url.Action("GetReportCobranza", "Report")',
+                type: 'GET',
+                traditional: true,
+                data: {
+                    startDAte: startDate,
+                    endDate: endDate,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        if (response.data.length > 0) {
+                            var gridData = response.data.map(function (item) {
+                                return {
+                                    ID: item.ID,
+                                    NroFicha: item.NroFicha,
+                                    CompRut: item.CompRut,
+                                    CompNombreApellido: item.CompNombreApellido,
+                                    CompComuna: item.CompComuna,
+                                    CompTelefono: item.CompTelefono,
+                                    Ubicacion: item.Ubicacion,
+                                    Deuda: item.Deuda
+                                };
+                            });
+                            var grid = $("#gridReport").data("kendoGrid");
+                            grid.dataSource.data(gridData);
+                        } else {
+                            showToast("info", "No existe información entre las fichas seleccionadas.");
+                        }
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showToast("error", "Ha ocurrido un error al obtener la información");
+                    showLoading(false);
+                }
+            });
+        });
+    });
+</script>

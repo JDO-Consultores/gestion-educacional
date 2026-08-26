@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Ayuda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .video-number {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #F26E22;
+        margin-right: 0.5rem;
+    }
+
+    .circle-number {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-color: #F26E22;
+        color: white;
+        text-align: center;
+        line-height: 32px;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container-md mt-4">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <h4 class="mb-0 me-3">
+                Ayuda
+            </h4>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <img src="~/Content/Assets/video-thumbnail.png" class="card-img-top" alt="Miniatura Video 1" style="cursor: pointer;"
+                 data-bs-toggle="modal" data-bs-target="#videoModal"
+                 data-video-url="@Url.Content("~/Content/Assets/Videos/Busqueda.mp4")"
+                 data-title="Iniciar Sesión y Búsquedas" />
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                    <span class="circle-number">1</span>
+                    <span class="ms-2">Iniciar Sesión y Búsquedas</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <img src="~/Content/Assets/video-thumbnail.png" class="card-img-top" alt="Miniatura Video 2" style="cursor: pointer;"
+                 data-bs-toggle="modal" data-bs-target="#videoModal"
+                 data-video-url="@Url.Content("~/Content/Assets/Videos/Crear Adquisicion.mp4")"
+                 data-title="Crear Adquisición" />
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                    <span class="circle-number">2</span>
+                    <span class="ms-2">Crear Adquisición</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <img src="~/Content/Assets/video-thumbnail.png" class="card-img-top" alt="Miniatura Video 3" style="cursor: pointer;"
+                 data-bs-toggle="modal" data-bs-target="#videoModal"
+                 data-video-url="@Url.Content("~/Content/Assets/Videos/Reportes.mp4")"
+                 data-title="Visualizar Reportes" />
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                    <span class="circle-number">3</span>
+                    <span class="ms-2">Reportes</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <img src="~/Content/Assets/video-thumbnail.png" class="card-img-top" alt="Miniatura Video 1" style="cursor: pointer;"
+                 data-bs-toggle="modal" data-bs-target="#videoModal"
+                 data-video-url="@Url.Content("~/Content/Assets/Videos/Imprimir.mp4")"
+                 data-title="Imprimir Ficha" />
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                    <span class="circle-number">4</span>
+                    <span class="ms-2">Imprimir Ficha</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Video de Ayuda</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <video id="helpVideo" class="w-100" controls>
+                        <source src="" type="video/mp4">
+                        Tu navegador no soporta video HTML5.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoModal = document.getElementById('videoModal');
+        const videoElement = document.getElementById('helpVideo');
+        const videoSource = videoElement.querySelector('source');
+        const modalTitle = document.getElementById('videoModalLabel');
+
+        document.querySelectorAll('[data-video-url]').forEach(element => {
+            element.addEventListener('click', function () {
+                const videoUrl = this.getAttribute('data-video-url');
+                const title = this.getAttribute('data-title') || 'Video de Ayuda';
+                videoSource.src = videoUrl;
+                videoElement.load();
+                modalTitle.textContent = title;
+
+                const onModalShown = () => {
+                    videoElement.play();
+                    videoModal.removeEventListener('shown.bs.modal', onModalShown);
+                };
+                videoModal.addEventListener('shown.bs.modal', onModalShown);
+            });
+        });
+
+        videoModal.addEventListener('hidden.bs.modal', function () {
+            videoElement.pause();
+            videoElement.currentTime = 0;
+        });
+    });
+</script>

@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "ServerError";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+
+<div id="notfound">
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>500</h1>
+        </div>
+        <h2>¡Ups! Algo salió mal en el servidor.</h2>
+        <p>Ha ocurrido un error interno. La página que intentabas acceder no está disponible debido a un problema en el servidor. <a href="@Url.Action("Login", "Account")">Volver a la página de inicio</a></p>
+    </div>
+</div>

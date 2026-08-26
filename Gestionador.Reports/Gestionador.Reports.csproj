@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{72FA01FE-2106-4C88-A6AC-C521AA0AE01D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Gestionador.Reports</RootNamespace>
+    <AssemblyName>Gestionador.Reports</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic.Core, Version=1.6.0.2, Culture=neutral, PublicKeyToken=0f07ec44de6ac832, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.Core.1.6.0.2\lib\net46\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\DifuntoViewModel.cs" />
+    <Compile Include="Models\FichaViewModel.cs" />
+    <Compile Include="Models\FichaViewModelBase.cs" />
+    <Compile Include="Models\FormaPagoViewModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\PersonaViewModel.cs" />
+    <Compile Include="Models\ServicioViewModel.cs" />
+    <Compile Include="Models\TransferAdquisicionViewModel.cs" />
+    <Compile Include="Models\UserCreateViewModel.cs" />
+    <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Responses\AdquisicionBase.cs" />
+    <Compile Include="Responses\AdquisicionMantencionResponse.cs" />
+    <Compile Include="Responses\AdquisicionObservacion.cs" />
+    <Compile Include="Responses\AdquisicionPagoResponse.cs" />
+    <Compile Include="Responses\AdquisicionResponse.cs" />
+    <Compile Include="Responses\AdquisicionServiciosResponse.cs" />
+    <Compile Include="Responses\BancosResponse.cs" />
+    <Compile Include="Responses\CategoriasResponse.cs" />
+    <Compile Include="Responses\CausaResponse.cs" />
+    <Compile Include="Responses\CementerioReponse.cs" />
+    <Compile Include="Responses\Comprador.cs" />
+    <Compile Include="Responses\ComunasResponse.cs" />
+    <Compile Include="Responses\ConceptoResponse.cs" />
+    <Compile Include="Responses\FormasPagoResponse.cs" />
+    <Compile Include="Responses\HistorialResponse.cs" />
+    <Compile Include="Responses\LugarDefuncionResponse.cs" />
+    <Compile Include="Responses\MantencionConceptosResponse.cs" />
+    <Compile Include="Responses\MantencionResponse.cs" />
+    <Compile Include="Responses\PatiosResponse.cs" />
+    <Compile Include="Responses\RegionesResponse.cs" />
+    <Compile Include="Responses\RolesResponse.cs" />
+    <Compile Include="Responses\RolesUsuarios.cs" />
+    <Compile Include="Responses\SeccionConceptosResponse.cs" />
+    <Compile Include="Responses\SectoresResponse.cs" />
+    <Compile Include="Responses\ServiciosConceptosResponse.cs" />
+    <Compile Include="Responses\ServiciosResponse.cs" />
+    <Compile Include="Responses\TipoMonedaResponse.cs" />
+    <Compile Include="Responses\UserResponse.cs" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\FichaReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\DifuntosReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\MantencionesReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ObservacionesReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PagosReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\TipoMonedaReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ServicioReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReferenteReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PersonaReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.DifuntoViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.FichaViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.FichaViewModelBase.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.FormaPagoViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.LoginViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.PersonaViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.ServicioViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.TransferAdquisicionViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.UserCreateViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Models.UserViewModel.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionBase.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionMantencionResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionObservacion.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionPagoResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.AdquisicionServiciosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.BancosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.CategoriasResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.CausaReponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.CementerioReponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.ComunasResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.ConceptoResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.FormasPagoResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.HistorialResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.LugarDefuncionResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.MantencionConceptosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.MantencionResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.PatiosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.PersonaResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.RegionesResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.RolesResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.RolesUsuarios.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.SeccionConceptosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.SectoresResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.ServiciosConceptosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.ServiciosResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.TipoMonedaResponse.datasource" />
+    <None Include="Properties\DataSources\Gestionador.Reports.Responses.UserResponse.datasource" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

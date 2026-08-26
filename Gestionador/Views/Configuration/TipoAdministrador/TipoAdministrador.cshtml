@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Gestionador.Responses.ParrocosResponse>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Administración</h2>
+    <button id="btnCrearParroco" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Registrar
+    </button>
+</div>
+<div id="grid"></div>
+
+<script>$(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetParrocosAdmin,
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: false, nullable: true },
+                            RutParroco: { type: "string" },
+                            NombreParroco: { type: "string" },
+                            IsActive: { type: "boolean" },
+                            TipoAdministradorID: { type: "number" }
+                        }
+                    }
+                },
+                pageSize: 10,
+            },
+            groupable: false,
+            pageable: true,
+            sortable: true,
+            scrollable: true,
+            editable: "inline",
+            columns: [
+                {
+                    field: "TipoAdministradorID",
+                    title: "Tipo",
+                    width: "200px",
+                    editor: tipoAdministradorDropDownEditor,
+                    template: function (dataItem) {
+                        if (dataItem.TipoAdministrador.TipoAdministrador === undefined) {
+                            return dataItem.TipoAdministrador
+                        }
+                        return dataItem.TipoAdministrador.TipoAdministrador
+                    },
+                },
+                { field: "RutParroco", title: "RUT", width: "200px" },
+                { field: "NombreParroco", title: "Nombre", width: "200px" },
+                { field: "IsActive", title: "Activo", width: "100px", template: "#= IsActive ? 'Si' : 'No' #" },
+                {
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalUpsertParrocos, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ]
+        });
+
+        $("#btnCrearParroco").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalUpsertParrocos));
+            showLoading(false);
+        });
+    });</script>

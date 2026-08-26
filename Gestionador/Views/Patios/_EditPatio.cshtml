@@ -1,0 +1,151 @@
+﻿@model Gestionador.Responses.PatiosResponse
+<div class="modal fade" id="editPatio" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    Crear Patio
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("editPatioAsync", "Patios", FormMethod.Post, new { id = "editPatioForm", autocomplete = "off" }))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(Model => Model.ID)
+                    @Html.HiddenFor(Model => Model.CementerioID)
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Cementerio</span>
+                            @Html.TextBoxFor(Model => Model.Cementerio, new { @class = "form-control", id = "Cementerio", disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Patio</span>
+                            @Html.TextBoxFor(Model => Model.Patio, new { @class = "form-control", id = "Patio", disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Sectores</span>
+                            <input type="text" id="sectoresInput" class="form-control" placeholder="Ingrese un sector">
+                            <button type="button" id="addSectorButton" class="btn btn-primary">+</button>
+                        </div>
+                        <div id="sectoresContainer" class="mt-2">
+                            @foreach (var item in Model.Sectores)
+                            {
+                                <span class="badge bg-primary me-2" data-id="@item.ID">
+                                    @item.Sector
+                                    <button type="button" class="btn-close btn-close-white ms-1" aria-label="Close" style="font-size: 0.7rem;"></button>
+                                </span>
+                            }
+                        </div>
+                        <div class="form-check form-switch form-check-reverse">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                            @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                        </div>
+                        @Html.HiddenFor(Model => Model.Sectores, new { id = "sectoresHiddenInput" })
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#editPatio").modal('show');
+        updateSectoresInput();
+        assignRemoveEvent();
+
+        $("#addSectorButton").on("click", function () {
+            const sectorValue = $("#sectoresInput").val().trim();
+
+            if (sectorValue) {
+                const badge = $(`
+                <span class="badge bg-primary me-2" data-id="0">
+                    ${sectorValue}
+                    <button type="button" class="btn-close btn-close-white ms-1" aria-label="Close" style="font-size: 0.7rem;"></button>
+                </span>
+            `);
+
+                $("#sectoresContainer").append(badge);
+                badge.find(".btn-close").on("click", function () {
+                    badge.remove();
+                    updateSectoresInput();
+                });
+
+                updateSectoresInput();
+                $("#sectoresInput").val("");
+            } else {
+                showToast("Info", "Ingrese un sector antes de agregarlo.");
+            }
+        });
+
+        function assignRemoveEvent() {
+            $("#sectoresContainer .btn-close").on("click", function () {
+                $(this).closest(".badge").remove();
+                updateSectoresInput();
+            });
+        }
+
+        function updateSectoresInput() {
+            const sectores = [];
+            $("#sectoresContainer .badge").each(function () {
+                const sectorText = $(this).text().trim();
+                const sectorId = $(this).data("id");
+                if (sectorText) {
+                    sectores.push({
+                        ID: sectorId || 0,
+                        Sector: sectorText
+                    });
+                }
+            });
+
+            $("#sectoresHiddenInput").val(JSON.stringify(sectores));
+        }
+
+        $('#submitButton').click(function () {
+            debugger
+            showLoading(true);
+            updateSectoresInput();
+
+            const requestData = {
+                ID: $("#ID").val(),
+                Patio: $("#Patio").val(),
+                CementerioID: $("#CementerioID").val(),
+                Sectores: JSON.parse($("#sectoresHiddenInput").val()),
+                IsActive: $('#flexSwitchCheckDefault').is(':checked')
+            };
+
+            $.ajax({
+                url: EditPatios,
+                type: 'Post',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#editPatio").modal('hide');
+                        $("#patiosGrid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

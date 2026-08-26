@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Gestionador.Responses.ValorMonedasResponse>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Tipos Monedas</h2>
+    <button id="btnCrearMoneda" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Registrar Moneda
+    </button>
+</div>
+<div id="grid"></div>
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetValorMonedaAdmin,
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: false, nullable: true },
+                            TipoMoneda: { type: "string" },
+                            Valor: { type: "number" },
+                            Day: { type: "number" },
+                            Month: { type: "number" },
+                            Year: { type: "number" },
+                            TipoMonedaTexto: { type: "string" }
+                        }
+                    },
+                    parse: function (data) {
+                        data.forEach(item => {
+                            item.TipoMonedaTexto = item.TipoMonedaResponse.TipoMoneda;
+                        });
+                        return data;
+                    },
+                },
+                pageSize: 10,                
+                group: { field: "TipoMonedaTexto" }
+            },
+            groupable: true,
+            pageable: true,
+            sortable: true,
+            scrollable: true,
+            filterable: true,
+            editable: "inline",
+            columns: [
+                {
+                    field: "TipoMonedaTexto", title: "Tipo Moneda", width: "150px", filterable: {
+                        multi: true,
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: GetTipoMonedas,
+                                    dataType: "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                { field: "Valor", title: "Valor", width: "150px", format: "${0:n0}" },
+                {
+                    field: "Day", title: "Día", width: "50px", template: function (dataItem) {
+                        debugger
+                        if (dataItem.TipoMonedaResponse.Periodicidad == "DIARIA") {
+                            return dataItem.Day
+                        } else {
+                            return ''
+                        }
+                    },
+                },
+                { field: "Month", title: "Mes", width: "50px" },
+                { field: "Year", title: "Año", width: "50px" },
+                {
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalUpsertValorMoneda, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ]
+        });
+
+        $("#btnCrearMoneda").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalUpsertValorMoneda));
+            showLoading(false);
+        });
+    });
+</script>

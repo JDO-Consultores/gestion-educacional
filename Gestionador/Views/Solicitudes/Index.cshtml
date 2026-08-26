@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Adquisición de Derechos</h2>
+    <button id="btnAddSolicitud" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Crear Adquisición
+    </button>
+</div>
+<div id="grid"></div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: GetSolicitudesIndexAsync,
+                        contentType: "application/json",
+                        type: "POST"
+                    },
+                    parameterMap: function (options, operation) {
+                        return kendo.stringify(options);
+                    }
+                },
+                pageSize: 20,
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "number" },
+                            NroFicha: { type: "string" },
+                            CompRut: { type: "string" },
+                            CompNombreApellido: { type: "string" },
+                            Cementerio: { type: "string" },
+                            FechaAdquisicion: { type: "date" },
+                            Estado: { type: "string" }
+                        }
+                    },
+                    data: "Data",
+                    total: "Total"
+                }
+            },
+            pageable: true,
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            columns: [
+                {
+                    filterable: {
+                        multi: true,
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: GetCementerios,
+                                }
+                            }
+                        }
+                    },
+                    field: "Cementerio",
+                    title: "Cementerio",
+                    width: "15%"
+                },
+                {
+                    field: "NroFicha",
+                    title: "Nro Ficha",
+                    width: "15%"
+                },
+                {
+                    field: "CompRut",
+                    title: "Rut Comprador",
+                    width: "20%"
+                },
+                {
+                    field: "CompNombreApellido",
+                    title: "Nombre Comprador",
+                    width: "25%"
+                },                
+                {
+                    field: "Estado",
+                    title: "Estado",
+                    width: "15%",
+                },
+                {
+                    field: "FechaAdquisicion",
+                    title: "Fecha Compra",
+                    width: "20%",
+                    format: "{0:dd-MM-yyyy}",
+                },
+                {
+                    command: [
+                        {
+                            text: "Ver",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.location.href = "/Solicitudes/ViewSolicitud?id=" + dataItem.ID;
+                            },
+                        },
+                        {
+                            text: "Editar",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.location.href = "/Solicitudes/EditSolicitud?id=" + dataItem.ID;
+                            },
+                        }
+                    ],
+                    title: "Acciones",
+                    width: "15%",
+                    attributes: {
+                        style: "text-align: center",
+                    }
+                }],
+        });
+    });
+
+    $("#btnAddSolicitud").click(function () {
+        window.location.href = "/Solicitudes/Create";
+    });
+</script>

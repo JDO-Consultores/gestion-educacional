@@ -1,0 +1,49 @@
+﻿<div id="modales"></div>
+<div class="modal fade" id="modal-loading" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modal-loading-label" aria-hidden="true" style="z-index: 10000">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="background-color: transparent !important; box-shadow:0 0 0 0;border:0">
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10001">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="myToast" data-bs-delay="5000">
+        <div class="toast-body">
+            <span class="content" id="respuesta"></span>
+        </div>
+    </div>
+</div>*@
+
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10001">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="myToast" data-bs-delay="5000">
+        <div class="toast-body">
+            <span class="content" id="respuesta"></span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toast {
+        font-size: 1rem; /* Tamaño de la fuente */
+        padding: 10px; /* Espaciado dentro del toast */
+        width: auto; /* Deja que el ancho se ajuste al contenido */
+        max-width: 100%; /* Evita que el toast se salga de la pantalla */
+        white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    }
+
+        .toast .toast-body .content {
+            color: black !important; /* Texto negro */
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1rem; /* Tamaño del texto */
+            white-space: nowrap; /* Evita el wrap del texto */
+            overflow: hidden; /* Evita que el texto se desborde */
+            display: block; /* Asegura que el texto ocupe el espacio disponible */
+        }
+</style>

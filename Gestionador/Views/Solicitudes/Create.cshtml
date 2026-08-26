@@ -1,0 +1,710 @@
+﻿@model Gestionador.Models.FichaViewModelBase
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var regiones = (List<dynamic>)ViewBag.Regiones;
+    var cementerios = (List<dynamic>)ViewBag.Cementerios;
+    var servicios = (List<dynamic>)ViewBag.servicios;
+    var formasPago = (List<dynamic>)ViewBag.formasPago;
+    var causas = (List<dynamic>)ViewBag.causas;
+    var letras = (List<dynamic>)ViewBag.letras;
+}
+
+<div class="container-md mt-4">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <h4 class="mb-0 me-3">
+                Estado:
+                <span class="badge bg-primary">Borrador</span>
+            </h4>
+        </div>
+        <h3 class="mb-0">Crear Ficha Adquisición</h3>
+    </div>
+</div>
+@using (Html.BeginForm("CreateAsync", "Solicitudes", FormMethod.Post, new { id = "fichaForm", autocomplete = "off", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken();
+    <div class="container-md mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Cementerio</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="d-flex flex-wrap align-items-center mb-4 col-8">
+                        <label class="form-label me-3">Cementerio:</label>
+                        @foreach (var item in cementerios)
+                        {
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(Model => Model.CementerioID, $"{item.ID.ToString()}", new { id = string.Format("{0}{1}", "Cementerio", item.ID.ToString()), @class = "form-check-input me-2", @checked = "checked" })
+                                <label class="form-check-label" for="@string.Format("{0}{1}", "Cementerio", item.ID.ToString())">@item.Cementerio</label>
+                            </div>
+                        }
+                    </div>
+                    <div class="justify-content-end col-4">
+                        <div class="form-check form-switch form-check-reverse">
+                            @Html.CheckBoxFor(Model => Model.IsRegulated, new { id = "IsRegulated", @class = "form-check-input", type = "checkbox", name = "IsRegulated" })
+                            <label class="form-check-label" for="IsRegulated">¿Esta ficha corresponde a una regularización?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Datos Comprador</h6>
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCard" aria-expanded="true" aria-controls="collapseCard">
+                            <i class="bi bi-chevron-down" id="collapseIcon"></i>
+                        </button>
+                    </div>
+                    <div id="collapseCard" class="collapse show">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rut</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Rut, new { @class = "form-control rut-input", id = "CompRut", maxlength = "12" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Nombre</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Nombre, new { @class = "form-control", id = "CompNombre" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Apellido</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Apellido, new { @class = "form-control", id = "CompApellido" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Región</span>
+                                        @Html.DropDownList("CompRegionId", new SelectList(regiones, "ID", "FullData", 7), new { @class = "form-select", id = "CompRegionId" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Comuna</span>
+                                        @Html.DropDownListFor(Model => Model.Comprador.ComunaID, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Comuna"), new { @class = "form-select", id = "CompComunaID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-9 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Dirección</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Direccion1, new { @class = "form-control", id = "CompDireccion1" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Número</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.DirNum, new { @class = "form-control", id = "CompDirNum" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Teléfono</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Telefono, new { @class = "form-control", id = "CompTelefono" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Email</span>
+                                        @Html.TextBoxFor(Model => Model.Comprador.Email, new { @class = "form-control", @type = "email", id = "CompEmail" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Referente</h6>
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCardRef1" aria-expanded="true" aria-controls="collapseCardRef1">
+                            <i class="bi bi-chevron-down" id="collapseIcon"></i>
+                        </button>
+                    </div>
+                    <div id="collapseCardRef1" class="collapse show">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rut</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Rut, new { @class = "form-control rut-input", maxlength = "12", id = "RefRut" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Nombre</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Nombre, new { @class = "form-control", id = "RefNombre" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Apellido</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Apellido, new { @class = "form-control", id = "RefApellido" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Región</span>
+                                        @Html.DropDownList("RefRegionID", new SelectList(regiones, "ID", "FullData", 7), new { @class = "form-select", id = "RefRegionId" })
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Comuna</span>
+                                        @Html.DropDownListFor(Model => Model.Referente.ComunaID, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Comuna"), new { @class = "form-select", id = "RefComunaID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-9 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Dirección</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Direccion1, new { @class = "form-control", id = "RefDireccion1" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Número</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.DirNum, new { @class = "form-control", id = "RefDirNum" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Teléfono</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Telefono, new { @class = "form-control", id = "RefTelefono" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Email</span>
+                                        @Html.TextBoxFor(Model => Model.Referente.Email, new { @class = "form-control", @type = "email", id = "RefEmail" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-md mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Adquisición de Derechos</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">PATIO-SECTOR-NÚMERO</span>
+                            @Html.DropDownListFor(Model => Model.UbiPatio, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Patio"), new { @class = "form-select", id = "UbiPatioID" })
+                            @Html.DropDownListFor(Model => Model.UbiSector, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Sector"), new { @class = "form-select", id = "UbiSectorID" })
+                            @Html.TextBoxFor(Model => Model.UbiNumero, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">PRODUCTO</span>
+                            @Html.DropDownListFor(Model => Model.ProductoID, new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Concepto"), new { @class = "form-select", id = "ProductoID" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">VALOR</span>
+                            <span class="input-group-text" id="TipoMoneda">-</span>
+                            <input id="Valor" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Stock</span>
+                            <input id="Stock" type="number" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3" id="LetraNicho" style="display:none">
+                        <div class="input-group">
+                            <span class="input-group-text">Letra Nicho</span>
+                            @Html.DropDownListFor(Model => Model.Letra, new SelectList(letras, "Letra", "Letra"), new { @class = "form-select", id = "LetraID" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="divServicios" class="container-md mt-12">
+        <h6 class="fw-bold">SERVICIOS</h6>
+        <div id="gridServicios"></div>
+    </div>
+    <br />
+    <div class="container-md mt-12">
+        <h6 class="fw-bold">DIFUNTOS</h6>
+        <div id="gridDifuntos"></div>
+    </div>
+    <br />
+    <div id="divPagos" class="container-md mt-12">
+        <h6 class="fw-bold">PAGOS</h6>
+        <div id="gridFormasPago"></div>
+    </div>
+    <br />
+    <div class="container-md mt-12">
+        <div class="row mb-3">
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">Total a Pagar:</span>
+                    <input id="SaldoTotal" type="text" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">Saldo Cancelado:</span>
+                    <input id="SaldoCancelado" type="text" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">Saldo Restante:</span>
+                    <input id="SaldoRestante" type="text" class="form-control" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-md mt-12">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <span class="input-group-text">Observación:</span>
+                    @Html.TextAreaFor(Model => Model.Observacion, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-end">
+        <div class="a-input-with-icon  col-2">
+            <button type="button" class="btn btn-primary" id="submitButton">GUARDAR</button>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $ComComuna = $("#CompComunaID");
+        $RefComuna = $("#RefComunaID");
+        $RefSector = $("#UbiSectorID");
+        $Producto = $("#ProductoID");
+
+        changeSelectCascade(GetComunasByRegionIdAsync, $("#CompRegionId").val(), $("#CompComunaID")).then(function () {
+            $("#CompComunaID").val(7);
+        });
+        changeSelectCascade(GetComunasByRegionIdAsync, $("#RefRegionId").val(), $("#RefComunaID")).then(function () {
+            $("#RefComunaID").val(7);
+        });
+        $("#UbiPatioID").val(-1).change();
+
+        var $defaultCementerio = $('input[name="CementerioID"]:first');
+        $defaultCementerio.prop('checked', true);
+
+        function cargarPatios(cementerioID) {
+            $.ajax({
+                url: GetPatiosByCementerioID,
+                type: 'GET',
+                data: { id: cementerioID },
+                success: function (data) {
+                    $('#UbiPatioID').empty();
+
+                    if (data && Array.isArray(data)) {
+                        data.forEach(function (item) {
+                            $('#UbiPatioID').append('<option value="' + item.ID + '">' + item.Patio + '</option>');
+                            $("#UbiPatioID").val(-1).change();
+                        });
+                    } else {
+                        $('#UbiPatioID').append('<option value="">No hay patios disponibles</option>');
+                    }
+                },
+                error: function () {
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        }
+        cargarPatios($defaultCementerio.val());
+
+        $('input[name="CementerioID"]').on('change', function () {
+            var selectedCementerioID = $(this).val();
+            cargarPatios(selectedCementerioID);
+        });
+
+        $("#gridServicios").kendoGrid({
+            dataSource: dataSourceServicios,
+            pageable: false,
+            sortable: false,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: false,
+            editable: "inline",
+            toolbar: [{
+                name: "create",
+                text: "Agregar nuevo servicio"
+            }],
+            columns: [
+                { field: "Servicio", title: "Servicio", width: "25%", template: "#=Servicio.Servicio#" },
+                { field: "Precio", title: "Precio", width: "25%", format: "{0:n0}" },
+                { field: "Maestro", title: "Maestro", width: "15%", editor: maestroDropDownEditor, template: "#= Maestro && Maestro.NombreApellido ? Maestro.NombreApellido : '' #" },
+                {
+                    command: [
+                        { name: "edit", text: { edit: "Editar", update: "Guardar", cancel: "Cancelar" } },
+                        { name: "destroy", text: "Eliminar" }
+                    ],
+                    title: "&nbsp;", width: "25%"
+                },
+            ],
+            edit: function (e) {
+                debugger
+                var precio = e.container.find("input[name='Precio']").data("kendoNumericTextBox");
+                precio.enable(false);
+            }
+        });
+
+        $("#gridFormasPago").kendoGrid({
+            dataSource: dataSourceFormaPago,
+            pageable: false,
+            sortable: false,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: false,
+            editable: "popup",
+            toolbar: [{
+                name: "create",
+                text: "Agregar pago"
+            }],
+            columns: [
+                { field: "FormaPago", title: "Forma Pago", width: "25%", editor: pagoDropDownEditor, template: "#=FormaPago.FormaPago#" },
+                { field: "FechaPago", title: "Fecha Pago", width: "15%", format: "{0:dd-MM-yyyy}" },
+                { field: "Banco", title: "Banco", width: "15%", editor: bancoDropDownEditor, template: "#=Banco.Banco#" },
+                { field: "NroCheque", title: "N° Cheque", width: "25%", format: "{0:0}" },
+                { field: "NroRecaudacion", title: "N° Recaudación", width: "25%", format: "{0:0}" },
+                { field: "Monto", title: "Monto", width: "25%", format: "{0:n0}" },
+                {
+                    command: [
+                        { name: "edit", text: { edit: "Editar", update: "Guardar", cancel: "Cancelar" } },
+                        { name: "destroy", text: "Eliminar" }
+                    ],
+                    title: "&nbsp;", width: "25%"
+                },
+            ],
+            edit: function (e) {
+                var formaPagoDropDown = e.container.find("input[name='FormaPago']").data("kendoDropDownList");
+                formaPagoDropDown.bind("change", function () {
+                    var selectedFormaPago = formaPagoDropDown.value();
+                    var bancoEditor = e.container.find("input[name='Banco']").data("kendoDropDownList");
+                    var nroChequeEditor = e.container.find("input[name='NroCheque']");
+
+                    if ((selectedFormaPago === "Cheque" || selectedFormaPago === "Transferencia") || (selectedFormaPago == 2 || selectedFormaPago == 4)) {
+                        bancoEditor.enable(true);
+                        nroChequeEditor.prop("disabled", false);
+                    } else {
+                        bancoEditor.enable(false);
+                        nroChequeEditor.prop("disabled", true);
+                    }
+                });
+
+                if (formaPagoDropDown.value() !== 2) {
+                    var bancoEditor = e.container.find("input[name='Banco']").data("kendoDropDownList");
+                    var nroChequeEditor = e.container.find("input[name='NroCheque']");
+
+                    bancoEditor.enable(false);
+                    nroChequeEditor.prop("disabled", true);
+                }
+            }
+        });
+
+        $("#gridDifuntos").kendoGrid({
+            dataSource: dataSourceDifuntos,
+            pageable: false,
+            sortable: false,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: false,
+            editable: "popup",
+            toolbar: [{
+                name: "create",
+                text: "Agregar nuevo registro"
+            }],
+            columns: [
+                { field: "NombreDifunto", title: "Nombre Difunto", width: "15%" },
+                {
+                    field: "Rut", title: "Rut", width: "12%",
+                    template: function (dataitem) {
+                        if (validateRut(dataitem.Rut)) {
+                            return formatRut(dataitem.Rut)
+                        } else {
+                            return ''
+                        }
+                    }
+                },
+                { field: "Edad", title: "Edad", width: "8%", format: "{0:0}" },
+                { field: "FechaDefuncion", title: "Fecha Defunción", width: "12%", format: "{0:dd-MM-yyyy}" },
+                { field: "Causa", title: "Causa", width: "12%", editor: causaDropDownEditor, template: "#=Causa.Causa#" },
+                { field: "Lugar", title: "Lugar", width: "12%", editor: lugarDropDownEditor, template: "#=Lugar.Lugar#" },
+                {
+                    field: "Reuso", title: "Reuso", width: "8%",
+                    template: reusoTemplate, hidden: true
+                },
+                { field: "FechaReuso", title: "Fecha Reuso", width: "12%", format: "{0:dd-MM-yyyy}", editor: fechaReusoEditor, hidden: true },
+                { field: "NroOrden", title: "N° Orden", width: "10%", format: "{0:0}" },
+                {
+                    field: "AdjuntarOrden",
+                    title: "Adjuntar Orden",
+                    width: "12%",
+                    editor: adjuntarOrdenEditor,
+                    template: "#= AdjuntarOrden ? '<i class=\"bi bi-file-earmark-check text-success\"></i> ' + AdjuntarOrden : '<i class=\"bi bi-file-earmark text-muted\"></i> Sin archivo' #"
+                },
+                {
+                    command: [
+                        { name: "edit", text: { edit: "Editar", update: "Guardar", cancel: "Cancelar" } },
+                        { name: "destroy", text: "Eliminar" }
+                    ],
+                    title: "&nbsp;", width: "15%"
+                },
+            ],
+            edit: function (e) {
+                debugger
+                var reusoCheckbox = e.container.find("input[name='Reuso']");
+                var fechaReusoInput = e.container.find("input[name='FechaReuso']").data("kendoDatePicker");
+                var isRegulated = $("input[name='IsRegulated']")[0].checked;
+                if (!e.model.Reuso) {
+                    e.model.FechaReuso = null;
+                    fechaReusoInput.value(null);
+                    fechaReusoInput.enable(false);
+                }
+                reusoCheckbox.change(function () {
+                    var isChecked = reusoCheckbox.is(":checked");
+                    if (isChecked) {
+                        fechaReusoInput.enable(true);
+                        e.model.FechaReuso = new Date();
+                        fechaReusoInput.wrapper.addClass("k-valid");
+                        e.model.fields.FechaReuso.validation = { required: true };
+                    } else {
+                        fechaReusoInput.value(null);
+                        fechaReusoInput.enable(false);
+                        e.model.FechaReuso = null;
+                        fechaReusoInput.wrapper.removeClass("k-valid");
+                        e.model.fields.FechaReuso.validation = { required: false };
+                    }
+                });
+                if (isRegulated) {
+                    reusoCheckbox.prop("disabled", false);
+                    fechaReusoInput.enable(true);
+                    if (e.model.Reuso) {
+                        e.model.FechaReuso = new Date();
+                        fechaReusoInput.wrapper.addClass("k-valid");
+                    }
+                    e.model.fields.FechaReuso.validation = { required: true };
+                } else {
+                    reusoCheckbox.prop("disabled", true);
+                    fechaReusoInput.value(null);
+                    fechaReusoInput.enable(false);
+                    e.model.FechaReuso = null;
+                    e.model.fields.FechaReuso.validation = { required: false };
+                }
+                if (e.model.Reuso) {
+                    fechaReusoInput.enable(true);
+                    e.model.fields.FechaReuso.validation = { required: true };
+                } else {
+                    fechaReusoInput.enable(false);
+                    e.model.fields.FechaReuso.validation = { required: false };
+                }
+            }
+        });
+
+        $('#CompRegionId').on("change", function () {
+            changeSelectCascade(GetComunasByRegionIdAsync, $(this).val(), $ComComuna)
+        });
+
+        $('#RefRegionId').on("change", function () {
+            changeSelectCascade(GetComunasByRegionIdAsync, $(this).val(), $RefComuna)
+        });
+
+        $('#UbiPatioID').on("change", function () {
+            changeSelectCascade(GetSectoresByIdAsync, $(this).val(), $RefSector)
+        });
+
+        $RefSector.on("change", function () {
+            changeSelectCascade(GetConceptosBySectorId, $(this).val(), $Producto)
+        });
+
+        $Producto.on("change", function (e) {
+            if ($Producto.val()) {
+                $.ajax({
+                    url: GetSeccionConceptoById,
+                    type: 'GET',
+                    data: {
+                        id: e.currentTarget.value
+                    },
+                    success: function (data) {
+                        debugger;
+
+                        if (data) {
+                            if (!$("#IsRegulated")[0].checked) {
+                                $("#Valor").val(formatNumber(data.Precio));
+                                $("#Stock").val(data.Stock);
+                            }
+                            if (data.Concepto.IsNicho) {
+                                $("#LetraNicho").show();
+                            } else {
+                                $("#LetraNicho").hide();
+                            }
+                            $("#LetraID").val(null);
+                            $("#TipoMoneda").text(data.TipoMoneda.TipoMoneda);
+                            calcularSaldo();
+                        }
+                    },
+                    error: function () {
+                        showToast("error", "Ocurrio un error al procesar la solicitud.");
+                    }
+                });
+                $.ajax({
+                    url: GetServiciosByConceptoId,
+                    type: 'GET',
+                    data: {
+                        id: e.currentTarget.value,
+                        seccionId: $RefSector.val()
+                    },
+                    success: function (data) {
+                        updateServicioDropDown(data);
+                    },
+                    error: function () {
+                        showToast("error", "Ocurrió un error al cargar los servicios.");
+                    }
+                });
+            }
+        });
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var difuntosData = $("#gridDifuntos").data("kendoGrid").dataSource.view();
+            var serviciosData = $("#gridServicios").data("kendoGrid").dataSource.view();
+            var formaPagoData = $("#gridFormasPago").data("kendoGrid").dataSource.view();
+            var difuntosList = [], serviciosList = [], formasPagoList = [];
+            var formData = new FormData($('#fichaForm')[0]);
+
+            $.each(difuntosData, function (index, item) {
+                difuntosList.push({
+                    ID: item.ID,
+                    NombreApellido: item.NombreDifunto,
+                    Rut: item.Rut,
+                    Edad: item.Edad,
+                    FechaDefuncion: item.FechaDefuncion,
+                    CausaID: item.Causa.ID,
+                    LugarID: item.Lugar.ID,
+                    Reuso: item.Reuso,
+                    FechaReuso: item.FechaReuso,
+                    NroOrden: item.NroOrden,
+                    AdjuntarOrden: item.AdjuntarOrden
+                });
+                if (item.fileData) {
+                    formData.append('difuntoFiles[' + index + ']', item.fileData);
+                }
+            });
+
+            $.each(serviciosData, function (index, item) {
+                debugger
+                serviciosList.push({
+                    ServicioID: item.Servicio.ID,
+                    MaestroID: item.Maestro.ID
+                });
+            });
+
+            $.each(formaPagoData, function (index, item) {
+                formasPagoList.push({
+                    FormaPagoID: item.FormaPago.ID,
+                    NroRecaudacion: item.NroRecaudacion,
+                    Monto: item.Monto,
+                    FechaPago: item.FechaPago,
+                    NroCheque: item.NroCheque,
+                    BancoID: item.Banco.ID
+                });
+            });
+
+            $('#fichaForm').find('input[name="DifuntosJson"]').remove();
+            $('#fichaForm').find('input[name="ServiciosJson"]').remove();
+            $('#fichaForm').find('input[name="FormasPagoJson"]').remove();
+            var difuntosHiddenField = $("<input>").attr("type", "hidden").attr("name", "DifuntosJson").val(JSON.stringify(difuntosList));
+            var servicioHiddenField = $("<input>").attr("type", "hidden").attr("name", "ServiciosJson").val(JSON.stringify(serviciosList));
+            var formaPagoHiddenField = $("<input>").attr("type", "hidden").attr("name", "FormasPagoJson").val(JSON.stringify(formasPagoList));
+            $('#fichaForm').append(difuntosHiddenField);
+            $('#fichaForm').append(servicioHiddenField);
+            $('#fichaForm').append(formaPagoHiddenField);
+
+            var formData = $('#fichaForm').serialize();
+
+            $.ajax({
+                url: CreateFicha,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl;
+                        showToast("success", response.message);
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+
+        var gridFormasPago = $("#gridFormasPago").data("kendoGrid");
+        gridFormasPago.bind("dataBound", calcularSaldo);
+
+        var gridServicios = $("#gridServicios").data("kendoGrid");
+        gridServicios.bind("dataBound", calcularSaldo);
+
+
+        $("input[name='IsRegulated']").on("change", function (e) {
+            var grid = $("#gridDifuntos").data("kendoGrid");
+            if (e.currentTarget.checked) {
+                grid.showColumn(6);
+                grid.showColumn(7);
+                $("#Valor").val(formatNumber(0))
+                $("#divPagos").hide();
+                $("#gridFormasPago").data("kendoGrid").dataSource.data([]);
+                $("#divServicios").hide();
+                $("#gridServicios").data("kendoGrid").dataSource.data([]);
+                calcularSaldo();
+            } else {
+                $("#ProductoID").val(-1);
+                $("#divPagos").show();
+                $("#divServicios").show();
+                grid.hideColumn(6);
+                grid.hideColumn(7);
+            }
+        });
+    });
+</script>

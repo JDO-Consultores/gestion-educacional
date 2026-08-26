@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATAFORMA DIGITAL - CEMENTERIOS</title>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/modernizr")
+    @*@Scripts.Render("~/bundles/bootstrap")*@
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    @*<script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>*@
+    <script src="~/Scripts/kendo/kendo.all.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <link rel="stylesheet" href="~/Content/kendo/kendo.default-main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="~/Scripts/global.js" type="text/javascript"></script>
+    <script src="~/Scripts/kendo-ui-license.js"></script>
+    <script src="~/Scripts/kendo-lic.js"></script>
+    <link rel="icon" type="image/x-icon" href="~/Content/Assets/Favicon/favicon.ico">
+    <script src="~/Scripts/kendo/cultures/kendo.culture.es-CL.min.js"></script>
+    <script>
+        kendo.culture("es-CL");
+    </script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <script type="text/javascript">
+        var isAdmin = @Html.Raw(Json.Encode(ViewBag.IsAdmin));
+        function getInitials(fullName) {
+            if (!fullName) return '';
+            return fullName.substring(0, 2).toUpperCase();
+        }
+
+        window.onload = function () {
+          var userName = '@User.Identity.Name';
+          document.getElementById('user-initials').textContent = getInitials(userName);
+        };
+    </script>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="a-logo-grid a-md"></div>
+            <a class="navbar-brand" href="@Url.Action("Index","Solicitudes")">PLATAFORMA DIGITAL - CEMENTERIOS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Create","Solicitudes")">Crear Adquisición</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("BusquedasAdquisicion","Solicitudes")">Búsquedas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="@Url.Action("Index","Solicitudes")">Adquisiciones</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Reportes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Report", "Report")">Ventas de productos y servicios</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("ReportVentas", "Report")">Formas de Pago</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("ReportDetalle", "Report")">Detalle ventas de productos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("ReportCobranza", "Report")">⁠Reporte de cobranza</a>
+                            </li>
+                        </ul>
+                    </li>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mantenedores
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Productos")">1.- Productos</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Servicios")">2.- Servicios</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Patios")">3.- Cementerios</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Causas", "Configuration")">Causas</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("LugarDefuncion", "Configuration")">Lugar Defunción</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("TipoAdministrador", "Configuration")">Administración</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("TipoMonedas", "Configuration")">Tipo Monedas</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Maestros", "Configuration")">Maestros</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Usuarios", "Users")">Usuarios</a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+                <span class="navbar-brand">
+                    <a target="_blank" href="@Url.Action("Ayuda", "Home")" class="bi bi-question-circle fs-4 text-primary">
+                    </a>
+                </span>
+                <span class="navbar-text">
+                    <div class="dropdown">
+                        <a href="#" class="user-circle initials dropdown-toggle no-caret" id="user-initials-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="user-initials"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-initials-dropdown">
+                            <li>
+                                <a class="dropdown-item" id="ChangePasswordButton">Cambiar Contraseña</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Logout", "Account")"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Sesión</a>
+                            </li>
+                            <form id="logout-form" action="@Url.Action("Logout", "Account")" method="post" style="display: none;">
+                                @Html.AntiForgeryToken()
+                            </form>
+                        </ul>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        <div id="modalUtilities"></div>
+        @RenderBody()
+        <hr />
+    </div>
+    <footer class="bg-light text-center text-lg-start border-top mt-auto">
+        <div class="container py-3">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 d-flex align-items-center justify-content-start mb-2 mb-lg-0">
+                    <img src="~/Content/Assets/Logos/png/logo_120x120.png"
+                         alt="CampoSantoDigital Logo"
+                         class="me-2"
+                         style="height: 36px;">
+                    <span class="fw-medium fs-6 text-dark">CampoSantoDigital</span>
+                </div>
+
+                <div class="col-lg-6 col-md-12 d-flex align-items-center justify-content-end mb-2 mb-lg-0">
+                    <img src="~/Content/Assets/Logos/png/logo_120x120.png"
+                         alt="Logo Cliente"
+                         class="me-2"
+                         style="height: 36px;">
+                    <span class="fw-medium fs-6 text-dark">Nombre Cliente</span>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <small class="text-muted">
+                        &copy; 2025 CampoSantoDigital. Todos los derechos reservados.
+                        Producto desarrollado por
+                        <a href="https://jdoconsultores.cl/" target="_blank" class="text-decoration-none text-muted fw-medium">
+                            JDOConsultores
+                        </a>.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @RenderSection("scripts", required: false)
+    @Html.Action("_UrlAccionesAjax", "Default")
+    <script>
+        $(document).ready(function () {
+            var _LoadingModal = '@Url.Action("_Utilities", "Default")';
+            loadView($("#modalUtilities"), _LoadingModal);
+
+            $("#ChangePasswordButton").click(function () {
+                showLoading(true);
+                loadView($('#modales'), urlAjaxParamId(ModalChangePassword));
+                showLoading(false);
+            });
+        });
+    </script>
+</body>
+</html>

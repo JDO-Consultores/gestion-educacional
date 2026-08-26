@@ -1,0 +1,259 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Administrador de Cementerios</h2>
+    <button id="btnCrearPatio" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Agregar Patio
+    </button>
+    <button id="btnAsignarProductos" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Asignar Productos
+    </button>
+</div>
+<div id="patiosGrid"></div>
+<script type="text/x-kendo-template" id="patiosTemplate">
+    <div class="patiosGrid"></div>
+</script>
+<script type="text/x-kendo-template" id="seccionTemplate">
+    <div class="seccionGrid"></div>
+</script>
+<script type="text/x-kendo-template" id="conceptoTemplate">
+    <div class="conceptoGrid"></div>
+</script>
+<script type="text/x-kendo-template" id="servicioTemplate">
+    <div class="servicioGrid"></div>
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#btnCrearPatio").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalCreatePatio));
+            //showLoading(false);
+        });
+
+        $("#btnAsignarProductos").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalAssingSeccionesByConcepto));
+            //showLoading(false);
+        });
+        debugger
+        $("#patiosGrid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetCementerios,
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            ID: { type: "number" },
+                            Cementerio: { type: "string" },
+                            IsActive: { type: "boolean" }
+                        },
+                        hasChildren: "Sectores"
+                    }
+                }
+            },
+            columns: [
+                { field: "Cementerio", title: "Cementerio" },
+                {
+                    field: "IsActive", title: "Activo", width: "10%", template: function (dataItem) {
+                        if (dataItem.IsActive) {
+                            return "SI"
+                        } else {
+                            return "NO"
+                        }
+                    }
+                }
+            ],
+            detailTemplate: kendo.template($("#patiosTemplate").html()),
+            detailInit: function (e) {
+                $("<div/>").appendTo(e.detailCell).kendoGrid({
+                    dataSource: {
+                        data: e.data.Patios,
+                        schema: {
+                            model: {
+                                fields: {
+                                    Patio: { type: "string" },
+                                    IsActive: { type: "boolean" }
+                                },
+                                hasChildren: "SeccionConcepto"
+                            }
+                        }
+                    },
+                    columns: [
+                        { field: "Patio", title: "Patio" },
+                        {
+                            field: "IsActive", title: "Activo", width: "10%", template: function (dataItem) {
+                                if (dataItem.IsActive) {
+                                    return "SI"
+                                } else {
+                                    return "NO"
+                                }
+                            }
+                        },
+                        {
+                            width: "10%",
+                            template: function (dataItem) {
+                                return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalEditPatio, dataItem.ID)}')"></button>`;
+                            },
+                        }
+                    ],
+                    detailTemplate: kendo.template($("#seccionTemplate").html()),
+                    detailInit: function (e) {
+                        $("<div/>").appendTo(e.detailCell).kendoGrid({
+                            dataSource: {
+                                data: e.data.Sectores,
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            Sector: { type: "string" },
+                                            IsActive: { type: "boolean" }
+                                        },
+                                        hasChildren: "SeccionConcepto"
+                                    }
+                                }
+                            },
+                            columns: [
+                                { field: "Sector", title: "Sector" },
+                                {
+                                    field: "IsActive", title: "Activo", width: "10%", template: function (dataItem) {
+                                        if (dataItem.IsActive) {
+                                            return "SI"
+                                        } else {
+                                            return "NO"
+                                        }
+                                    }
+                                },
+                            ],
+                            detailTemplate: kendo.template($("#conceptoTemplate").html()),
+                            detailInit: function (e) {
+                                let conceptosData = e.data.SeccionConcepto.reduce((acc, sc) => {
+                                    if (sc.Concepto) {
+                                        let conceptoConPrecio = {
+                                            ...sc.Concepto,
+                                            SeccionConceptoId: sc.ID,
+                                            Precio: sc.Precio,
+                                            Stock: sc.Stock,
+                                            IsActive: sc.IsActive,
+                                            TipoMoneda: sc.TipoMoneda ? {
+                                                ID: sc.TipoMoneda.ID,
+                                                TipoMoneda: sc.TipoMoneda.TipoMoneda,
+                                                Format: sc.TipoMoneda.Format
+                                            } : null
+                                        };
+                                        acc.push(conceptoConPrecio);
+                                    }
+                                    return acc;
+                                }, []);
+                                $("<div/>").appendTo(e.detailCell).kendoGrid({
+                                    dataSource: {
+                                        data: conceptosData,
+                                        schema: {
+                                            model: {
+                                                id: "ID",
+                                                fields: {
+                                                    ID: { type: "number" },
+                                                    SeccionConceptoId: { type: "number" },
+                                                    Concepto: { type: "string" },
+                                                    TipoMoneda: { },
+                                                    Precio: { type: "number" },
+                                                    Stock: { type: "number" },
+                                                    IsActive: { type: "boolean" }
+                                                },
+                                                hasChildren: "ServiciosConceptos"
+                                            }
+                                        }
+                                    },
+                                    columns: [
+                                        { field: "Concepto", title: "Producto" },
+                                        {
+                                            field: "TipoMoneda", title: "Tipo Moneda", template: function (dataItem) {
+                                                if (dataItem.TipoMoneda && typeof dataItem.TipoMoneda === "object") {
+                                                    return dataItem.TipoMoneda.TipoMoneda || "";
+                                                }
+                                                return dataItem.TipoMoneda || "";
+                                            }
+                                        },
+                                        {
+                                            field: "Precio",
+                                            title: "Precio",
+                                            template: function (dataItem) {
+                                                debugger
+                                                if (dataItem.TipoMoneda && dataItem.TipoMoneda.Format) {
+                                                    return kendo.toString(dataItem.Precio, dataItem.TipoMoneda.Format);
+                                                }
+                                                return kendo.toString(dataItem.Precio, "n0");
+                                            }
+                                        },
+                                        { field: "Stock", title: "Stock" },
+                                        {
+                                            field: "IsActive", title: "Activo", template: function (dataItem) {
+                                                if (dataItem.IsActive) {
+                                                    return "SI"
+                                                } else {
+                                                    return "NO"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            title: "Acciones",
+                                            width: "15%",
+                                            template: function (dataItem) {
+                                                return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalEditSeccionConcepto, dataItem.SeccionConceptoId)}')"></button>`;
+                                            },
+                                            attributes: {
+                                                style: "text-align: center",
+                                            },
+                                        }],
+
+                                    detailTemplate: kendo.template($("#servicioTemplate").html()),
+                                    detailInit: function (e) {
+                                        $("<div/>").appendTo(e.detailCell).kendoGrid({
+                                            dataSource: {
+                                                data: e.data.ServiciosConceptos,
+                                                schema: {
+                                                    model: {
+                                                        fields: {
+                                                            Categoria: { type: "string" },
+                                                            Servicio: { type: "string" },
+                                                            TipoMonedas: { type: "string" },
+                                                            Precio: { type: "number" },
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            columns: [
+                                                { field: "Categoria", title: "Categoria" },
+                                                { field: "Servicio", title: "Servicios" },
+                                                { field: "TipoMonedas", title: "Tipo Moneda" },
+                                                {
+                                                    field: "Precio",
+                                                    title: "Precio",
+                                                    template: function (dataItem) {
+                                                        if (dataItem.TipoMoneda && dataItem.TipoMoneda.Format) {
+                                                            return kendo.toString(dataItem.Precio, dataItem.TipoMoneda.Format);
+                                                        }
+                                                        return kendo.toString(dataItem.Precio, "n0");
+                                                    }
+                                                },
+                                            ]
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+            }
+        });
+    });
+</script>

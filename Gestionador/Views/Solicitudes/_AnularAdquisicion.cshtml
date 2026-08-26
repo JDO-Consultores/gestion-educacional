@@ -1,0 +1,55 @@
+﻿@{
+    int id = ViewBag.Id;
+}
+<div class="modal fade" id="anularAdquisiconModal" tabindex="-1" aria-labelledby="anularAdquisiconModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="anularAdquisiconModalModalLabel">Anular Adquisición</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AnularAdquisicionAsync", "Solicitudes", FormMethod.Post, new { id = "anularForm", autocomplete = "off" }))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.Hidden("ID", id)
+                    
+                   <text> ¿Está seguro de anular esta ficha?</text>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="anularButton">Anular</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $("#anularAdquisiconModal").modal('show');
+
+        $("#anularButton").click(function () {
+            showLoading(true);
+            var formData = $('#anularForm').serialize();
+            $.ajax({
+                url: AnularAdquisicionAsync,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function (e) {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

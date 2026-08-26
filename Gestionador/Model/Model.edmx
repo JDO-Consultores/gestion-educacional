@@ -1,0 +1,2819 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_Adquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NroFicha" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CementerioID" Type="int" Nullable="false" />
+          <Property Name="CompRut" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="CompNombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompApellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompComunaID" Type="int" Nullable="false" />
+          <Property Name="CompDireccion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompNum" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CompTelefono" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CompEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="RefRut" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="RefNombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefApellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefComunaID" Type="int" Nullable="false" />
+          <Property Name="RefDireccion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefNum" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="RefTelefono" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RefEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="UbiSectorID" Type="int" Nullable="false" />
+          <Property Name="UbiNumero" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductoID" Type="int" Nullable="false" />
+          <Property Name="Producto" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="PrecioProducto" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="LetraNicho" Type="nvarchar" MaxLength="1" />
+          <Property Name="FechaAdquisicion" Type="datetime" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="EstadoID" Type="int" Nullable="false" />
+          <Property Name="IsTrasferred" Type="bit" Nullable="false" />
+          <Property Name="TranferredID" Type="int" />
+          <Property Name="TransferredNroFicha" Type="nvarchar" MaxLength="50" />
+          <Property Name="NextTransferID" Type="int" />
+          <Property Name="NextTransferNroFicha" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsRegulated" Type="bit" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="date" />
+        </EntityType>
+        <EntityType Name="tbl_Bancos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Banco" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Categorias">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Categoria" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Causas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Causa" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Cementerios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cementerio" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Comunas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Comuna" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="RegionID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Conceptos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Concepto" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CategoriaID" Type="int" Nullable="false" />
+          <Property Name="IsNicho" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_ConceptosServicios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SeccionID" Type="int" Nullable="false" />
+          <Property Name="ServicioID" Type="int" Nullable="false" />
+          <Property Name="ConceptoID" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Precio" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Difuntos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rut" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="NombreApellido" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Edad" Type="int" Nullable="false" />
+          <Property Name="FechaDefuncion" Type="datetime" Nullable="false" />
+          <Property Name="CausaID" Type="int" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="Reuso" Type="bit" />
+          <Property Name="FechaReuso" Type="datetime" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="LugarID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Estados">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_FormasPago">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FormaPago" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_HistorialAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="Accion" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Letra">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Letra" Type="nvarchar" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_LugarDefuncion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Lugar" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Observaciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Observacion" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_PagoAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FormaPagoID" Type="int" Nullable="false" />
+          <Property Name="NroRecaudacion" Type="int" Nullable="false" />
+          <Property Name="Monto" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="FechaPago" Type="datetime" Nullable="false" />
+          <Property Name="NroCheque" Type="nvarchar" MaxLength="50" />
+          <Property Name="BancoID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_PagosMantenciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MantencionID" Type="int" Nullable="false" />
+          <Property Name="Precio" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="Anio" Type="int" Nullable="false" />
+          <Property Name="Observacion" Type="nvarchar" MaxLength="250" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="date" />
+        </EntityType>
+        <EntityType Name="tbl_Parrocos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreParroco" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="RutParroco" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="TipoAdministradorID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Patios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Patio" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CementerioID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Regiones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NroRegion" Type="int" Nullable="false" />
+          <Property Name="Simbologia" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="Region" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Roles">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rol" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RolesUsuarios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="RolID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_SeccionConceptos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConceptoID" Type="int" Nullable="false" />
+          <Property Name="SeccionID" Type="int" Nullable="false" />
+          <Property Name="Stock" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Precio" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Secciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Seccion" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="PatioID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Servicios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Servicio" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CategoriaID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_ServiciosAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ServicioID" Type="int" Nullable="false" />
+          <Property Name="Precio" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="UsuarioID" Type="int" Nullable="false" />
+          <Property Name="AdquisicionID" Type="int" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="date" />
+          <Property Name="MaestroID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_TipoAdministrador">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TipoAdministrador" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_TipoMonedas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TipoMoneda" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Periodicidad" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="HasSymbol" Type="bit" Nullable="false" />
+          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Usuarios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PasswordHash" Type="varbinary" MaxLength="64" Nullable="false" />
+          <Property Name="PasswordSalt" Type="varbinary" MaxLength="128" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Apellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Creado" Type="datetime" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="IsSuperAdmin" Type="bit" Nullable="false" />
+          <Property Name="TokenHash" Type="nvarchar" MaxLength="250" />
+          <Property Name="ExpirationDate" Type="datetime" />
+          <Property Name="IsUsed" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_ValorMonedas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Dia" Type="int" Nullable="false" />
+          <Property Name="Mes" Type="int" Nullable="false" />
+          <Property Name="Year" Type="int" Nullable="false" />
+          <Property Name="Valor" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Maestros">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rut" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Apellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ComunaID" Type="int" Nullable="false" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Num" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Telefono" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_tbl_Adquisicion_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="0..1" />
+          <End Role="tbl_Adquisicion1" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion1">
+              <PropertyRef Name="TranferredID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Adquisicion1">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="0..1" />
+          <End Role="tbl_Adquisicion1" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion1">
+              <PropertyRef Name="NextTransferID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Cementerios">
+          <End Role="tbl_Cementerios" Type="Self.tbl_Cementerios" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cementerios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="CementerioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Comunas">
+          <End Role="tbl_Comunas" Type="Self.tbl_Comunas" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="CompComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Comunas1">
+          <End Role="tbl_Comunas" Type="Self.tbl_Comunas" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="RefComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Conceptos">
+          <End Role="tbl_Conceptos" Type="Self.tbl_Conceptos" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Estados">
+          <End Role="tbl_Estados" Type="Self.tbl_Estados" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Estados">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="EstadoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Secciones1">
+          <End Role="tbl_Secciones" Type="Self.tbl_Secciones" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="UbiSectorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Comunas_tbl_Regiones">
+          <End Role="tbl_Regiones" Type="Self.tbl_Regiones" Multiplicity="1" />
+          <End Role="tbl_Comunas" Type="Self.tbl_Comunas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Regiones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Comunas">
+              <PropertyRef Name="RegionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Conceptos_tbl_Categorias">
+          <End Role="tbl_Categorias" Type="Self.tbl_Categorias" Multiplicity="1" />
+          <End Role="tbl_Conceptos" Type="Self.tbl_Conceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Categorias">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Conceptos">
+              <PropertyRef Name="CategoriaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Conceptos">
+          <End Role="tbl_Conceptos" Type="Self.tbl_Conceptos" Multiplicity="1" />
+          <End Role="tbl_ConceptosServicios" Type="Self.tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="ConceptoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Secciones">
+          <End Role="tbl_Secciones" Type="Self.tbl_Secciones" Multiplicity="1" />
+          <End Role="tbl_ConceptosServicios" Type="Self.tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="SeccionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Servicios">
+          <End Role="tbl_Servicios" Type="Self.tbl_Servicios" Multiplicity="1" />
+          <End Role="tbl_ConceptosServicios" Type="Self.tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="ServicioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_ConceptosServicios" Type="Self.tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_Difuntos" Type="Self.tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Causas">
+          <End Role="tbl_Causas" Type="Self.tbl_Causas" Multiplicity="1" />
+          <End Role="tbl_Difuntos" Type="Self.tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Causas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="CausaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_LugarDefuncion">
+          <End Role="tbl_LugarDefuncion" Type="Self.tbl_LugarDefuncion" Multiplicity="1" />
+          <End Role="tbl_Difuntos" Type="Self.tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_LugarDefuncion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="LugarID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_Difuntos" Type="Self.tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_HistorialAdquisicion_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_HistorialAdquisicion" Type="Self.tbl_HistorialAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_HistorialAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_HistorialAdquisicion_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_HistorialAdquisicion" Type="Self.tbl_HistorialAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_HistorialAdquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Maestros_tbl_Comunas">
+          <End Role="tbl_Comunas" Type="Self.tbl_Comunas" Multiplicity="1" />
+          <End Role="tbl_Maestros" Type="Self.tbl_Maestros" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Maestros">
+              <PropertyRef Name="ComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Observaciones_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_Observaciones" Type="Self.tbl_Observaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Observaciones">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Observaciones_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_Observaciones" Type="Self.tbl_Observaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Observaciones">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_PagoAdquisicion" Type="Self.tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_Bancos">
+          <End Role="tbl_Bancos" Type="Self.tbl_Bancos" Multiplicity="0..1" />
+          <End Role="tbl_PagoAdquisicion" Type="Self.tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Bancos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="BancoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_FormasPago">
+          <End Role="tbl_FormasPago" Type="Self.tbl_FormasPago" Multiplicity="1" />
+          <End Role="tbl_PagoAdquisicion" Type="Self.tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_FormasPago">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="FormaPagoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_PagosMantenciones" Type="Self.tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Servicios">
+          <End Role="tbl_Servicios" Type="Self.tbl_Servicios" Multiplicity="1" />
+          <End Role="tbl_PagosMantenciones" Type="Self.tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="MantencionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_PagosMantenciones" Type="Self.tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_PagosMantenciones" Type="Self.tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Parrocos_tbl_TipoAdministrador">
+          <End Role="tbl_TipoAdministrador" Type="Self.tbl_TipoAdministrador" Multiplicity="1" />
+          <End Role="tbl_Parrocos" Type="Self.tbl_Parrocos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoAdministrador">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Parrocos">
+              <PropertyRef Name="TipoAdministradorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Patios_tbl_Cementerios">
+          <End Role="tbl_Cementerios" Type="Self.tbl_Cementerios" Multiplicity="0..1" />
+          <End Role="tbl_Patios" Type="Self.tbl_Patios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cementerios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Patios">
+              <PropertyRef Name="CementerioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RolesUsuarios_tbl_Roles">
+          <End Role="tbl_Roles" Type="Self.tbl_Roles" Multiplicity="1" />
+          <End Role="tbl_RolesUsuarios" Type="Self.tbl_RolesUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Roles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RolesUsuarios">
+              <PropertyRef Name="RolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RolesUsuarios_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_RolesUsuarios" Type="Self.tbl_RolesUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RolesUsuarios">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_Conceptos">
+          <End Role="tbl_Conceptos" Type="Self.tbl_Conceptos" Multiplicity="1" />
+          <End Role="tbl_SeccionConceptos" Type="Self.tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="ConceptoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_Secciones">
+          <End Role="tbl_Secciones" Type="Self.tbl_Secciones" Multiplicity="1" />
+          <End Role="tbl_SeccionConceptos" Type="Self.tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="SeccionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_SeccionConceptos" Type="Self.tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Secciones_tbl_Patios">
+          <End Role="tbl_Patios" Type="Self.tbl_Patios" Multiplicity="1" />
+          <End Role="tbl_Secciones" Type="Self.tbl_Secciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Patios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Secciones">
+              <PropertyRef Name="PatioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Servicios_tbl_Categorias1">
+          <End Role="tbl_Categorias" Type="Self.tbl_Categorias" Multiplicity="1" />
+          <End Role="tbl_Servicios" Type="Self.tbl_Servicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Categorias">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Servicios">
+              <PropertyRef Name="CategoriaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Adquisicion">
+          <End Role="tbl_Adquisicion" Type="Self.tbl_Adquisicion" Multiplicity="1" />
+          <End Role="tbl_ServiciosAdquisicion" Type="Self.tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisicion_tbl_Maestros">
+          <End Role="tbl_Maestros" Type="Self.tbl_Maestros" Multiplicity="0..1" />
+          <End Role="tbl_ServiciosAdquisicion" Type="Self.tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Maestros">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="MaestroID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Servicios">
+          <End Role="tbl_Servicios" Type="Self.tbl_Servicios" Multiplicity="1" />
+          <End Role="tbl_ServiciosAdquisicion" Type="Self.tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="ServicioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_ServiciosAdquisicion" Type="Self.tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Usuarios">
+          <End Role="tbl_Usuarios" Type="Self.tbl_Usuarios" Multiplicity="1" />
+          <End Role="tbl_ServiciosAdquisicion" Type="Self.tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ValorMonedas_tbl_TipoMonedas">
+          <End Role="tbl_TipoMonedas" Type="Self.tbl_TipoMonedas" Multiplicity="1" />
+          <End Role="tbl_ValorMonedas" Type="Self.tbl_ValorMonedas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ValorMonedas">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="tbl_Adquisicion" EntityType="Self.tbl_Adquisicion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Bancos" EntityType="Self.tbl_Bancos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Categorias" EntityType="Self.tbl_Categorias" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Causas" EntityType="Self.tbl_Causas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Cementerios" EntityType="Self.tbl_Cementerios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Comunas" EntityType="Self.tbl_Comunas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Conceptos" EntityType="Self.tbl_Conceptos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ConceptosServicios" EntityType="Self.tbl_ConceptosServicios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Difuntos" EntityType="Self.tbl_Difuntos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Estados" EntityType="Self.tbl_Estados" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_FormasPago" EntityType="Self.tbl_FormasPago" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_HistorialAdquisicion" EntityType="Self.tbl_HistorialAdquisicion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Letra" EntityType="Self.tbl_Letra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_LugarDefuncion" EntityType="Self.tbl_LugarDefuncion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Observaciones" EntityType="Self.tbl_Observaciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PagoAdquisicion" EntityType="Self.tbl_PagoAdquisicion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PagosMantenciones" EntityType="Self.tbl_PagosMantenciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Parrocos" EntityType="Self.tbl_Parrocos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Patios" EntityType="Self.tbl_Patios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Regiones" EntityType="Self.tbl_Regiones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Roles" EntityType="Self.tbl_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RolesUsuarios" EntityType="Self.tbl_RolesUsuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_SeccionConceptos" EntityType="Self.tbl_SeccionConceptos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Secciones" EntityType="Self.tbl_Secciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Servicios" EntityType="Self.tbl_Servicios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ServiciosAdquisicion" EntityType="Self.tbl_ServiciosAdquisicion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_TipoAdministrador" EntityType="Self.tbl_TipoAdministrador" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_TipoMonedas" EntityType="Self.tbl_TipoMonedas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Usuarios" EntityType="Self.tbl_Usuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ValorMonedas" EntityType="Self.tbl_ValorMonedas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Maestros" EntityType="Self.tbl_Maestros" Schema="sql_user_camposanto" store:Type="Tables" />
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Adquisicion" Association="Self.FK_tbl_Adquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Adquisicion1" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Adquisicion1" Association="Self.FK_tbl_Adquisicion_tbl_Adquisicion1">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Adquisicion1" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Cementerios" Association="Self.FK_tbl_Adquisicion_tbl_Cementerios">
+            <End Role="tbl_Cementerios" EntitySet="tbl_Cementerios" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Comunas" Association="Self.FK_tbl_Adquisicion_tbl_Comunas">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Comunas1" Association="Self.FK_tbl_Adquisicion_tbl_Comunas1">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Conceptos" Association="Self.FK_tbl_Adquisicion_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Estados" Association="Self.FK_tbl_Adquisicion_tbl_Estados">
+            <End Role="tbl_Estados" EntitySet="tbl_Estados" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Secciones1" Association="Self.FK_tbl_Adquisicion_tbl_Secciones1">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_TipoMonedas" Association="Self.FK_tbl_Adquisicion_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Usuarios" Association="Self.FK_tbl_Adquisicion_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Comunas_tbl_Regiones" Association="Self.FK_tbl_Comunas_tbl_Regiones">
+            <End Role="tbl_Regiones" EntitySet="tbl_Regiones" />
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Conceptos_tbl_Categorias" Association="Self.FK_tbl_Conceptos_tbl_Categorias">
+            <End Role="tbl_Categorias" EntitySet="tbl_Categorias" />
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Conceptos" Association="Self.FK_tbl_ConceptosServicios_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Secciones" Association="Self.FK_tbl_ConceptosServicios_tbl_Secciones">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Servicios" Association="Self.FK_tbl_ConceptosServicios_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_TipoMonedas" Association="Self.FK_tbl_ConceptosServicios_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Adquisicion" Association="Self.FK_tbl_Difuntos_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Causas" Association="Self.FK_tbl_Difuntos_tbl_Causas">
+            <End Role="tbl_Causas" EntitySet="tbl_Causas" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_LugarDefuncion" Association="Self.FK_tbl_Difuntos_tbl_LugarDefuncion">
+            <End Role="tbl_LugarDefuncion" EntitySet="tbl_LugarDefuncion" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Usuarios" Association="Self.FK_tbl_Difuntos_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_HistorialAdquisicion_tbl_Adquisicion" Association="Self.FK_tbl_HistorialAdquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_HistorialAdquisicion" EntitySet="tbl_HistorialAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_HistorialAdquisicion_tbl_Usuarios" Association="Self.FK_tbl_HistorialAdquisicion_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_HistorialAdquisicion" EntitySet="tbl_HistorialAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Maestros_tbl_Comunas" Association="Self.FK_tbl_Maestros_tbl_Comunas">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Maestros" EntitySet="tbl_Maestros" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Observaciones_tbl_Adquisicion" Association="Self.FK_tbl_Observaciones_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Observaciones" EntitySet="tbl_Observaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Observaciones_tbl_Usuarios" Association="Self.FK_tbl_Observaciones_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Observaciones" EntitySet="tbl_Observaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_Adquisicion" Association="Self.FK_tbl_PagoAdquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_Bancos" Association="Self.FK_tbl_PagoAdquisicion_tbl_Bancos">
+            <End Role="tbl_Bancos" EntitySet="tbl_Bancos" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_FormasPago" Association="Self.FK_tbl_PagoAdquisicion_tbl_FormasPago">
+            <End Role="tbl_FormasPago" EntitySet="tbl_FormasPago" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Adquisicion" Association="Self.FK_tbl_PagosMantenciones_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Servicios" Association="Self.FK_tbl_PagosMantenciones_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_TipoMonedas" Association="Self.FK_tbl_PagosMantenciones_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Usuarios" Association="Self.FK_tbl_PagosMantenciones_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Parrocos_tbl_TipoAdministrador" Association="Self.FK_tbl_Parrocos_tbl_TipoAdministrador">
+            <End Role="tbl_TipoAdministrador" EntitySet="tbl_TipoAdministrador" />
+            <End Role="tbl_Parrocos" EntitySet="tbl_Parrocos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Patios_tbl_Cementerios" Association="Self.FK_tbl_Patios_tbl_Cementerios">
+            <End Role="tbl_Cementerios" EntitySet="tbl_Cementerios" />
+            <End Role="tbl_Patios" EntitySet="tbl_Patios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RolesUsuarios_tbl_Roles" Association="Self.FK_tbl_RolesUsuarios_tbl_Roles">
+            <End Role="tbl_Roles" EntitySet="tbl_Roles" />
+            <End Role="tbl_RolesUsuarios" EntitySet="tbl_RolesUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RolesUsuarios_tbl_Usuarios" Association="Self.FK_tbl_RolesUsuarios_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_RolesUsuarios" EntitySet="tbl_RolesUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_Conceptos" Association="Self.FK_tbl_SeccionConceptos_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_Secciones" Association="Self.FK_tbl_SeccionConceptos_tbl_Secciones">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_TipoMonedas" Association="Self.FK_tbl_SeccionConceptos_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Secciones_tbl_Patios" Association="Self.FK_tbl_Secciones_tbl_Patios">
+            <End Role="tbl_Patios" EntitySet="tbl_Patios" />
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Servicios_tbl_Categorias1" Association="Self.FK_tbl_Servicios_tbl_Categorias1">
+            <End Role="tbl_Categorias" EntitySet="tbl_Categorias" />
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Adquisicion" Association="Self.FK_tbl_ServiciosAdquisición_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisicion_tbl_Maestros" Association="Self.FK_tbl_ServiciosAdquisicion_tbl_Maestros">
+            <End Role="tbl_Maestros" EntitySet="tbl_Maestros" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Servicios" Association="Self.FK_tbl_ServiciosAdquisición_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas" Association="Self.FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Usuarios" Association="Self.FK_tbl_ServiciosAdquisición_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ValorMonedas_tbl_TipoMonedas" Association="Self.FK_tbl_ValorMonedas_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ValorMonedas" EntitySet="tbl_ValorMonedas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_Adquisicion" EntityType="Model.tbl_Adquisicion" />
+          <EntitySet Name="tbl_Bancos" EntityType="Model.tbl_Bancos" />
+          <EntitySet Name="tbl_Categorias" EntityType="Model.tbl_Categorias" />
+          <EntitySet Name="tbl_Causas" EntityType="Model.tbl_Causas" />
+          <EntitySet Name="tbl_Cementerios" EntityType="Model.tbl_Cementerios" />
+          <EntitySet Name="tbl_Comunas" EntityType="Model.tbl_Comunas" />
+          <EntitySet Name="tbl_Conceptos" EntityType="Model.tbl_Conceptos" />
+          <EntitySet Name="tbl_ConceptosServicios" EntityType="Model.tbl_ConceptosServicios" />
+          <EntitySet Name="tbl_Difuntos" EntityType="Model.tbl_Difuntos" />
+          <EntitySet Name="tbl_Estados" EntityType="Model.tbl_Estados" />
+          <EntitySet Name="tbl_FormasPago" EntityType="Model.tbl_FormasPago" />
+          <EntitySet Name="tbl_HistorialAdquisicion" EntityType="Model.tbl_HistorialAdquisicion" />
+          <EntitySet Name="tbl_Letra" EntityType="Model.tbl_Letra" />
+          <EntitySet Name="tbl_LugarDefuncion" EntityType="Model.tbl_LugarDefuncion" />
+          <EntitySet Name="tbl_Observaciones" EntityType="Model.tbl_Observaciones" />
+          <EntitySet Name="tbl_PagoAdquisicion" EntityType="Model.tbl_PagoAdquisicion" />
+          <EntitySet Name="tbl_PagosMantenciones" EntityType="Model.tbl_PagosMantenciones" />
+          <EntitySet Name="tbl_Parrocos" EntityType="Model.tbl_Parrocos" />
+          <EntitySet Name="tbl_Patios" EntityType="Model.tbl_Patios" />
+          <EntitySet Name="tbl_Regiones" EntityType="Model.tbl_Regiones" />
+          <EntitySet Name="tbl_Roles" EntityType="Model.tbl_Roles" />
+          <EntitySet Name="tbl_RolesUsuarios" EntityType="Model.tbl_RolesUsuarios" />
+          <EntitySet Name="tbl_SeccionConceptos" EntityType="Model.tbl_SeccionConceptos" />
+          <EntitySet Name="tbl_Secciones" EntityType="Model.tbl_Secciones" />
+          <EntitySet Name="tbl_Servicios" EntityType="Model.tbl_Servicios" />
+          <EntitySet Name="tbl_ServiciosAdquisicion" EntityType="Model.tbl_ServiciosAdquisicion" />
+          <EntitySet Name="tbl_TipoAdministrador" EntityType="Model.tbl_TipoAdministrador" />
+          <EntitySet Name="tbl_TipoMonedas" EntityType="Model.tbl_TipoMonedas" />
+          <EntitySet Name="tbl_Usuarios" EntityType="Model.tbl_Usuarios" />
+          <EntitySet Name="tbl_ValorMonedas" EntityType="Model.tbl_ValorMonedas" />
+          <EntitySet Name="tbl_Maestros" EntityType="Model.tbl_Maestros" />
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Adquisicion" Association="Model.FK_tbl_Adquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Adquisicion1" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Adquisicion1" Association="Model.FK_tbl_Adquisicion_tbl_Adquisicion1">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Adquisicion1" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Cementerios" Association="Model.FK_tbl_Adquisicion_tbl_Cementerios">
+            <End Role="tbl_Cementerios" EntitySet="tbl_Cementerios" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Comunas" Association="Model.FK_tbl_Adquisicion_tbl_Comunas">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Comunas1" Association="Model.FK_tbl_Adquisicion_tbl_Comunas1">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Conceptos" Association="Model.FK_tbl_Adquisicion_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Estados" Association="Model.FK_tbl_Adquisicion_tbl_Estados">
+            <End Role="tbl_Estados" EntitySet="tbl_Estados" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Secciones1" Association="Model.FK_tbl_Adquisicion_tbl_Secciones1">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_TipoMonedas" Association="Model.FK_tbl_Adquisicion_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Adquisicion_tbl_Usuarios" Association="Model.FK_tbl_Adquisicion_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Adquisicion" Association="Model.FK_tbl_Difuntos_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_HistorialAdquisicion_tbl_Adquisicion" Association="Model.FK_tbl_HistorialAdquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_HistorialAdquisicion" EntitySet="tbl_HistorialAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Observaciones_tbl_Adquisicion" Association="Model.FK_tbl_Observaciones_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_Observaciones" EntitySet="tbl_Observaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_Adquisicion" Association="Model.FK_tbl_PagoAdquisicion_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Adquisicion" Association="Model.FK_tbl_PagosMantenciones_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Adquisicion" Association="Model.FK_tbl_ServiciosAdquisición_tbl_Adquisicion">
+            <End Role="tbl_Adquisicion" EntitySet="tbl_Adquisicion" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_Bancos" Association="Model.FK_tbl_PagoAdquisicion_tbl_Bancos">
+            <End Role="tbl_Bancos" EntitySet="tbl_Bancos" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Conceptos_tbl_Categorias" Association="Model.FK_tbl_Conceptos_tbl_Categorias">
+            <End Role="tbl_Categorias" EntitySet="tbl_Categorias" />
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Servicios_tbl_Categorias1" Association="Model.FK_tbl_Servicios_tbl_Categorias1">
+            <End Role="tbl_Categorias" EntitySet="tbl_Categorias" />
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Causas" Association="Model.FK_tbl_Difuntos_tbl_Causas">
+            <End Role="tbl_Causas" EntitySet="tbl_Causas" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Patios_tbl_Cementerios" Association="Model.FK_tbl_Patios_tbl_Cementerios">
+            <End Role="tbl_Cementerios" EntitySet="tbl_Cementerios" />
+            <End Role="tbl_Patios" EntitySet="tbl_Patios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Comunas_tbl_Regiones" Association="Model.FK_tbl_Comunas_tbl_Regiones">
+            <End Role="tbl_Regiones" EntitySet="tbl_Regiones" />
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Maestros_tbl_Comunas" Association="Model.FK_tbl_Maestros_tbl_Comunas">
+            <End Role="tbl_Comunas" EntitySet="tbl_Comunas" />
+            <End Role="tbl_Maestros" EntitySet="tbl_Maestros" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Conceptos" Association="Model.FK_tbl_ConceptosServicios_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_Conceptos" Association="Model.FK_tbl_SeccionConceptos_tbl_Conceptos">
+            <End Role="tbl_Conceptos" EntitySet="tbl_Conceptos" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Secciones" Association="Model.FK_tbl_ConceptosServicios_tbl_Secciones">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_Servicios" Association="Model.FK_tbl_ConceptosServicios_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ConceptosServicios_tbl_TipoMonedas" Association="Model.FK_tbl_ConceptosServicios_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ConceptosServicios" EntitySet="tbl_ConceptosServicios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_LugarDefuncion" Association="Model.FK_tbl_Difuntos_tbl_LugarDefuncion">
+            <End Role="tbl_LugarDefuncion" EntitySet="tbl_LugarDefuncion" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Difuntos_tbl_Usuarios" Association="Model.FK_tbl_Difuntos_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Difuntos" EntitySet="tbl_Difuntos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagoAdquisicion_tbl_FormasPago" Association="Model.FK_tbl_PagoAdquisicion_tbl_FormasPago">
+            <End Role="tbl_FormasPago" EntitySet="tbl_FormasPago" />
+            <End Role="tbl_PagoAdquisicion" EntitySet="tbl_PagoAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_HistorialAdquisicion_tbl_Usuarios" Association="Model.FK_tbl_HistorialAdquisicion_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_HistorialAdquisicion" EntitySet="tbl_HistorialAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Observaciones_tbl_Usuarios" Association="Model.FK_tbl_Observaciones_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_Observaciones" EntitySet="tbl_Observaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Servicios" Association="Model.FK_tbl_PagosMantenciones_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_TipoMonedas" Association="Model.FK_tbl_PagosMantenciones_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PagosMantenciones_tbl_Usuarios" Association="Model.FK_tbl_PagosMantenciones_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_PagosMantenciones" EntitySet="tbl_PagosMantenciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Parrocos_tbl_TipoAdministrador" Association="Model.FK_tbl_Parrocos_tbl_TipoAdministrador">
+            <End Role="tbl_TipoAdministrador" EntitySet="tbl_TipoAdministrador" />
+            <End Role="tbl_Parrocos" EntitySet="tbl_Parrocos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Secciones_tbl_Patios" Association="Model.FK_tbl_Secciones_tbl_Patios">
+            <End Role="tbl_Patios" EntitySet="tbl_Patios" />
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RolesUsuarios_tbl_Roles" Association="Model.FK_tbl_RolesUsuarios_tbl_Roles">
+            <End Role="tbl_Roles" EntitySet="tbl_Roles" />
+            <End Role="tbl_RolesUsuarios" EntitySet="tbl_RolesUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RolesUsuarios_tbl_Usuarios" Association="Model.FK_tbl_RolesUsuarios_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_RolesUsuarios" EntitySet="tbl_RolesUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_Secciones" Association="Model.FK_tbl_SeccionConceptos_tbl_Secciones">
+            <End Role="tbl_Secciones" EntitySet="tbl_Secciones" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_SeccionConceptos_tbl_TipoMonedas" Association="Model.FK_tbl_SeccionConceptos_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_SeccionConceptos" EntitySet="tbl_SeccionConceptos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Servicios" Association="Model.FK_tbl_ServiciosAdquisición_tbl_Servicios">
+            <End Role="tbl_Servicios" EntitySet="tbl_Servicios" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisicion_tbl_Maestros" Association="Model.FK_tbl_ServiciosAdquisicion_tbl_Maestros">
+            <End Role="tbl_Maestros" EntitySet="tbl_Maestros" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas" Association="Model.FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ServiciosAdquisición_tbl_Usuarios" Association="Model.FK_tbl_ServiciosAdquisición_tbl_Usuarios">
+            <End Role="tbl_Usuarios" EntitySet="tbl_Usuarios" />
+            <End Role="tbl_ServiciosAdquisicion" EntitySet="tbl_ServiciosAdquisicion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_ValorMonedas_tbl_TipoMonedas" Association="Model.FK_tbl_ValorMonedas_tbl_TipoMonedas">
+            <End Role="tbl_TipoMonedas" EntitySet="tbl_TipoMonedas" />
+            <End Role="tbl_ValorMonedas" EntitySet="tbl_ValorMonedas" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="tbl_Adquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NroFicha" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CementerioID" Type="Int32" Nullable="false" />
+          <Property Name="CompRut" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="CompNombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompApellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompComunaID" Type="Int32" Nullable="false" />
+          <Property Name="CompDireccion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompNum" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CompTelefono" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CompEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RefRut" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="RefNombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RefApellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RefComunaID" Type="Int32" Nullable="false" />
+          <Property Name="RefDireccion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RefNum" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RefTelefono" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RefEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UbiSectorID" Type="Int32" Nullable="false" />
+          <Property Name="UbiNumero" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProductoID" Type="Int32" Nullable="false" />
+          <Property Name="Producto" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="PrecioProducto" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+          <Property Name="LetraNicho" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="FechaAdquisicion" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="EstadoID" Type="Int32" Nullable="false" />
+          <Property Name="IsTrasferred" Type="Boolean" Nullable="false" />
+          <Property Name="TranferredID" Type="Int32" />
+          <Property Name="TransferredNroFicha" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NextTransferID" Type="Int32" />
+          <Property Name="NextTransferNroFicha" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsRegulated" Type="Boolean" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="tbl_Adquisicion1" Relationship="Model.FK_tbl_Adquisicion_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_Adquisicion1" />
+          <NavigationProperty Name="tbl_Adquisicion2" Relationship="Model.FK_tbl_Adquisicion_tbl_Adquisicion" FromRole="tbl_Adquisicion1" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Adquisicion11" Relationship="Model.FK_tbl_Adquisicion_tbl_Adquisicion1" FromRole="tbl_Adquisicion" ToRole="tbl_Adquisicion1" />
+          <NavigationProperty Name="tbl_Adquisicion3" Relationship="Model.FK_tbl_Adquisicion_tbl_Adquisicion1" FromRole="tbl_Adquisicion1" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Cementerios" Relationship="Model.FK_tbl_Adquisicion_tbl_Cementerios" FromRole="tbl_Adquisicion" ToRole="tbl_Cementerios" />
+          <NavigationProperty Name="tbl_Comunas" Relationship="Model.FK_tbl_Adquisicion_tbl_Comunas" FromRole="tbl_Adquisicion" ToRole="tbl_Comunas" />
+          <NavigationProperty Name="tbl_Comunas1" Relationship="Model.FK_tbl_Adquisicion_tbl_Comunas1" FromRole="tbl_Adquisicion" ToRole="tbl_Comunas" />
+          <NavigationProperty Name="tbl_Conceptos" Relationship="Model.FK_tbl_Adquisicion_tbl_Conceptos" FromRole="tbl_Adquisicion" ToRole="tbl_Conceptos" />
+          <NavigationProperty Name="tbl_Estados" Relationship="Model.FK_tbl_Adquisicion_tbl_Estados" FromRole="tbl_Adquisicion" ToRole="tbl_Estados" />
+          <NavigationProperty Name="tbl_Secciones" Relationship="Model.FK_tbl_Adquisicion_tbl_Secciones1" FromRole="tbl_Adquisicion" ToRole="tbl_Secciones" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_Adquisicion_tbl_TipoMonedas" FromRole="tbl_Adquisicion" ToRole="tbl_TipoMonedas" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_Adquisicion_tbl_Usuarios" FromRole="tbl_Adquisicion" ToRole="tbl_Usuarios" />
+          <NavigationProperty Name="tbl_Difuntos" Relationship="Model.FK_tbl_Difuntos_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_Difuntos" />
+          <NavigationProperty Name="tbl_HistorialAdquisicion" Relationship="Model.FK_tbl_HistorialAdquisicion_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_HistorialAdquisicion" />
+          <NavigationProperty Name="tbl_Observaciones" Relationship="Model.FK_tbl_Observaciones_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_Observaciones" />
+          <NavigationProperty Name="tbl_PagoAdquisicion" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_PagoAdquisicion" />
+          <NavigationProperty Name="tbl_PagosMantenciones" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_PagosMantenciones" />
+          <NavigationProperty Name="tbl_ServiciosAdquisicion" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Adquisicion" FromRole="tbl_Adquisicion" ToRole="tbl_ServiciosAdquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_Bancos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Banco" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_PagoAdquisicion" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_Bancos" FromRole="tbl_Bancos" ToRole="tbl_PagoAdquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_Categorias">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Categoria" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Conceptos" Relationship="Model.FK_tbl_Conceptos_tbl_Categorias" FromRole="tbl_Categorias" ToRole="tbl_Conceptos" />
+          <NavigationProperty Name="tbl_Servicios" Relationship="Model.FK_tbl_Servicios_tbl_Categorias1" FromRole="tbl_Categorias" ToRole="tbl_Servicios" />
+        </EntityType>
+        <EntityType Name="tbl_Causas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Causa" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Difuntos" Relationship="Model.FK_tbl_Difuntos_tbl_Causas" FromRole="tbl_Causas" ToRole="tbl_Difuntos" />
+        </EntityType>
+        <EntityType Name="tbl_Cementerios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cementerio" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Cementerios" FromRole="tbl_Cementerios" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Patios" Relationship="Model.FK_tbl_Patios_tbl_Cementerios" FromRole="tbl_Cementerios" ToRole="tbl_Patios" />
+        </EntityType>
+        <EntityType Name="tbl_Comunas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Comuna" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="RegionID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Comunas" FromRole="tbl_Comunas" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Adquisicion1" Relationship="Model.FK_tbl_Adquisicion_tbl_Comunas1" FromRole="tbl_Comunas" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Regiones" Relationship="Model.FK_tbl_Comunas_tbl_Regiones" FromRole="tbl_Comunas" ToRole="tbl_Regiones" />
+          <NavigationProperty Name="tbl_Maestros" Relationship="Model.FK_tbl_Maestros_tbl_Comunas" FromRole="tbl_Comunas" ToRole="tbl_Maestros" />
+        </EntityType>
+        <EntityType Name="tbl_Conceptos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Concepto" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CategoriaID" Type="Int32" Nullable="false" />
+          <Property Name="IsNicho" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Conceptos" FromRole="tbl_Conceptos" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Categorias" Relationship="Model.FK_tbl_Conceptos_tbl_Categorias" FromRole="tbl_Conceptos" ToRole="tbl_Categorias" />
+          <NavigationProperty Name="tbl_ConceptosServicios" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Conceptos" FromRole="tbl_Conceptos" ToRole="tbl_ConceptosServicios" />
+          <NavigationProperty Name="tbl_SeccionConceptos" Relationship="Model.FK_tbl_SeccionConceptos_tbl_Conceptos" FromRole="tbl_Conceptos" ToRole="tbl_SeccionConceptos" />
+        </EntityType>
+        <EntityType Name="tbl_ConceptosServicios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SeccionID" Type="Int32" Nullable="false" />
+          <Property Name="ServicioID" Type="Int32" Nullable="false" />
+          <Property Name="ConceptoID" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Precio" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Conceptos" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Conceptos" FromRole="tbl_ConceptosServicios" ToRole="tbl_Conceptos" />
+          <NavigationProperty Name="tbl_Secciones" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Secciones" FromRole="tbl_ConceptosServicios" ToRole="tbl_Secciones" />
+          <NavigationProperty Name="tbl_Servicios" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Servicios" FromRole="tbl_ConceptosServicios" ToRole="tbl_Servicios" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_ConceptosServicios_tbl_TipoMonedas" FromRole="tbl_ConceptosServicios" ToRole="tbl_TipoMonedas" />
+        </EntityType>
+        <EntityType Name="tbl_Difuntos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rut" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="NombreApellido" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Edad" Type="Int32" Nullable="false" />
+          <Property Name="FechaDefuncion" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CausaID" Type="Int32" Nullable="false" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="Reuso" Type="Boolean" />
+          <Property Name="FechaReuso" Type="DateTime" Precision="3" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="LugarID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Difuntos_tbl_Adquisicion" FromRole="tbl_Difuntos" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Causas" Relationship="Model.FK_tbl_Difuntos_tbl_Causas" FromRole="tbl_Difuntos" ToRole="tbl_Causas" />
+          <NavigationProperty Name="tbl_LugarDefuncion" Relationship="Model.FK_tbl_Difuntos_tbl_LugarDefuncion" FromRole="tbl_Difuntos" ToRole="tbl_LugarDefuncion" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_Difuntos_tbl_Usuarios" FromRole="tbl_Difuntos" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_Estados">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Estado" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Estados" FromRole="tbl_Estados" ToRole="tbl_Adquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_FormasPago">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FormaPago" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_PagoAdquisicion" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_FormasPago" FromRole="tbl_FormasPago" ToRole="tbl_PagoAdquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_HistorialAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Accion" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_HistorialAdquisicion_tbl_Adquisicion" FromRole="tbl_HistorialAdquisicion" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_HistorialAdquisicion_tbl_Usuarios" FromRole="tbl_HistorialAdquisicion" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_Letra">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Letra" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_LugarDefuncion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Lugar" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Difuntos" Relationship="Model.FK_tbl_Difuntos_tbl_LugarDefuncion" FromRole="tbl_LugarDefuncion" ToRole="tbl_Difuntos" />
+        </EntityType>
+        <EntityType Name="tbl_Observaciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Observacion" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Observaciones_tbl_Adquisicion" FromRole="tbl_Observaciones" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_Observaciones_tbl_Usuarios" FromRole="tbl_Observaciones" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_PagoAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FormaPagoID" Type="Int32" Nullable="false" />
+          <Property Name="NroRecaudacion" Type="Int32" Nullable="false" />
+          <Property Name="Monto" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="FechaPago" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NroCheque" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BancoID" Type="Int32" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_Adquisicion" FromRole="tbl_PagoAdquisicion" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Bancos" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_Bancos" FromRole="tbl_PagoAdquisicion" ToRole="tbl_Bancos" />
+          <NavigationProperty Name="tbl_FormasPago" Relationship="Model.FK_tbl_PagoAdquisicion_tbl_FormasPago" FromRole="tbl_PagoAdquisicion" ToRole="tbl_FormasPago" />
+        </EntityType>
+        <EntityType Name="tbl_PagosMantenciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MantencionID" Type="Int32" Nullable="false" />
+          <Property Name="Precio" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="Anio" Type="Int32" Nullable="false" />
+          <Property Name="Observacion" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Adquisicion" FromRole="tbl_PagosMantenciones" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Servicios" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Servicios" FromRole="tbl_PagosMantenciones" ToRole="tbl_Servicios" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_PagosMantenciones_tbl_TipoMonedas" FromRole="tbl_PagosMantenciones" ToRole="tbl_TipoMonedas" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Usuarios" FromRole="tbl_PagosMantenciones" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_Parrocos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreParroco" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="RutParroco" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="TipoAdministradorID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_TipoAdministrador" Relationship="Model.FK_tbl_Parrocos_tbl_TipoAdministrador" FromRole="tbl_Parrocos" ToRole="tbl_TipoAdministrador" />
+        </EntityType>
+        <EntityType Name="tbl_Patios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Patio" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CementerioID" Type="Int32" />
+          <NavigationProperty Name="tbl_Cementerios" Relationship="Model.FK_tbl_Patios_tbl_Cementerios" FromRole="tbl_Patios" ToRole="tbl_Cementerios" />
+          <NavigationProperty Name="tbl_Secciones" Relationship="Model.FK_tbl_Secciones_tbl_Patios" FromRole="tbl_Patios" ToRole="tbl_Secciones" />
+        </EntityType>
+        <EntityType Name="tbl_Regiones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NroRegion" Type="Int32" Nullable="false" />
+          <Property Name="Simbologia" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Comunas" Relationship="Model.FK_tbl_Comunas_tbl_Regiones" FromRole="tbl_Regiones" ToRole="tbl_Comunas" />
+        </EntityType>
+        <EntityType Name="tbl_Roles">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rol" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_RolesUsuarios" Relationship="Model.FK_tbl_RolesUsuarios_tbl_Roles" FromRole="tbl_Roles" ToRole="tbl_RolesUsuarios" />
+        </EntityType>
+        <EntityType Name="tbl_RolesUsuarios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="RolID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Roles" Relationship="Model.FK_tbl_RolesUsuarios_tbl_Roles" FromRole="tbl_RolesUsuarios" ToRole="tbl_Roles" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_RolesUsuarios_tbl_Usuarios" FromRole="tbl_RolesUsuarios" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_SeccionConceptos">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConceptoID" Type="Int32" Nullable="false" />
+          <Property Name="SeccionID" Type="Int32" Nullable="false" />
+          <Property Name="Stock" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Precio" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Conceptos" Relationship="Model.FK_tbl_SeccionConceptos_tbl_Conceptos" FromRole="tbl_SeccionConceptos" ToRole="tbl_Conceptos" />
+          <NavigationProperty Name="tbl_Secciones" Relationship="Model.FK_tbl_SeccionConceptos_tbl_Secciones" FromRole="tbl_SeccionConceptos" ToRole="tbl_Secciones" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_SeccionConceptos_tbl_TipoMonedas" FromRole="tbl_SeccionConceptos" ToRole="tbl_TipoMonedas" />
+        </EntityType>
+        <EntityType Name="tbl_Secciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Seccion" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="PatioID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Secciones1" FromRole="tbl_Secciones" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_ConceptosServicios" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Secciones" FromRole="tbl_Secciones" ToRole="tbl_ConceptosServicios" />
+          <NavigationProperty Name="tbl_Patios" Relationship="Model.FK_tbl_Secciones_tbl_Patios" FromRole="tbl_Secciones" ToRole="tbl_Patios" />
+          <NavigationProperty Name="tbl_SeccionConceptos" Relationship="Model.FK_tbl_SeccionConceptos_tbl_Secciones" FromRole="tbl_Secciones" ToRole="tbl_SeccionConceptos" />
+        </EntityType>
+        <EntityType Name="tbl_Servicios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Servicio" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CategoriaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Categorias" Relationship="Model.FK_tbl_Servicios_tbl_Categorias1" FromRole="tbl_Servicios" ToRole="tbl_Categorias" />
+          <NavigationProperty Name="tbl_ConceptosServicios" Relationship="Model.FK_tbl_ConceptosServicios_tbl_Servicios" FromRole="tbl_Servicios" ToRole="tbl_ConceptosServicios" />
+          <NavigationProperty Name="tbl_PagosMantenciones" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Servicios" FromRole="tbl_Servicios" ToRole="tbl_PagosMantenciones" />
+          <NavigationProperty Name="tbl_ServiciosAdquisicion" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Servicios" FromRole="tbl_Servicios" ToRole="tbl_ServiciosAdquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_ServiciosAdquisicion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ServicioID" Type="Int32" Nullable="false" />
+          <Property Name="Precio" Type="Decimal" Nullable="false" Precision="10" Scale="0" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="AdquisicionID" Type="Int32" Nullable="false" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <Property Name="ValorTipoMonedaActual" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PrecioTipoMoneda" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FechaTipoMoneda" Type="DateTime" Precision="0" />
+          <Property Name="MaestroID" Type="Int32" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Adquisicion" FromRole="tbl_ServiciosAdquisicion" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Servicios" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Servicios" FromRole="tbl_ServiciosAdquisicion" ToRole="tbl_Servicios" />
+          <NavigationProperty Name="tbl_Maestros" Relationship="Model.FK_tbl_ServiciosAdquisicion_tbl_Maestros" FromRole="tbl_ServiciosAdquisicion" ToRole="tbl_Maestros" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas" FromRole="tbl_ServiciosAdquisicion" ToRole="tbl_TipoMonedas" />
+          <NavigationProperty Name="tbl_Usuarios" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Usuarios" FromRole="tbl_ServiciosAdquisicion" ToRole="tbl_Usuarios" />
+        </EntityType>
+        <EntityType Name="tbl_TipoAdministrador">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoAdministrador" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Parrocos" Relationship="Model.FK_tbl_Parrocos_tbl_TipoAdministrador" FromRole="tbl_TipoAdministrador" ToRole="tbl_Parrocos" />
+        </EntityType>
+        <EntityType Name="tbl_TipoMonedas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoMoneda" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Periodicidad" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="HasSymbol" Type="Boolean" Nullable="false" />
+          <Property Name="Format" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_ConceptosServicios" Relationship="Model.FK_tbl_ConceptosServicios_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_ConceptosServicios" />
+          <NavigationProperty Name="tbl_PagosMantenciones" Relationship="Model.FK_tbl_PagosMantenciones_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_PagosMantenciones" />
+          <NavigationProperty Name="tbl_SeccionConceptos" Relationship="Model.FK_tbl_SeccionConceptos_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_SeccionConceptos" />
+          <NavigationProperty Name="tbl_ServiciosAdquisicion" Relationship="Model.FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_ServiciosAdquisicion" />
+          <NavigationProperty Name="tbl_ValorMonedas" Relationship="Model.FK_tbl_ValorMonedas_tbl_TipoMonedas" FromRole="tbl_TipoMonedas" ToRole="tbl_ValorMonedas" />
+        </EntityType>
+        <EntityType Name="tbl_Usuarios">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordHash" Type="Binary" Nullable="false" MaxLength="64" FixedLength="false" />
+          <Property Name="PasswordSalt" Type="Binary" Nullable="false" MaxLength="128" FixedLength="false" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Creado" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsSuperAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="TokenHash" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="3" />
+          <Property Name="IsUsed" Type="Boolean" />
+          <NavigationProperty Name="tbl_Adquisicion" Relationship="Model.FK_tbl_Adquisicion_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_Adquisicion" />
+          <NavigationProperty Name="tbl_Difuntos" Relationship="Model.FK_tbl_Difuntos_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_Difuntos" />
+          <NavigationProperty Name="tbl_HistorialAdquisicion" Relationship="Model.FK_tbl_HistorialAdquisicion_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_HistorialAdquisicion" />
+          <NavigationProperty Name="tbl_Observaciones" Relationship="Model.FK_tbl_Observaciones_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_Observaciones" />
+          <NavigationProperty Name="tbl_PagosMantenciones" Relationship="Model.FK_tbl_PagosMantenciones_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_PagosMantenciones" />
+          <NavigationProperty Name="tbl_RolesUsuarios" Relationship="Model.FK_tbl_RolesUsuarios_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_RolesUsuarios" />
+          <NavigationProperty Name="tbl_ServiciosAdquisicion" Relationship="Model.FK_tbl_ServiciosAdquisición_tbl_Usuarios" FromRole="tbl_Usuarios" ToRole="tbl_ServiciosAdquisicion" />
+        </EntityType>
+        <EntityType Name="tbl_ValorMonedas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Dia" Type="Int32" Nullable="false" />
+          <Property Name="Mes" Type="Int32" Nullable="false" />
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="Valor" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TipoMonedaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_TipoMonedas" Relationship="Model.FK_tbl_ValorMonedas_tbl_TipoMonedas" FromRole="tbl_ValorMonedas" ToRole="tbl_TipoMonedas" />
+        </EntityType>
+        <EntityType Name="tbl_Maestros">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rut" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ComunaID" Type="Int32" Nullable="false" />
+          <Property Name="Direccion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Num" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Telefono" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Comunas" Relationship="Model.FK_tbl_Maestros_tbl_Comunas" FromRole="tbl_Maestros" ToRole="tbl_Comunas" />
+          <NavigationProperty Name="tbl_ServiciosAdquisicion" Relationship="Model.FK_tbl_ServiciosAdquisicion_tbl_Maestros" FromRole="tbl_Maestros" ToRole="tbl_ServiciosAdquisicion" />
+        </EntityType>
+        <Association Name="FK_tbl_Adquisicion_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="0..1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion1">
+              <PropertyRef Name="TranferredID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Adquisicion1">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="0..1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion1">
+              <PropertyRef Name="NextTransferID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Cementerios">
+          <End Type="Model.tbl_Cementerios" Role="tbl_Cementerios" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cementerios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="CementerioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Comunas">
+          <End Type="Model.tbl_Comunas" Role="tbl_Comunas" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="CompComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Comunas1">
+          <End Type="Model.tbl_Comunas" Role="tbl_Comunas" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="RefComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Conceptos">
+          <End Type="Model.tbl_Conceptos" Role="tbl_Conceptos" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Estados">
+          <End Type="Model.tbl_Estados" Role="tbl_Estados" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Estados">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="EstadoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Secciones1">
+          <End Type="Model.tbl_Secciones" Role="tbl_Secciones" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="UbiSectorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Adquisicion_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Adquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_Difuntos" Role="tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_HistorialAdquisicion_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_HistorialAdquisicion" Role="tbl_HistorialAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_HistorialAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Observaciones_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_Observaciones" Role="tbl_Observaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Observaciones">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_PagoAdquisicion" Role="tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_PagosMantenciones" Role="tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Adquisicion">
+          <End Type="Model.tbl_Adquisicion" Role="tbl_Adquisicion" Multiplicity="1" />
+          <End Type="Model.tbl_ServiciosAdquisicion" Role="tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Adquisicion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="AdquisicionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_Bancos">
+          <End Type="Model.tbl_Bancos" Role="tbl_Bancos" Multiplicity="0..1" />
+          <End Type="Model.tbl_PagoAdquisicion" Role="tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Bancos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="BancoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Conceptos_tbl_Categorias">
+          <End Type="Model.tbl_Categorias" Role="tbl_Categorias" Multiplicity="1" />
+          <End Type="Model.tbl_Conceptos" Role="tbl_Conceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Categorias">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Conceptos">
+              <PropertyRef Name="CategoriaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Servicios_tbl_Categorias1">
+          <End Type="Model.tbl_Categorias" Role="tbl_Categorias" Multiplicity="1" />
+          <End Type="Model.tbl_Servicios" Role="tbl_Servicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Categorias">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Servicios">
+              <PropertyRef Name="CategoriaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Causas">
+          <End Type="Model.tbl_Causas" Role="tbl_Causas" Multiplicity="1" />
+          <End Type="Model.tbl_Difuntos" Role="tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Causas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="CausaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Patios_tbl_Cementerios">
+          <End Type="Model.tbl_Cementerios" Role="tbl_Cementerios" Multiplicity="0..1" />
+          <End Type="Model.tbl_Patios" Role="tbl_Patios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cementerios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Patios">
+              <PropertyRef Name="CementerioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Comunas_tbl_Regiones">
+          <End Type="Model.tbl_Regiones" Role="tbl_Regiones" Multiplicity="1" />
+          <End Type="Model.tbl_Comunas" Role="tbl_Comunas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Regiones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Comunas">
+              <PropertyRef Name="RegionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Maestros_tbl_Comunas">
+          <End Type="Model.tbl_Comunas" Role="tbl_Comunas" Multiplicity="1" />
+          <End Type="Model.tbl_Maestros" Role="tbl_Maestros" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Comunas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Maestros">
+              <PropertyRef Name="ComunaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Conceptos">
+          <End Type="Model.tbl_Conceptos" Role="tbl_Conceptos" Multiplicity="1" />
+          <End Type="Model.tbl_ConceptosServicios" Role="tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="ConceptoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_Conceptos">
+          <End Type="Model.tbl_Conceptos" Role="tbl_Conceptos" Multiplicity="1" />
+          <End Type="Model.tbl_SeccionConceptos" Role="tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Conceptos">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="ConceptoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Secciones">
+          <End Type="Model.tbl_Secciones" Role="tbl_Secciones" Multiplicity="1" />
+          <End Type="Model.tbl_ConceptosServicios" Role="tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="SeccionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_Servicios">
+          <End Type="Model.tbl_Servicios" Role="tbl_Servicios" Multiplicity="1" />
+          <End Type="Model.tbl_ConceptosServicios" Role="tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="ServicioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ConceptosServicios_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_ConceptosServicios" Role="tbl_ConceptosServicios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ConceptosServicios">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_LugarDefuncion">
+          <End Type="Model.tbl_LugarDefuncion" Role="tbl_LugarDefuncion" Multiplicity="1" />
+          <End Type="Model.tbl_Difuntos" Role="tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_LugarDefuncion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="LugarID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Difuntos_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_Difuntos" Role="tbl_Difuntos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Difuntos">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagoAdquisicion_tbl_FormasPago">
+          <End Type="Model.tbl_FormasPago" Role="tbl_FormasPago" Multiplicity="1" />
+          <End Type="Model.tbl_PagoAdquisicion" Role="tbl_PagoAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_FormasPago">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagoAdquisicion">
+              <PropertyRef Name="FormaPagoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_HistorialAdquisicion_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_HistorialAdquisicion" Role="tbl_HistorialAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_HistorialAdquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Observaciones_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_Observaciones" Role="tbl_Observaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Observaciones">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Servicios">
+          <End Type="Model.tbl_Servicios" Role="tbl_Servicios" Multiplicity="1" />
+          <End Type="Model.tbl_PagosMantenciones" Role="tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="MantencionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_PagosMantenciones" Role="tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PagosMantenciones_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_PagosMantenciones" Role="tbl_PagosMantenciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_PagosMantenciones">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Parrocos_tbl_TipoAdministrador">
+          <End Type="Model.tbl_TipoAdministrador" Role="tbl_TipoAdministrador" Multiplicity="1" />
+          <End Type="Model.tbl_Parrocos" Role="tbl_Parrocos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoAdministrador">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Parrocos">
+              <PropertyRef Name="TipoAdministradorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Secciones_tbl_Patios">
+          <End Type="Model.tbl_Patios" Role="tbl_Patios" Multiplicity="1" />
+          <End Type="Model.tbl_Secciones" Role="tbl_Secciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Patios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Secciones">
+              <PropertyRef Name="PatioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RolesUsuarios_tbl_Roles">
+          <End Type="Model.tbl_Roles" Role="tbl_Roles" Multiplicity="1" />
+          <End Type="Model.tbl_RolesUsuarios" Role="tbl_RolesUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Roles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RolesUsuarios">
+              <PropertyRef Name="RolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RolesUsuarios_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_RolesUsuarios" Role="tbl_RolesUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RolesUsuarios">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_Secciones">
+          <End Type="Model.tbl_Secciones" Role="tbl_Secciones" Multiplicity="1" />
+          <End Type="Model.tbl_SeccionConceptos" Role="tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Secciones">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="SeccionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_SeccionConceptos_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_SeccionConceptos" Role="tbl_SeccionConceptos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_SeccionConceptos">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Servicios">
+          <End Type="Model.tbl_Servicios" Role="tbl_Servicios" Multiplicity="1" />
+          <End Type="Model.tbl_ServiciosAdquisicion" Role="tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Servicios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="ServicioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisicion_tbl_Maestros">
+          <End Type="Model.tbl_Maestros" Role="tbl_Maestros" Multiplicity="0..1" />
+          <End Type="Model.tbl_ServiciosAdquisicion" Role="tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Maestros">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="MaestroID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_ServiciosAdquisicion" Role="tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ServiciosAdquisición_tbl_Usuarios">
+          <End Type="Model.tbl_Usuarios" Role="tbl_Usuarios" Multiplicity="1" />
+          <End Type="Model.tbl_ServiciosAdquisicion" Role="tbl_ServiciosAdquisicion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Usuarios">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ServiciosAdquisicion">
+              <PropertyRef Name="UsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_ValorMonedas_tbl_TipoMonedas">
+          <End Type="Model.tbl_TipoMonedas" Role="tbl_TipoMonedas" Multiplicity="1" />
+          <End Type="Model.tbl_ValorMonedas" Role="tbl_ValorMonedas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TipoMonedas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_ValorMonedas">
+              <PropertyRef Name="TipoMonedaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="tbl_Adquisicion">
+            <EntityTypeMapping TypeName="Model.tbl_Adquisicion">
+              <MappingFragment StoreEntitySet="tbl_Adquisicion">
+                <ScalarProperty Name="FechaTipoMoneda" ColumnName="FechaTipoMoneda" />
+                <ScalarProperty Name="PrecioTipoMoneda" ColumnName="PrecioTipoMoneda" />
+                <ScalarProperty Name="ValorTipoMonedaActual" ColumnName="ValorTipoMonedaActual" />
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="IsRegulated" ColumnName="IsRegulated" />
+                <ScalarProperty Name="NextTransferNroFicha" ColumnName="NextTransferNroFicha" />
+                <ScalarProperty Name="NextTransferID" ColumnName="NextTransferID" />
+                <ScalarProperty Name="TransferredNroFicha" ColumnName="TransferredNroFicha" />
+                <ScalarProperty Name="TranferredID" ColumnName="TranferredID" />
+                <ScalarProperty Name="IsTrasferred" ColumnName="IsTrasferred" />
+                <ScalarProperty Name="EstadoID" ColumnName="EstadoID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="FechaAdquisicion" ColumnName="FechaAdquisicion" />
+                <ScalarProperty Name="LetraNicho" ColumnName="LetraNicho" />
+                <ScalarProperty Name="PrecioProducto" ColumnName="PrecioProducto" />
+                <ScalarProperty Name="Producto" ColumnName="Producto" />
+                <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+                <ScalarProperty Name="UbiNumero" ColumnName="UbiNumero" />
+                <ScalarProperty Name="UbiSectorID" ColumnName="UbiSectorID" />
+                <ScalarProperty Name="RefEmail" ColumnName="RefEmail" />
+                <ScalarProperty Name="RefTelefono" ColumnName="RefTelefono" />
+                <ScalarProperty Name="RefNum" ColumnName="RefNum" />
+                <ScalarProperty Name="RefDireccion" ColumnName="RefDireccion" />
+                <ScalarProperty Name="RefComunaID" ColumnName="RefComunaID" />
+                <ScalarProperty Name="RefApellido" ColumnName="RefApellido" />
+                <ScalarProperty Name="RefNombre" ColumnName="RefNombre" />
+                <ScalarProperty Name="RefRut" ColumnName="RefRut" />
+                <ScalarProperty Name="CompEmail" ColumnName="CompEmail" />
+                <ScalarProperty Name="CompTelefono" ColumnName="CompTelefono" />
+                <ScalarProperty Name="CompNum" ColumnName="CompNum" />
+                <ScalarProperty Name="CompDireccion" ColumnName="CompDireccion" />
+                <ScalarProperty Name="CompComunaID" ColumnName="CompComunaID" />
+                <ScalarProperty Name="CompApellido" ColumnName="CompApellido" />
+                <ScalarProperty Name="CompNombre" ColumnName="CompNombre" />
+                <ScalarProperty Name="CompRut" ColumnName="CompRut" />
+                <ScalarProperty Name="CementerioID" ColumnName="CementerioID" />
+                <ScalarProperty Name="NroFicha" ColumnName="NroFicha" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Bancos">
+            <EntityTypeMapping TypeName="Model.tbl_Bancos">
+              <MappingFragment StoreEntitySet="tbl_Bancos">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Banco" ColumnName="Banco" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Categorias">
+            <EntityTypeMapping TypeName="Model.tbl_Categorias">
+              <MappingFragment StoreEntitySet="tbl_Categorias">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Categoria" ColumnName="Categoria" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Causas">
+            <EntityTypeMapping TypeName="Model.tbl_Causas">
+              <MappingFragment StoreEntitySet="tbl_Causas">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Causa" ColumnName="Causa" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Cementerios">
+            <EntityTypeMapping TypeName="Model.tbl_Cementerios">
+              <MappingFragment StoreEntitySet="tbl_Cementerios">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Cementerio" ColumnName="Cementerio" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Comunas">
+            <EntityTypeMapping TypeName="Model.tbl_Comunas">
+              <MappingFragment StoreEntitySet="tbl_Comunas">
+                <ScalarProperty Name="RegionID" ColumnName="RegionID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Comuna" ColumnName="Comuna" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Conceptos">
+            <EntityTypeMapping TypeName="Model.tbl_Conceptos">
+              <MappingFragment StoreEntitySet="tbl_Conceptos">
+                <ScalarProperty Name="IsNicho" ColumnName="IsNicho" />
+                <ScalarProperty Name="CategoriaID" ColumnName="CategoriaID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Concepto" ColumnName="Concepto" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ConceptosServicios">
+            <EntityTypeMapping TypeName="Model.tbl_ConceptosServicios">
+              <MappingFragment StoreEntitySet="tbl_ConceptosServicios">
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ConceptoID" ColumnName="ConceptoID" />
+                <ScalarProperty Name="ServicioID" ColumnName="ServicioID" />
+                <ScalarProperty Name="SeccionID" ColumnName="SeccionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Difuntos">
+            <EntityTypeMapping TypeName="Model.tbl_Difuntos">
+              <MappingFragment StoreEntitySet="tbl_Difuntos">
+                <ScalarProperty Name="LugarID" ColumnName="LugarID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="FechaReuso" ColumnName="FechaReuso" />
+                <ScalarProperty Name="Reuso" ColumnName="Reuso" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="CausaID" ColumnName="CausaID" />
+                <ScalarProperty Name="FechaDefuncion" ColumnName="FechaDefuncion" />
+                <ScalarProperty Name="Edad" ColumnName="Edad" />
+                <ScalarProperty Name="NombreApellido" ColumnName="NombreApellido" />
+                <ScalarProperty Name="Rut" ColumnName="Rut" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Estados">
+            <EntityTypeMapping TypeName="Model.tbl_Estados">
+              <MappingFragment StoreEntitySet="tbl_Estados">
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_FormasPago">
+            <EntityTypeMapping TypeName="Model.tbl_FormasPago">
+              <MappingFragment StoreEntitySet="tbl_FormasPago">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="FormaPago" ColumnName="FormaPago" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_HistorialAdquisicion">
+            <EntityTypeMapping TypeName="Model.tbl_HistorialAdquisicion">
+              <MappingFragment StoreEntitySet="tbl_HistorialAdquisicion">
+                <ScalarProperty Name="Accion" ColumnName="Accion" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Letra">
+            <EntityTypeMapping TypeName="Model.tbl_Letra">
+              <MappingFragment StoreEntitySet="tbl_Letra">
+                <ScalarProperty Name="Letra" ColumnName="Letra" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_LugarDefuncion">
+            <EntityTypeMapping TypeName="Model.tbl_LugarDefuncion">
+              <MappingFragment StoreEntitySet="tbl_LugarDefuncion">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Lugar" ColumnName="Lugar" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Observaciones">
+            <EntityTypeMapping TypeName="Model.tbl_Observaciones">
+              <MappingFragment StoreEntitySet="tbl_Observaciones">
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Observacion" ColumnName="Observacion" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PagoAdquisicion">
+            <EntityTypeMapping TypeName="Model.tbl_PagoAdquisicion">
+              <MappingFragment StoreEntitySet="tbl_PagoAdquisicion">
+                <ScalarProperty Name="BancoID" ColumnName="BancoID" />
+                <ScalarProperty Name="NroCheque" ColumnName="NroCheque" />
+                <ScalarProperty Name="FechaPago" ColumnName="FechaPago" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+                <ScalarProperty Name="NroRecaudacion" ColumnName="NroRecaudacion" />
+                <ScalarProperty Name="FormaPagoID" ColumnName="FormaPagoID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PagosMantenciones">
+            <EntityTypeMapping TypeName="Model.tbl_PagosMantenciones">
+              <MappingFragment StoreEntitySet="tbl_PagosMantenciones">
+                <ScalarProperty Name="FechaTipoMoneda" ColumnName="FechaTipoMoneda" />
+                <ScalarProperty Name="PrecioTipoMoneda" ColumnName="PrecioTipoMoneda" />
+                <ScalarProperty Name="ValorTipoMonedaActual" ColumnName="ValorTipoMonedaActual" />
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="Observacion" ColumnName="Observacion" />
+                <ScalarProperty Name="Anio" ColumnName="Anio" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="MantencionID" ColumnName="MantencionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Parrocos">
+            <EntityTypeMapping TypeName="Model.tbl_Parrocos">
+              <MappingFragment StoreEntitySet="tbl_Parrocos">
+                <ScalarProperty Name="TipoAdministradorID" ColumnName="TipoAdministradorID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="RutParroco" ColumnName="RutParroco" />
+                <ScalarProperty Name="NombreParroco" ColumnName="NombreParroco" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Patios">
+            <EntityTypeMapping TypeName="Model.tbl_Patios">
+              <MappingFragment StoreEntitySet="tbl_Patios">
+                <ScalarProperty Name="CementerioID" ColumnName="CementerioID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Patio" ColumnName="Patio" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Regiones">
+            <EntityTypeMapping TypeName="Model.tbl_Regiones">
+              <MappingFragment StoreEntitySet="tbl_Regiones">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Simbologia" ColumnName="Simbologia" />
+                <ScalarProperty Name="NroRegion" ColumnName="NroRegion" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Roles">
+            <EntityTypeMapping TypeName="Model.tbl_Roles">
+              <MappingFragment StoreEntitySet="tbl_Roles">
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RolesUsuarios">
+            <EntityTypeMapping TypeName="Model.tbl_RolesUsuarios">
+              <MappingFragment StoreEntitySet="tbl_RolesUsuarios">
+                <ScalarProperty Name="RolID" ColumnName="RolID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_SeccionConceptos">
+            <EntityTypeMapping TypeName="Model.tbl_SeccionConceptos">
+              <MappingFragment StoreEntitySet="tbl_SeccionConceptos">
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+                <ScalarProperty Name="SeccionID" ColumnName="SeccionID" />
+                <ScalarProperty Name="ConceptoID" ColumnName="ConceptoID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Secciones">
+            <EntityTypeMapping TypeName="Model.tbl_Secciones">
+              <MappingFragment StoreEntitySet="tbl_Secciones">
+                <ScalarProperty Name="PatioID" ColumnName="PatioID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Seccion" ColumnName="Seccion" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Servicios">
+            <EntityTypeMapping TypeName="Model.tbl_Servicios">
+              <MappingFragment StoreEntitySet="tbl_Servicios">
+                <ScalarProperty Name="CategoriaID" ColumnName="CategoriaID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Servicio" ColumnName="Servicio" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ServiciosAdquisicion">
+            <EntityTypeMapping TypeName="Model.tbl_ServiciosAdquisicion">
+              <MappingFragment StoreEntitySet="tbl_ServiciosAdquisicion">
+                <ScalarProperty Name="MaestroID" ColumnName="MaestroID" />
+                <ScalarProperty Name="FechaTipoMoneda" ColumnName="FechaTipoMoneda" />
+                <ScalarProperty Name="PrecioTipoMoneda" ColumnName="PrecioTipoMoneda" />
+                <ScalarProperty Name="ValorTipoMonedaActual" ColumnName="ValorTipoMonedaActual" />
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="AdquisicionID" ColumnName="AdquisicionID" />
+                <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="ServicioID" ColumnName="ServicioID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_TipoAdministrador">
+            <EntityTypeMapping TypeName="Model.tbl_TipoAdministrador">
+              <MappingFragment StoreEntitySet="tbl_TipoAdministrador">
+                <ScalarProperty Name="TipoAdministrador" ColumnName="TipoAdministrador" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_TipoMonedas">
+            <EntityTypeMapping TypeName="Model.tbl_TipoMonedas">
+              <MappingFragment StoreEntitySet="tbl_TipoMonedas">
+                <ScalarProperty Name="Format" ColumnName="Format" />
+                <ScalarProperty Name="HasSymbol" ColumnName="HasSymbol" />
+                <ScalarProperty Name="Periodicidad" ColumnName="Periodicidad" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="TipoMoneda" ColumnName="TipoMoneda" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Usuarios">
+            <EntityTypeMapping TypeName="Model.tbl_Usuarios">
+              <MappingFragment StoreEntitySet="tbl_Usuarios">
+                <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="TokenHash" ColumnName="TokenHash" />
+                <ScalarProperty Name="IsSuperAdmin" ColumnName="IsSuperAdmin" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Creado" ColumnName="Creado" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ValorMonedas">
+            <EntityTypeMapping TypeName="Model.tbl_ValorMonedas">
+              <MappingFragment StoreEntitySet="tbl_ValorMonedas">
+                <ScalarProperty Name="TipoMonedaID" ColumnName="TipoMonedaID" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Valor" ColumnName="Valor" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Mes" ColumnName="Mes" />
+                <ScalarProperty Name="Dia" ColumnName="Dia" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Maestros">
+            <EntityTypeMapping TypeName="Model.tbl_Maestros">
+              <MappingFragment StoreEntitySet="tbl_Maestros">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Num" ColumnName="Num" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="ComunaID" ColumnName="ComunaID" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Rut" ColumnName="Rut" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

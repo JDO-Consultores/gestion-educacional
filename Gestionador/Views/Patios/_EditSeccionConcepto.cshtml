@@ -1,0 +1,256 @@
+﻿@model Gestionador.Responses.SeccionConceptosResponse
+@{
+    var patios = (List<dynamic>)ViewBag.Patios;
+    var conceptos = (List<dynamic>)ViewBag.Conceptos;
+    var servicios = (List<dynamic>)ViewBag.Servicios;
+    var tipoMonedas = (List<dynamic>)ViewBag.TipoMonedas;
+}
+
+<div class="modal fade" id="editSeccionConcepto" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    Editar Productos y Servicios
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditSeccionConceptoAsync", "Patios", FormMethod.Post, new { id = "editSeccionConceptoForm", autocomplete = "off" }))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(m => m.ID)
+                    @Html.HiddenFor(m => m.SeccionID, new { id = "SeccionID" })
+                    @Html.HiddenFor(m => m.ConceptoID, new { id = "ConceptoID" })
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Patio</span>
+                            @Html.TextBoxFor(Model => Model.Sectores.Patios.Patio, new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Sección</span>
+                            @Html.TextBoxFor(Model => Model.Sectores.Sector, new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Producto</span>
+                            @Html.TextBoxFor(Model => Model.Concepto.Concepto, new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Stock</span>
+                            @Html.TextBoxFor(m => m.Stock, new { @class = "form-control", id = "Stock", type = "number" })
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        @Html.DropDownListFor(m => m.TipoMonedaID, new SelectList(tipoMonedas, "ID", "TipoMoneda"), "Tipo Moneda", new { @class = "form-control col-3", })
+                        @Html.TextBoxFor(m => m.Precio, new { @class = "form-control col-9", placeholder = "Ingrese precio" })
+                    </div>
+
+
+                    <div class="form-check form-switch form-check-reverse">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                        @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                    </div>
+                }
+                <div class="col-md-12 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">Servicio</span>
+                        @Html.DropDownList("ServicioID", new SelectList(servicios, "ID", "Servicio", "Categoria"), "Seleccionar servicio", new { @class = "form-select", id = "ServicioID" })
+                        <button type="button" class="btn btn-primary" id="addServiceBtn">Agregar Servicio</button>
+                    </div>
+                </div>
+
+                <table class="table" id="servicesTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Servicio</th>
+                            <th>Tipo Moneda</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var servicio in Model.Concepto.ServiciosConceptos)
+                        {
+                            <tr data-service-id="@servicio.ServicioID">
+                                <td><input type="hidden" class="form-control service-concept-id" value="@servicio.ID"></td>
+                                <td><input type="hidden" class="form-control seccion-id" value="@servicio.SeccionID"></td>
+                                <td><input type="hidden" class="form-control concept-id" value="@servicio.ConceptoID"></td>
+                                <td>@servicio.Servicio</td>
+                                <td>
+                                    <select class="form-control service-tipo-moneda-id" placeholder="Asignar precio" value="@servicio.TipoMonedaID">
+                                        @foreach (var item in tipoMonedas)
+                                        {
+                                            <option value="@item.ID" @(item.ID == servicio.TipoMonedaID ? "selected" : "")>@item.TipoMoneda</option>
+                                            //<option value="@item.ID" selected="@servicio.TipoMonedaID">@item.TipoMoneda</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control service-price Precio" placeholder="Asignar precio" value="@servicio.Precio"></td>
+                                <td><button type="button" class="btn btn-danger removeServiceBtn">Eliminar</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="updateButton">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#editSeccionConcepto").modal('show');
+
+        
+
+        // ======== Formateo de precios principal ======== //
+        $(document).on('input', '#Precio', function () {
+            let tipoMonedaText = $('#TipoMonedaID option:selected').text().trim().toUpperCase();
+            let allowDecimals = tipoMonedaText !== 'CLP';
+            $(this).val(formatChileanNumber($(this).val(), allowDecimals));
+        });
+
+        $(document).on('change', '#TipoMonedaID', function () {
+            let tipoMonedaText = $('#TipoMonedaID option:selected').text().trim().toUpperCase();
+            let allowDecimals = tipoMonedaText !== 'CLP';
+            $('#Precio').val(formatChileanNumber($('#Precio').val(), allowDecimals));
+        });
+
+        // ======== Formatear los precios existentes al cargar ======== //
+        $('.service-price').each(function () {
+            let row = $(this).closest('tr');
+            let tipoMonedaText = row.find('.service-tipo-moneda-id option:selected').text().trim().toUpperCase();
+            let allowDecimals = tipoMonedaText !== 'CLP';
+            $(this).val(formatChileanNumber($(this).val(), allowDecimals));
+        });
+
+        // ======== Agregar servicio dinámico ======== //
+        $('#addServiceBtn').on('click', function () {
+            var selectedServiceText = $('#ServicioID option:selected').text();
+            var selectedServiceId = $('#ServicioID').val();
+
+            if (selectedServiceId) {
+                var serviceExists = $('#servicesTable tbody tr').filter(function () {
+                    return $(this).data('service-id') == selectedServiceId;
+                }).length > 0;
+
+                if (serviceExists) {
+                    showToast("info", "Este servicio ya está agregado.");
+                    return;
+                }
+
+                var conceptoid = $("#ConceptoID").val();
+                var seccionId = $("#SeccionID").val();
+
+                var newRow = $(`
+                    <tr data-service-id="${selectedServiceId}">
+                        <td><input type="hidden" class="form-control service-concept-id" value=""></td>
+                        <td><input type="hidden" class="form-control seccion-id" value="${seccionId}"></td>
+                        <td><input type="hidden" class="form-control concept-id" value="${conceptoid}"></td>
+                        <td>${selectedServiceText}</td>
+                        <td>
+                            <select class="form-control service-tipo-moneda-id">
+                                @foreach (var item in tipoMonedas)
+                                {
+                                    <option value="@item.ID">@item.TipoMoneda</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control service-price Precio" placeholder="Asignar precio"></td>
+                        <td><button type="button" class="btn btn-danger removeServiceBtn">Eliminar</button></td>
+                    </tr>
+                `);
+
+                $('#servicesTable tbody').append(newRow);
+            }
+        });
+
+        // ======== Formateo dinámico en servicios ======== //
+        $(document).on('input', '.service-price', function () {
+            let row = $(this).closest('tr');
+            let tipoMonedaText = row.find('.service-tipo-moneda-id option:selected').text().trim().toUpperCase();
+            let allowDecimals = tipoMonedaText !== 'CLP';
+            $(this).val(formatChileanNumber($(this).val(), allowDecimals));
+        });
+
+        $(document).on('change', '.service-tipo-moneda-id', function () {
+            let row = $(this).closest('tr');
+            let tipoMonedaText = $(this).find('option:selected').text().trim().toUpperCase();
+            let allowDecimals = tipoMonedaText !== 'CLP';
+            let priceInput = row.find('.service-price');
+            priceInput.val(formatChileanNumber(priceInput.val(), allowDecimals));
+        });
+
+        // ======== Eliminar servicio ======== //
+        $('#servicesTable').on('click', '.removeServiceBtn', function () {
+            $(this).closest('tr').remove();
+        });
+
+        // ======== Botón actualizar ======== //
+        $('#updateButton').click(function () {
+            showLoading(true);
+
+            $('#editSeccionConceptoForm').find('input[name^="ServicioRequests"]').remove();
+
+            $('#servicesTable tbody tr').each(function (index) {
+                var serviceId = $(this).data('service-id');
+                var price = $(this).find('.service-price').val();
+                var serviceConceptId = $(this).find('.service-concept-id').val();
+                var seccionId = $(this).find('.seccion-id').val();
+                var conceptId = $(this).find('.concept-id').val();
+                var tipoMonedaId = $(this).find('.service-tipo-moneda-id').val();
+
+                // Convertir formato chileno a número estándar
+                price = price.replace(/\./g, '');
+
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].Precio` }).val(price).appendTo('#editSeccionConceptoForm');
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].ServicioID` }).val(serviceId).appendTo('#editSeccionConceptoForm');
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].ID` }).val(serviceConceptId).appendTo('#editSeccionConceptoForm');
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].SeccionID` }).val(seccionId).appendTo('#editSeccionConceptoForm');
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].ConceptoID` }).val(conceptId).appendTo('#editSeccionConceptoForm');
+                $('<input>').attr({ type: 'hidden', name: `ServicioRequests[${index}].TipoMonedaID` }).val(tipoMonedaId).appendTo('#editSeccionConceptoForm');
+            });
+
+            // Precio principal a formato numérico
+            $('#Precio').val($('#Precio').val().replace(/\./g, ''));
+
+            var formData = $('#editSeccionConceptoForm').serialize();
+
+            $.ajax({
+                url: EditSeccionConcepto,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#editSeccionConcepto").modal('hide');
+                        $("#patiosGrid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

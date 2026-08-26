@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Gestionador.Responses.ParrocosResponse>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Administrador/Parrocos</h2>
+    <button id="btnCrearParroco" class="btn btn-primary">
+        <i class="bi bi-plus"></i>
+        Registrar
+    </button>
+</div>
+<div id="grid"></div>
+
+<script>$(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: GetParrocos,
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: false, nullable: true },
+                            Rut: { type: "string" },
+                            Parroco: { type: "string" },
+                            IsActive: { type: "boolean" },
+                            Tipo: { type: "number" }
+                        }
+                    }
+                },
+                pageSize: 10,
+                group: { field: "Categoria" }
+            },
+            groupable: true,
+            pageable: true,
+            sortable: true,
+            scrollable: true,
+            editable: "inline",
+            columns: [
+                {
+                    field: "CategoriaID",
+                    title: "Categoría",
+                    width: "200px",
+                    editor: categoriaDropDownEditor,
+                    template: function (dataItem) {
+                        if (dataItem.Categoria.Categoria === undefined) {
+                            return dataItem.Categoria
+                        }
+                        return dataItem.Categoria.Categoria
+                    },
+                },
+                { field: "Servicio", title: "Servicio", width: "200px" },
+                { field: "IsActive", title: "Activo", width: "100px", template: "#= IsActive ? 'Si' : 'No' #" },
+                {
+                    title: "Acciones",
+                    width: "15%",
+                    template: function (dataItem) {
+                        return `<button class="btn btn-primary btn-sm bi-eye" onclick="loadView($('#modales'), '${urlAjaxParamId(ModalUpsertServicio, dataItem.ID)}')"></button>`;
+                    },
+                    attributes: {
+                        style: "text-align: center",
+                    },
+                }
+            ]
+        });
+
+        $("#btnCrearServicio").click(function () {
+            showLoading(true);
+            loadView($('#modales'), urlAjaxParamId(ModalUpsertServicio));
+            showLoading(false);
+        });
+    });</script>

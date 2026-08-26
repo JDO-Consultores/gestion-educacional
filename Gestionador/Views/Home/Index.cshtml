@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="d-flex flex-column min-vh-100">
+
+    <!-- Sección Principal -->
+    <section class="ftco-section flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+
+                    <!-- Título -->
+                    <h2 class="mb-3 fw-bold text-uppercase text-primary-custom">
+                        ¡¡ Bienvenidos a la Plataforma Digital !!
+                    </h2>
+
+                    <!-- Subtítulo -->
+                    <h4 class="mb-4 fw-semibold text-primary-custom">
+                        Donde el futuro para la gestión de cementerios se encuentra con la tecnología
+                    </h4>
+
+                    <!-- Logo -->
+                    <div class="mb-4">
+                        <img src="~/Content/Assets/Logos/Home/logo_300x300.png"
+                             alt="Logo"
+                             class="img-fluid logo-hover-effect"
+                             style="max-width: 220px;">
+                    </div>
+
+                    <!-- Botón -->
+                    <div>
+                        <a href="@Url.Action("Login", "Account")"
+                           class="btn btn-lg btn-custom rounded-pill px-5 py-3 shadow-lg">
+                            <strong>Ingresar</strong>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start border-top mt-auto py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start text-center mb-2 mb-md-0">
+                    <small class="text-muted">
+                        &copy; 2025 CampoSantoDigital. Todos los derechos reservados.
+                    </small>
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    <small class="text-muted">
+                        Producto desarrollado por
+                        <a href="https://jdoconsultores.cl/" target="_blank" class="text-decoration-none text-primary-custom fw-semibold">
+                            JDOConsultores
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    body, html {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .ftco-section {
+        height: calc(100vh - 60px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        padding: 2em 0;
+    }
+
+    .text-primary-custom {
+        color: #f29727 !important;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom {
+        background-color: #f29727;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom:hover {
+        background-color: #d87d1e;
+        transform: scale(1.05);
+        color: white;
+    }
+
+    .logo-hover-effect {
+        transition: transform 0.3s ease-in-out;
+        border-radius: 10px;
+    }
+
+    .logo-hover-effect:hover {
+        transform: scale(1.1);
+    }
+
+    footer {
+        background-color: #f8f9fa;
+    }
+
+    footer a {
+        text-decoration: none;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+    }
+</style>

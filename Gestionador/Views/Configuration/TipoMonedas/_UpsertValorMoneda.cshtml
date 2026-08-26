@@ -1,0 +1,177 @@
+﻿@model Gestionador.Models.ValorMonedaRequest
+
+@{
+    var tipoMoneda = (List<dynamic>)ViewBag.TipoMonedas;
+    var isEditing = Model.ID.HasValue;
+}
+
+<div class="modal fade" id="createValorMoneda" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    @if (isEditing)
+                    {
+                        <text>Editar Moneda</text>
+                    }
+                    else
+                    {
+                        <text>Registrar Moneda</text>
+                    }
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateMonedaAsync", "Configuration", FormMethod.Post, new { id = "crearMonedaForm" }))
+                {
+                    if (isEditing)
+                    {
+                        @Html.HiddenFor(Model => Model.ID);
+                    }
+                    @Html.AntiForgeryToken();
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Tipo Moneda</span>
+                            <select id="TipoMonedaID" name="TipoMonedaID" class="form-select">
+
+                                @foreach (var item in (List<dynamic>)ViewBag.TipoMonedas)
+                                {
+                                    <option value="@item.ID" data-periodicidad="@item.Periodicidad" @(Model.TipoMonedaID == item.ID ? "selected" : "")>@item.TipoMoneda</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="fechaDiaria" class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Fecha</span>
+                            @Html.TextBoxFor(m => m.Fecha, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "fechaInput", value = Model.Fecha })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Valor</span>
+                            @Html.TextBoxFor(Model => Model.Valor, new { @class = "form-control Precio", id = "Valor" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#createValorMoneda").modal('show');
+        
+        $('.Precio').on('input', function () {
+            formatNumberWithThousandSeparators($(this));
+        });
+
+        function parseDateFromInput(val) {
+            if (!val) return null;
+            var parts = val.split("-");
+            if (parts.length !== 3) return null;
+            return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        }
+
+        function toISODate(d) {
+            if (!d) return "";
+            var yyyy = d.getFullYear();
+            var mm = String(d.getMonth() + 1).padStart(2, "0");
+            var dd = String(d.getDate()).padStart(2, "0");
+            return yyyy + "-" + mm + "-" + dd;
+        }
+
+        function adjustToMonday(d) {
+            if (!d) return d;
+            var day = d.getDay();
+            var diff = (day === 0) ? -6 : (1 - day);
+            d.setDate(d.getDate() + diff);
+            return d;
+        }
+
+        function adjustToFirstOfMonth(d) {
+            if (!d) return d;
+            d.setDate(1);
+            return d;
+        }
+
+        var $tipo = $("#TipoMonedaID");
+        var $fecha = $("#fechaInput");
+
+        function bindFechaChangeHandler(periodicidad) {
+            $fecha.off(".period");
+
+            if (!periodicidad) periodicidad = "DIARIA";
+
+            periodicidad = String(periodicidad).toUpperCase();
+
+            if (periodicidad === "DIARIA") {
+                $fecha.on("change.period", function () {
+                });
+                $fecha.attr("step", "1");
+                $fecha.prop("readonly", false);
+
+            } else if (periodicidad === "MENSUAL") {
+                $fecha.on("change.period", function () {
+                    var d = parseDateFromInput($(this).val()) || new Date();
+                    d = adjustToFirstOfMonth(d);
+                    $(this).val(toISODate(d));
+                });
+                $fecha.attr("step", "1");
+                var curM = parseDateFromInput($fecha.val()) || new Date();
+                $fecha.val(toISODate(adjustToFirstOfMonth(curM)));
+            } else {
+                $fecha.attr("step", "1");
+                $fecha.prop("readonly", false);
+            }
+        }
+
+        function aplicarPeriodicidadSegunSeleccion() {
+            var periodicidad = $tipo.find("option:selected").data("periodicidad");
+            if (!periodicidad) {
+                periodicidad = $tipo.find("option:selected").attr("data-periodicidad");
+            }
+            if (periodicidad) periodicidad = String(periodicidad).toUpperCase();
+            bindFechaChangeHandler(periodicidad);
+        }
+
+        $tipo.on("change.periodicidad", function () {
+            aplicarPeriodicidadSegunSeleccion();
+        });
+
+        aplicarPeriodicidadSegunSeleccion();
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+
+            $('#Valor').val($('#Valor').val().replace(/\./g, ''));            
+            var formData = $('#crearMonedaForm').serialize();
+            $.ajax({
+                url: UpsertValorMonedaAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createValorMoneda").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,106 @@
+﻿@model Gestionador.Models.ParrocoRequest
+@{
+    var tipoAdministrador = (List<dynamic>)ViewBag.TipoAdministrador;
+    var isEditing = Model.ID.HasValue;
+}
+
+<div class="modal fade" id="createParroco" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    @if (isEditing)
+                    {
+                        <text>Editar</text>
+                    }
+                    else
+                    {
+                        <text>Crear</text>
+                    }
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateParrocoAsync", "Configuration", FormMethod.Post, new { id = "crearParrocoForm" }))
+                {
+                    @Html.AntiForgeryToken();
+                    if (isEditing)
+                    {
+                        @Html.HiddenFor(Model => Model.ID);
+                    }
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Categoria</span>
+                            @Html.DropDownListFor(Model => Model.TipoAdministradorID, new SelectList(tipoAdministrador, "ID", "TipoAdministrador", Model.TipoAdministradorID), new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">RUT</span>
+                            @Html.TextBoxFor(Model => Model.Rut, new { @class = "form-control rut-input", id = "RutParroco" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">NOMBRE</span>
+                            @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control", id = "NombreParroco" })
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch form-check-reverse">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                        @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#createParroco").modal('show');
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var formData = $('#crearParrocoForm').serialize();
+            $.ajax({
+                url: UpsertParrocoAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createParroco").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+
+        $('.rut-input').on('input', function () {        
+            var formattedRut = formatRut($(this).val());
+            $(this).val(formattedRut);
+        });    
+
+        $('.rut-input').on('blur', function () {
+            var rut = $(this).val();
+            if (!validateRut(rut)) {
+                showToast("info", "Rut Invalido");
+                $(this).val('');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,238 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Conceptos = (List<dynamic>)ViewBag.Conceptos;
+}
+
+<h2>Detalle ventas de productos</h2>
+<div class="container-md">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Criterios de búsqueda</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="d-flex flex-wrap align-items-center col-4">
+                            <div class="input-group input-group-sm mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Inicio</span>
+                                <input type="date" id="startDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center col-4">
+                            <div class="input-group input-group-sm mb-4">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Termino</span>
+                                <input type="date" id="endDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center col-4">
+                            <div class="input-group input-group-sm mb-4">
+                                <div class="form-check form-switch form-check-reverse">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Regularizadas</label>
+                                    @Html.CheckBox("OnlyRegulated", new { @class = "form-check-input", role = "switch", id = "OnlyRegulated" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="d-flex flex-wrap align-items-center col-12">
+                            <div class="input-group input-group-sm mb-6">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Productos</span>
+                                @Html.ListBox("Conceptos", new SelectList(Conceptos, "ID", "Concepto"), new { @class = "form-select", aria_label = "Multiple select example", id = "Conceptos" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="button" class="btn btn-primary" id="filterButton">CONSULTAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gridReport"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#startDate').val(getCurrentDate());
+        $('#endDate').val(getCurrentDate());
+
+        $("#gridReport").kendoGrid({
+            dataSource: {
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "number" },
+                            NroFicha: { type: "string" },
+                            CompRut: { type: "string" },
+                            CompNombreApellido: { type: "string" },
+                            Cementerio: { type: "string" },
+                            FechaAdquisicion: { type: "date" },
+                            Estado: { type: "string" },
+                            Producto: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 20,
+                data: [],
+            },
+            pageable: true,
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "Contiene"
+                    }
+                }
+            },
+            toolbar: ["excel"],
+            excel: {
+                fileName: "reporte.xlsx",
+                filterable: true,
+                allPages: true
+            },
+            columns: [
+                {
+                    field: "NroFicha",
+                    title: "Nro Ficha",
+                    width: "15%"
+                },
+                {
+                    field: "CompRut",
+                    title: "Rut Comprador",
+                    width: "20%"
+                },
+                {
+                    field: "CompNombreApellido",
+                    title: "Nombre Comprador",
+                    width: "25%"
+                },
+                {
+                    filterable: {
+                        multi: true,
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: GetCementerios,
+                                }
+                            }
+                        }
+                    },
+                    field: "Cementerio",
+                    title: "Cementerio",
+                    width: "15%"
+                },
+                {
+                    field: "Estado",
+                    title: "Estado",
+                    width: "15%",
+                },
+                {
+                    field: "Producto",
+                    title: "Producto",
+                    width: "15%",
+                },
+                {
+                    field: "FechaAdquisicion", title: "Fecha", width: "15%", format: "{0:dd-MM-yyyy}",
+                    template: function (dataitem) {
+                        return kendo.toString(kendo.parseDate(dataitem.FechaAdquisicion), "dd-MM-yyyy");
+                    }
+                },
+                {
+                    command: [
+                        {
+                            text: "Ver",
+                            click: function (e) {
+                                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                window.open("/Solicitudes/ViewSolicitud?id=" + encodeURIComponent(dataItem.ID), "_blank");
+                            },
+                        },
+                    ],
+                    title: "",
+                    width: "15%",
+                    attributes: {
+                        style: "text-align: center",
+                    }
+                }
+            ],
+            excelExport: function (e) {
+                var sheet = e.workbook.sheets[0];
+                sheet.columns.forEach(function (column) {
+                    column.width = 200;
+                });
+                for (var i = 1; i < sheet.rows.length; i++) {
+                    var row = sheet.rows[i];
+                    var cellFecha = row.cells[6];
+                    if (cellFecha && cellFecha.value) {
+                        if (typeof cellFecha.value === "string" && cellFecha.value.indexOf("/Date(") === 0) {
+                            var timestamp = parseInt(cellFecha.value.replace(/\/Date\((\d+)\)\//, '$1'));
+                            var date = new Date(timestamp);
+                            cellFecha.value = date;
+                            cellFecha.format = "dd-MM-yyyy";
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateChart(startDate, endDate, conceptoIds, onlyRegulated) {
+            $.ajax({
+                url: '@Url.Action("GetReportDetalle", "Report")',
+                type: 'GET',
+                traditional: true,
+                data: {
+                    startDAte: startDate,
+                    endDate: endDate,
+                    ConceptoId: conceptoIds,
+                    onlyRegulated: onlyRegulated
+                },
+                success: function (response) {
+                    if (response.success) {
+                        if (response.data.length > 0) {
+                            var gridData = response.data.map(function (item) {
+                                return {
+                                    NroFicha: item.NroFicha,
+                                    ID: item.ID,
+                                    CompRut: item.CompRut,
+                                    CompNombreApellido: item.CompNombreApellido,
+                                    Cementerio: item.Cementerio,
+                                    FechaAdquisicion: item.FechaAdquisicion,
+                                    Estado: item.Estado,
+                                    Producto: item.Producto,
+                                };
+                            });
+                            var grid = $("#gridReport").data("kendoGrid");
+                            grid.dataSource.data(gridData);
+                        } else {
+                            showToast("info", "No existe información para los dias seleccionados.");
+                        }
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showToast("error", "Ha ocurrido un error al obtener la información");
+                    showLoading(false);
+                }
+            });
+        };
+
+        $('#filterButton').click(function () {
+            showLoading(true);debugger
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var conceptoIds = $('#Conceptos').val();
+            var onlyRegulated = $('#OnlyRegulated').is(':checked');
+
+            updateChart(startDate, endDate, conceptoIds, onlyRegulated);
+        });
+    });
+</script>

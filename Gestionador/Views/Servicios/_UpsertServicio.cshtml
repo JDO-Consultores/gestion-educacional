@@ -1,0 +1,86 @@
+﻿@model Gestionador.Models.ServicioRequest
+@{
+    var categorias = (List<dynamic>)ViewBag.Categorias;
+    var isEditing = Model.ID.HasValue;
+}
+
+<div class="modal fade" id="createServicio" tabindex="-1" aria-labelledby="creatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">
+                    @if (isEditing)
+                    {
+                        <text>Editar Servicio</text>
+                    }
+                    else
+                    {
+                        <text>Crear Servicio</text>
+                    }
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateServicioAsync", "Servicios", FormMethod.Post, new { id = "crearServicioForm" }))
+                {
+                    @Html.AntiForgeryToken();
+                    if (isEditing)
+                    {
+                        @Html.HiddenFor(Model => Model.ID);
+                    }
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Categoria</span>
+                            @Html.DropDownListFor(Model => Model.CategoriaID, new SelectList(categorias, "ID", "Categoria", Model.CategoriaID), new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">Servicio</span>
+                            @Html.TextBoxFor(Model => Model.Servicio, new { @class = "form-control", id = "Servicio" })
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch form-check-reverse">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Activar</label>
+                        @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-check-input", role = "switch", id = "flexSwitchCheckDefault" })
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitButton">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#createServicio").modal('show');
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            var formData = $('#crearServicioForm').serialize();
+            $.ajax({
+                url: UpsertServicioAsync,
+                type: 'Post',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("success", response.message);
+                        $("#createServicio").modal('hide');
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>

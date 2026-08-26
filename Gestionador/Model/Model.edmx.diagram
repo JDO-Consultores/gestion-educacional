@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e873b1146067445388f5dc99b8068bca" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="Model.tbl_Adquisicion" Width="1.5" PointX="6" PointY="10.25" />
+        <EntityTypeShape EntityType="Model.tbl_Bancos" Width="1.5" PointX="6" PointY="23.5" />
+        <EntityTypeShape EntityType="Model.tbl_Categorias" Width="1.5" PointX="1.5" PointY="28" />
+        <EntityTypeShape EntityType="Model.tbl_Causas" Width="1.5" PointX="9" PointY="31.5" />
+        <EntityTypeShape EntityType="Model.tbl_Cementerios" Width="1.5" PointX="3.75" PointY="6.875" />
+        <EntityTypeShape EntityType="Model.tbl_Comunas" Width="1.5" PointX="3.75" PointY="21" />
+        <EntityTypeShape EntityType="Model.tbl_Conceptos" Width="1.5" PointX="3.75" PointY="27.625" />
+        <EntityTypeShape EntityType="Model.tbl_ConceptosServicios" Width="1.5" PointX="14.25" PointY="20.375" />
+        <EntityTypeShape EntityType="Model.tbl_Difuntos" Width="1.5" PointX="11.25" PointY="20" />
+        <EntityTypeShape EntityType="Model.tbl_Estados" Width="1.5" PointX="3.75" PointY="18.625" />
+        <EntityTypeShape EntityType="Model.tbl_FormasPago" Width="1.5" PointX="6" PointY="7" />
+        <EntityTypeShape EntityType="Model.tbl_HistorialAdquisicion" Width="1.5" PointX="8.25" PointY="10.875" />
+        <EntityTypeShape EntityType="Model.tbl_Letra" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="Model.tbl_LugarDefuncion" Width="1.5" PointX="9" PointY="29" />
+        <EntityTypeShape EntityType="Model.tbl_Observaciones" Width="1.5" PointX="11.25" PointY="9.875" />
+        <EntityTypeShape EntityType="Model.tbl_PagoAdquisicion" Width="1.5" PointX="8.25" PointY="14.25" />
+        <EntityTypeShape EntityType="Model.tbl_PagosMantenciones" Width="1.5" PointX="8.25" PointY="19" />
+        <EntityTypeShape EntityType="Model.tbl_Parrocos" Width="1.5" PointX="3" PointY="0.875" />
+        <EntityTypeShape EntityType="Model.tbl_Patios" Width="1.5" PointX="1.5" PointY="24.5" />
+        <EntityTypeShape EntityType="Model.tbl_Regiones" Width="1.5" PointX="1.5" PointY="21.25" />
+        <EntityTypeShape EntityType="Model.tbl_Roles" Width="1.5" PointX="0.75" PointY="11.25" />
+        <EntityTypeShape EntityType="Model.tbl_RolesUsuarios" Width="1.5" PointX="3" PointY="15.125" />
+        <EntityTypeShape EntityType="Model.tbl_SeccionConceptos" Width="1.5" PointX="12" PointY="25.5" />
+        <EntityTypeShape EntityType="Model.tbl_Secciones" Width="1.5" PointX="3.75" PointY="24.25" />
+        <EntityTypeShape EntityType="Model.tbl_Servicios" Width="1.5" PointX="9" PointY="24.875" />
+        <EntityTypeShape EntityType="Model.tbl_ServiciosAdquisicion" Width="1.5" PointX="11.25" PointY="14" />
+        <EntityTypeShape EntityType="Model.tbl_TipoAdministrador" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="Model.tbl_TipoMonedas" Width="1.5" PointX="3.75" PointY="9.625" />
+        <EntityTypeShape EntityType="Model.tbl_Usuarios" Width="1.5" PointX="0.75" PointY="13.75" />
+        <EntityTypeShape EntityType="Model.tbl_ValorMonedas" Width="1.5" PointX="6" PointY="26.5" />
+        <EntityTypeShape EntityType="Model.tbl_Maestros" Width="1.5" PointX="9" PointY="6.75" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Adquisicion1" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Cementerios" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Comunas" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Comunas1" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Conceptos" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Estados" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Secciones1" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_TipoMonedas" />
+        <AssociationConnector Association="Model.FK_tbl_Adquisicion_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_Difuntos_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_HistorialAdquisicion_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_Observaciones_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_PagoAdquisicion_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_PagosMantenciones_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_ServiciosAdquisición_tbl_Adquisicion" />
+        <AssociationConnector Association="Model.FK_tbl_PagoAdquisicion_tbl_Bancos" />
+        <AssociationConnector Association="Model.FK_tbl_Conceptos_tbl_Categorias" />
+        <AssociationConnector Association="Model.FK_tbl_Servicios_tbl_Categorias1" />
+        <AssociationConnector Association="Model.FK_tbl_Difuntos_tbl_Causas" />
+        <AssociationConnector Association="Model.FK_tbl_Patios_tbl_Cementerios" />
+        <AssociationConnector Association="Model.FK_tbl_Comunas_tbl_Regiones" />
+        <AssociationConnector Association="Model.FK_tbl_Maestros_tbl_Comunas" />
+        <AssociationConnector Association="Model.FK_tbl_ConceptosServicios_tbl_Conceptos" />
+        <AssociationConnector Association="Model.FK_tbl_SeccionConceptos_tbl_Conceptos" />
+        <AssociationConnector Association="Model.FK_tbl_ConceptosServicios_tbl_Secciones" />
+        <AssociationConnector Association="Model.FK_tbl_ConceptosServicios_tbl_Servicios" />
+        <AssociationConnector Association="Model.FK_tbl_ConceptosServicios_tbl_TipoMonedas" />
+        <AssociationConnector Association="Model.FK_tbl_Difuntos_tbl_LugarDefuncion" />
+        <AssociationConnector Association="Model.FK_tbl_Difuntos_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_PagoAdquisicion_tbl_FormasPago" />
+        <AssociationConnector Association="Model.FK_tbl_HistorialAdquisicion_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_Observaciones_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_PagosMantenciones_tbl_Servicios" />
+        <AssociationConnector Association="Model.FK_tbl_PagosMantenciones_tbl_TipoMonedas" />
+        <AssociationConnector Association="Model.FK_tbl_PagosMantenciones_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_Parrocos_tbl_TipoAdministrador" />
+        <AssociationConnector Association="Model.FK_tbl_Secciones_tbl_Patios" />
+        <AssociationConnector Association="Model.FK_tbl_RolesUsuarios_tbl_Roles" />
+        <AssociationConnector Association="Model.FK_tbl_RolesUsuarios_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_SeccionConceptos_tbl_Secciones" />
+        <AssociationConnector Association="Model.FK_tbl_SeccionConceptos_tbl_TipoMonedas" />
+        <AssociationConnector Association="Model.FK_tbl_ServiciosAdquisición_tbl_Servicios" />
+        <AssociationConnector Association="Model.FK_tbl_ServiciosAdquisicion_tbl_Maestros" />
+        <AssociationConnector Association="Model.FK_tbl_ServiciosAdquisicion_tbl_TipoMonedas" />
+        <AssociationConnector Association="Model.FK_tbl_ServiciosAdquisición_tbl_Usuarios" />
+        <AssociationConnector Association="Model.FK_tbl_ValorMonedas_tbl_TipoMonedas" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

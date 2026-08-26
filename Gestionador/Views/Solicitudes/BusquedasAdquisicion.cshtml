@@ -1,0 +1,149 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var cementerios = (List<dynamic>)ViewBag.Cementerios;
+}
+
+<div class="container-md mt-4">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <h4 class="mb-0 me-3">
+                Buscar Adquisiciones:
+            </h4>
+        </div>
+        <button id="btnAddSolicitud" class="btn btn-primary">
+            <i class="bi bi-plus"></i>
+            Crear Adquisición
+        </button>
+    </div>
+</div>
+
+@using (Html.BeginForm("BuscarAdquisicionAsync", "Solicitudes", FormMethod.Get, new { id = "BuscarAdquisicionForm", autocomplete = "off" }))
+{
+    @Html.AntiForgeryToken();
+    <div class="container-md mt-4" id="adquisicionDropdownContainer">
+        <div class="input-group mb-3">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownButton">Seleccionar Campo:</button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" data-value="Número Ficha">NÚMERO FICHA</a></li>
+                <li><a class="dropdown-item" data-value="Rut">RUT COMPRADOR</a></li>
+                <li><a class="dropdown-item" data-value="NOMBRE COMPRADOR/REFERENTE">NOMBRE COMPRADOR/REFERENTE</a></li>
+                <li><a class="dropdown-item" data-value="Fecha Adquisición">FECHA ADQUISICIÓN</a></li>
+                <li><a class="dropdown-item" data-value="Difunto">NOMBRE DIFUNTO</a></li>
+            </ul>
+            @Html.Hidden("dropdownValue")
+            <input type="text" class="form-control" id="searchText" name="searchText" placeholder="Escriba el criterio de búsqueda">
+
+            <div class="a-input-with-icon justify-content-end">
+                <button type="button" class="btn btn-primary" id="submitButton">BUSCAR</button>
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table table-striped table-hover" id="tableResult">
+    <thead>
+        <tr>
+            <th>CEMENTERIO</th>
+            <th>NRO FICHA</th>
+            <th>RUT COMPRADOR</th>
+            <th>COMPRADOR</th>
+            <th>REFERENTE</th>
+            <th>ESTADO</th>
+            <th>FECHA COMPRA</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="tbodyResult"></tbody>
+</table>
+<script>
+    $(document).ready(function () {
+
+        var defaultOption = "Número Ficha";
+        $('#dropdownButton').text(defaultOption);
+        $('#dropdownValue').val(defaultOption);
+
+        $("#btnAddSolicitud").click(function () {
+            window.location.href = "@Url.Action("Create", "Solicitudes")";
+        });
+
+        $('#adquisicionDropdownContainer .dropdown-item').on('click', function (e) {
+            e.preventDefault();
+            $('#searchText').show();
+            var selectedText = $(this).data('value');
+            $('#dropdownButton').text(selectedText);
+            $('#dropdownValue').val(selectedText);
+            $('#searchText').removeClass("rut-input");
+            $('#searchText').removeClass('rut-input').val('').attr('type', 'text');
+            $('#searchText').off('input');
+            $('.rut-input').off('input');
+            $('#searchText').off('blur');
+            switch (selectedText) {
+                case "Fecha Adquisición":
+                    $('#searchText').attr('type', 'date');
+                    break;
+                case "Rut":
+                    $('#searchText').addClass("rut-input");
+                    $('.rut-input').off('input');
+                    $('.rut-input').on('input', function () {
+                        var formattedRut = formatRut($(this).val());
+                        $(this).val(formattedRut);
+                    });    
+                    break
+                default:
+                    $('#searchText').attr('type', 'text');
+                    break;
+            }
+        });
+
+        $('#BuscarAdquisicionForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#submitButton').click();
+        });
+
+        $('#submitButton').click(function () {
+            showLoading(true);
+            $('#tbodyResult').empty();
+            var formData = $('#BuscarAdquisicionForm').serializeArray();            
+            $.ajax({
+                url: BuscarAdquisicionAsync,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        var tbody = '';
+                        var tabla = document.getElementById('tbodyResult');
+                        response.data.forEach(function (item) {
+                            tbody += `
+                                <tr>
+                                    <td>${item.Cementerio}</td>
+                                    <td>${item.NroFicha}</td>
+                                    <td>${item.CompRut} </td>
+                                    <td>${item.CompNombreApellido}</td>
+                                    <td>${item.RefNombreApellido}</td>                                    
+                                    <td>${item.Estado}</td>
+                                    <td>${item.FechaLocal}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary" onclick="window.open('/Solicitudes/ViewSolicitud?id=${item.ID}', '_blank')" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="window.open('/Solicitudes/EditSolicitud?id=${item.ID}', '_blank')" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                        tabla.innerHTML = tbody;
+                        showLoading(false);
+                    } else {
+                        showToast("info", response.message);
+                    }
+                    showLoading(false);
+                },
+                error: function () {
+                    showLoading(false);
+                    showToast("error", "Ocurrió un error al procesar la solicitud.");
+                }
+            });
+        });
+    });
+</script>
